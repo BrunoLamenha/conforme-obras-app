@@ -7,68 +7,63 @@ let empreendimentosPadrao = [
         pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
         detalhesPavimentos: {
             'PRIVATIVA - 1º Pavimento': [
-                { unidade: '101', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '102', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '103', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '104', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '105', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '106', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '107', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '108', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '109', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '110', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '111', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '112', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '113', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '114', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+                { unidade: '101', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '102', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '103', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '104', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '105', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '106', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '108', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '109', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '110', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '111', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '112', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '113', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '114', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' }
             ],
             'PRIVATIVA - 2º Pavimento': [
-                { unidade: '201', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '202', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '203', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '204', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '205', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '206', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '207', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '208', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '209', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '210', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '211', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '212', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '213', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '214', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+                { unidade: '201', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '202', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '203', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '204', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '205', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '206', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '208', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '209', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '210', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '211', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '212', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '213', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '214', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' }
             ],
             'PRIVATIVA - 3º Pavimento': [
-                { unidade: '301', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '302', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '303', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '304', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '305', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '306', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '307', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '308', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '309', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '310', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '311', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '312', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '313', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '314', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+                { unidade: '301', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '302', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '303', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '304', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '305', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '306', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '308', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '309', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '310', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '311', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '312', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '313', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' },
+                { unidade: '314', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Sem piscina' }
             ],
             'PRIVATIVA - 4º Pavimento (c/ piscina)': [
-                { unidade: '401', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '402', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '403', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '404', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '405', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '406', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '407', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '408', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '409', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '410', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '411', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '412', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '413', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
-                { unidade: '414', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+                { unidade: '401', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '402', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '403', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '404', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '405', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '406', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '407', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '408', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '409', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '410', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '411', tipologia: 'Quarto/Sala', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' },
+                { unidade: '412', tipologia: '3 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão', piscina: 'Com piscina' }
             ]
         },
         unidadesPorPavimento: 14,
@@ -273,10 +268,13 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
 
     unidadesSalvas.forEach((u, idx) => {
         listaUnidadesHtml += `
-            <button onclick="carregarUnidadeParaEdicao('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="width: 100%; background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; cursor: pointer; text-align: left;">
-                <span style="color: #f8fafc; font-size: 0.9rem;"><strong>Unidade ${u.unidade}</strong> - ${u.tipologia} | ${u.suite === 'Sim' ? 'Suíte' : ''} | ${u.varanda === 'Sim' ? 'Varanda' : ''} | ${u.reforma || 'Padrão'}</span>
-                <span style="color: #38bdf8; font-size: 0.8rem;">✏ Editar</span>
-            </button>
+            <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
+                <span onclick="carregarUnidadeParaEdicao('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="color: #f8fafc; font-size: 0.95rem; cursor: pointer; flex: 1; font-weight: bold;">Unidade ${u.unidade}</span>
+                <div style="display: flex; gap: 6px;">
+                    <button onclick="carregarUnidadeParaEdicao('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="background: #3b82f6; border: none; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Editar</button>
+                    <button onclick="removerUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="background: #ef4444; border: none; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Apagar</button>
+                </div>
+            </div>
         `;
     });
 
@@ -333,7 +331,7 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
             </div>
 
             <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px; max-height: 250px; overflow-y: auto;">
-                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 0.95rem;">Unidades Cadastradas (Clique para Editar)</h3>
+                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 0.95rem;">Unidades Cadastradas</h3>
                 ${listaUnidadesHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhuma unidade cadastrada ainda.</p>'}
             </div>
 
@@ -396,7 +394,7 @@ function salvarUnidadePavimento(nomeObra, pavimento, tipoArea) {
         areaServico: document.getElementById('checkAreaServicoUnidade').checked ? 'Sim' : 'Não',
         varanda: document.getElementById('checkVarandaUnidade').checked ? 'Sim' : 'Não',
         reforma: document.getElementById('checkReformaUnidade').checked ? 'Reforma' : 'Padrão',
-        piscina: 'Sem piscina'
+        piscina: pavimento.includes('piscina') ? 'Com piscina' : 'Sem piscina'
     };
 
     let lista = obterEmpreendimentos();
@@ -416,13 +414,15 @@ function salvarUnidadePavimento(nomeObra, pavimento, tipoArea) {
 }
 
 function removerUnidadePavimento(nomeObra, pavimento, tipoArea, index) {
-    let lista = obterEmpreendimentos();
-    let obraObj = lista.find(e => e.nome === nomeObra);
-    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
-    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[chavePav]) {
-        obraObj.detalhesPavimentos[chavePav].splice(index, 1);
-        salvarEmpreendimentos(lista);
-        abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
+    if (confirm('Deseja realmente apagar esta unidade?')) {
+        let lista = obterEmpreendimentos();
+        let obraObj = lista.find(e => e.nome === nomeObra);
+        const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
+        if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[chavePav]) {
+            obraObj.detalhesPavimentos[chavePav].splice(index, 1);
+            salvarEmpreendimentos(lista);
+            abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
+        }
     }
 }
 
@@ -775,7 +775,7 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
             `;
         });
     } else {
-        botoesUnidades = `<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma unidade cadastrada neste pavimento. Cadastre em Cadastros > Escolher da lista.</p>`;
+        botoesUnidades = `<p style="color: #94a3b8; text-align: center; padding: 20px;">Nenhuma unidade cadastrada neste pavimento.</p>`;
     }
 
     container.innerHTML = `
@@ -808,6 +808,7 @@ window.abrirCadastroUnidadesPavimento = abrirCadastroUnidadesPavimento;
 window.carregarUnidadeParaEdicao = carregarUnidadeParaEdicao;
 window.cancelarEdicaoUnidade = cancelarEdicaoUnidade;
 window.salvarUnidadePavimento = salvarUnidadePavimento;
+window.removerUnidadePavimento = removerUnidadePavimento;
 window.carregarPassoWizard = carregarPassoWizard;
 window.salvarPasso1 = salvarPasso1;
 window.salvarPasso2 = salvarPasso2;
