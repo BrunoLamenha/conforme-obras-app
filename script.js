@@ -65,24 +65,183 @@ const checklistsModelos = {
   ]
 };
 
-let empreendimentosPadrao = [
-    { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'] },
-    { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'] },
-    { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'] },
-    { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'] },
-    { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'] }
+// Estrutura inicial contendo a empresa "VIVER BEM" e seus empreendimentos padrão
+let empresasPadrao = [
+    {
+        nome: 'VIVER BEM',
+        empreendimentos: [
+            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'] },
+            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'] },
+            { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'] },
+            { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'] },
+            { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'] }
+        ]
+    }
 ];
 
-function obterEmpreendimentos() {
-    const salvo = localStorage.getItem('conformeObra_empreendimentos');
+let empresaAtual = 'VIVER BEM';
+
+function obterEmpresas() {
+    const salvo = localStorage.getItem('conformeObra_empresas');
     if (salvo) return JSON.parse(salvo);
-    localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(empreendimentosPadrao));
-    return empreendimentosPadrao;
+    localStorage.setItem('conformeObra_empresas', JSON.stringify(empresasPadrao));
+    return empresasPadrao;
 }
 
-function salvarEmpreendimentos(lista) {
-    localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(lista));
+function salvarEmpresas(lista) {
+    localStorage.setItem('conformeObra_empresas', JSON.stringify(lista));
 }
+
+function obterEmpreendimentos() {
+    const empresas = obterEmpresas();
+    const emp = empresas.find(e => e.nome === empresaAtual);
+    return emp ? emp.empreendimentos : [];
+}
+
+function salvarEmpreendimentos(novaListaEmpreendimentos) {
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0) {
+        empresas[empIndex].empreendimentos = novaListaEmpreendimentos;
+        salvarEmpresas(empresas);
+    }
+}
+
+// --- TELA INICIAL: SELEÇÃO DE EMPRESAS ---
+function voltarInicio() {
+    const container = document.getElementById('main-content');
+    const empresas = obterEmpresas();
+
+    let htmlEmpresas = '';
+    empresas.forEach(emp => {
+        htmlEmpresas += `
+            <div class="card-menu" onclick="abrirEmpresa('${emp.nome}')">
+                <div class="card-icon"><i class="fa-solid fa-building-user"></i></div>
+                <div class="card-info">
+                    <h2>${emp.nome}</h2>
+                    <span>${emp.empreendimentos.length} empreendimento(s) cadastrado(s)</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-city"></i> Empresas & Grupos</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione a empresa ou adicione uma nova</p>
+        </div>
+        <div class="menu-inicial">
+            ${htmlEmpresas}
+            <div class="card-menu" onclick="iniciarCadastroEmpresa()" style="border: 2px dashed var(--primary); background: rgba(37, 99, 235, 0.05);">
+                <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
+                <div class="card-info">
+                    <h2 style="color: var(--primary);">ADICIONAR OUTRA EMPRESA</h2>
+                    <span>Criar novo grupo/empresa (inicia sem empreendimentos)</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+    `;
+}
+
+window.iniciarCadastroEmpresa = function() {
+    const container = document.getElementById('main-content');
+    container.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Adicionar Nova Empresa</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Insira o nome da nova empresa ou grupo</p>
+        </div>
+
+        <div class="menu-inicial" style="gap: 10px;">
+            <div>
+                <label style="font-size: 13px; font-weight: 600;">Nome da Empresa:</label>
+                <input type="text" id="novoNomeEmpresa" placeholder="Ex: Construtora Horizonte">
+            </div>
+            
+            <button class="btn-action" onclick="salvarNovaEmpresa()"><i class="fa-solid fa-check"></i> Salvar Empresa</button>
+        </div>
+        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
+    `;
+};
+
+window.salvarNovaEmpresa = function() {
+    const nome = document.getElementById('novoNomeEmpresa').value.trim();
+    if (!nome) {
+        alert("Por favor, informe o nome da empresa.");
+        return;
+    }
+
+    const empresas = obterEmpresas();
+    if (empresas.some(e => e.nome.toUpperCase() === nome.toUpperCase())) {
+        alert("Já existe uma empresa com este nome.");
+        return;
+    }
+
+    empresas.push({
+        nome: nome.toUpperCase(),
+        empreendimentos: []
+    });
+
+    salvarEmpresas(empresas);
+    alert("Empresa cadastrada com sucesso!");
+    voltarInicio();
+};
+
+// --- DASHBOARD DA EMPRESA SELECIONADA ---
+window.abrirEmpresa = function(nomeEmpresa) {
+    empresaAtual = nomeEmpresa;
+    const container = document.getElementById('main-content');
+
+    container.innerHTML = `
+        <div class="app-header" style="border-bottom: none; margin-bottom: 10px; padding-bottom: 0;">
+            <div class="header-titles">
+                <h1 style="color: var(--primary);"><i class="fa-solid fa-building"></i> ${empresaAtual}</h1>
+                <p>Painel de Gestão e Vistoria</p>
+            </div>
+        </div>
+        
+        <div class="menu-inicial" style="margin-top: 15px;">
+            <div class="card-menu" onclick="navegar('vistoria')">
+                <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div class="card-info">
+                    <h2>VISTORIA</h2>
+                    <span>Checklists de execução estrutural e arquitetônica</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+
+            <div class="card-menu" onclick="navegar('cadastros')">
+                <div class="card-icon"><i class="fa-solid fa-building-shield"></i></div>
+                <div class="card-info">
+                    <h2>CADASTROS & PROJETOS</h2>
+                    <span>Gerenciar empreendimentos e envio de PDFs</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+
+            <div class="card-menu" onclick="navegar('cronograma')">
+                <div class="card-icon"><i class="fa-solid fa-timeline"></i></div>
+                <div class="card-info">
+                    <h2>CRONOGRAMA</h2>
+                    <span>Acompanhamento do avanço físico</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+
+            <div class="card-menu" onclick="navegar('indicadores')">
+                <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="card-info">
+                    <h2>INDICADORES</h2>
+                    <span>Painel consolidado de conformidades</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar para Lista de Empresas</button>
+    `;
+};
 
 function navegar(destino) {
     const container = document.getElementById('main-content');
@@ -90,26 +249,30 @@ function navegar(destino) {
 
     if (destino === 'vistoria') {
         let botoesObras = '';
-        lista.forEach(obra => {
-            botoesObras += `
-                <div class="card-menu" onclick="escolherDisciplinaVistoria('${obra.nome}')">
-                    <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
-                    <div class="card-info">
-                        <h2>${obra.nome}</h2>
-                        <span>Selecionar disciplina para vistoria</span>
+        if (lista.length === 0) {
+            botoesObras = `<p style="color: var(--text-muted); text-align:center; padding: 20px;">Nenhum empreendimento cadastrado nesta empresa. Utilize o menu de Cadastros para adicionar.</p>`;
+        } else {
+            lista.forEach(obra => {
+                botoesObras += `
+                    <div class="card-menu" onclick="escolherDisciplinaVistoria('${obra.nome}')">
+                        <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
+                        <div class="card-info">
+                            <h2>${obra.nome}</h2>
+                            <span>Selecionar disciplina para vistoria</span>
+                        </div>
+                        <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </div>
-                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-            `;
-        });
+                `;
+            });
+        }
 
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistorias por Empreendimento</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Escolha a obra para visualizar os caminhos e disciplinas</p>
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria: ${empresaAtual}</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Escolha o empreendimento para iniciar a vistoria</p>
             </div>
             <div class="menu-inicial">${botoesObras}</div>
-            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
         `;
     } else if (destino === 'cadastros') {
         container.innerHTML = `
@@ -135,7 +298,7 @@ function navegar(destino) {
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
             </div>
-            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
         `;
     } else if (destino === 'cronograma') {
         carregarCronogramaGeral();
@@ -173,7 +336,7 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Obras</button>
+        <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-arrow-left"></i> Voltar para Obras</button>
     `;
 };
 
@@ -207,7 +370,7 @@ window.abrirVistoriaObra = function(nomeObra, disciplina) {
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
+        <button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 
     carregarItensChecklist(disciplina);
@@ -235,8 +398,7 @@ function carregarItensChecklist(disciplina) {
                         <span style="flex: 1; color: var(--text-main);">${itemText}</span>
                     </label>
                     
-                    <!-- Evidência Fotográfica e NC (Ocultas inicialmente) -->
-                    <div id="extra_${itemId}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+                    <div id="extra_${itemId}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); flex-direction: column; gap: 6px;">
                         <div style="display: flex; align-items: center; gap: 6px;">
                             <label style="font-size: 11px; color: #facc15; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation"></i> Não Conformidade Detectada</label>
                         </div>
@@ -259,7 +421,6 @@ function carregarItensChecklist(disciplina) {
 
     containerChecklist.innerHTML = htmlGeral;
 
-    // Listener para nome do arquivo da foto
     document.querySelectorAll('input[type="file"][id^="foto_"]').forEach(input => {
         input.addEventListener('change', (e) => {
             const id = e.target.id.replace('foto_', '');
@@ -275,7 +436,6 @@ function carregarItensChecklist(disciplina) {
 window.toggleSecaoNC = function(itemId) {
     const chk = document.getElementById(itemId);
     const extraDiv = document.getElementById(`extra_${itemId}`);
-    // Se o item NÃO estiver marcado (desmarcado), assume-se falha/não conformidade e exibe campos extras
     if (!chk.checked) {
         extraDiv.style.display = 'flex';
     } else {
@@ -307,6 +467,7 @@ window.salvarVistoriaCompleta = function(nomeObra, disciplina) {
     });
 
     const dadosVistoria = {
+        empresa: empresaAtual,
         obra: nomeObra,
         disciplina: disciplina,
         pavimento: pavimento,
@@ -316,7 +477,7 @@ window.salvarVistoriaCompleta = function(nomeObra, disciplina) {
         data: new Date().toISOString()
     };
 
-    localStorage.setItem(`vistoria_${nomeObra}_${disciplina}_${pavimento}`, JSON.stringify(dadosVistoria));
+    localStorage.setItem(`vistoria_${empresaAtual}_${nomeObra}_${disciplina}_${pavimento}`, JSON.stringify(dadosVistoria));
     alert(`Vistoria salva com sucesso! Itens conformes: ${totalVerificados}/${todosChecks.length}. NCs registradas: ${naoConformidades.length}.`);
 };
 
@@ -331,7 +492,7 @@ window.enviarRelatorioWhatsApp = function(nomeObra, disciplina) {
         else ncsCount++;
     });
 
-    const texto = `*RELATÓRIO DE VISTORIA - CONFORME OBRA*\n\n` +
+    const texto = `*RELATÓRIO DE VISTORIA - ${empresaAtual}*\n\n` +
                   `🏢 *Obra:* ${nomeObra}\n` +
                   `📐 *Disciplina:* ${disciplina.toUpperCase()}\n` +
                   `📍 *Pavimento:* ${pavimento.toUpperCase()}\n` +
@@ -348,28 +509,32 @@ window.carregarCronogramaGeral = function() {
     const lista = obterEmpreendimentos();
 
     let htmlObra = '';
-    lista.forEach((obra, idx) => {
-        htmlObra += `
-            <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
-                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome}</h4>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
-                
-                <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                    <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
-                    <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
+    if (lista.length === 0) {
+        htmlObra = `<p style="color: var(--text-muted); text-align:center; padding: 20px;">Nenhum empreendimento cadastrado nesta empresa.</p>`;
+    } else {
+        lista.forEach((obra, idx) => {
+            htmlObra += `
+                <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                    <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome}</h4>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
+                    
+                    <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                        <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
+                        <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
+                    </div>
                 </div>
-            </div>
-        `;
-    });
+            `;
+        });
+    }
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma Interativo</h3>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma: ${empresaAtual}</h3>
             <p style="font-size: 13px; color: var(--text-muted);">Acompanhamento do avanço físico dos empreendimentos</p>
         </div>
         <div class="menu-inicial">${htmlObra}</div>
-        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+        <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
     `;
 };
 
@@ -380,7 +545,7 @@ window.carregarPainelIndicadores = function() {
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Painel de Indicadores</h3>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Indicadores: ${empresaAtual}</h3>
             <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada da gestão de obras</p>
         </div>
 
@@ -404,7 +569,7 @@ window.carregarPainelIndicadores = function() {
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+        <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
     `;
 };
 
@@ -431,8 +596,8 @@ window.carregarListaCadastro = function() {
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-list-check"></i> Escolher Obra</h3>
             <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para gerenciar os projetos</p>
         </div>
-        <div class="menu-inicial">${htmlObras.length > 0 ? htmlObras : '<p style="color:var(--text-muted); text-align:center;">Nenhum empreendimento cadastrado.</p>'}</div>
-        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
+        <div class="menu-inicial">${htmlObras.length > 0 ? htmlObras : '<p style="color:var(--text-muted); text-align:center;">Nenhum empreendimento cadastrado nesta empresa.</p>'}</div>
+        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 };
 
@@ -464,7 +629,7 @@ window.escolherDisciplinaObra = function(nomeObra) {
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="carregarListaCadastro()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Lista</button>
+        <button class="btn-action btn-back" onclick="carregarListaCadastro()"><i class="fa-solid fa-arrow-left"></i> Voltar para Lista</button>
     `;
 };
 
@@ -504,7 +669,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="escolherDisciplinaObra('${nomeObra}')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Disciplinas</button>
+        <button class="btn-action btn-back" onclick="escolherDisciplinaObra('${nomeObra}')"><i class="fa-solid fa-arrow-left"></i> Voltar para Disciplinas</button>
     `;
 
     const selectPav = document.getElementById('selectPavimentoModulo');
@@ -587,7 +752,7 @@ window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento</h3>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento (${empresaAtual})</h3>
             <p style="font-size: 13px; color: var(--text-muted);">Preencha as configurações da nova obra</p>
         </div>
 
@@ -630,7 +795,7 @@ window.iniciarWizardCadastro = function() {
             
             <button class="btn-action" onclick="salvarNovoEmpreendimento()"><i class="fa-solid fa-check"></i> Salvar Empreendimento</button>
         </div>
-        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
+        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 };
 
@@ -661,9 +826,10 @@ window.salvarNovoEmpreendimento = function() {
     carregarListaCadastro();
 };
 
-window.voltarInicio = function() {
-    location.reload();
-};
+// Inicialização automática ao carregar o script
+window.addEventListener('DOMContentLoaded', () => {
+    voltarInicio();
+});
 
 // Registro do Service Worker para suporte a PWA e funcionamento offline
 if ('serviceWorker' in navigator) {
@@ -673,5 +839,3 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.log('Falha ao registrar Service Worker:', err));
     });
 }
-
-window.navegar = navegar;
