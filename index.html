@@ -41,6 +41,20 @@
             </div>
         </main>
     </div>
+    <div class="card" id="type-card" style="display:none;">
+    <h3>3. Tipo de Vistoria</h3>
+    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;" id="category-selection-container">
+        <button class="tab-btn btn-opt" style="flex:1; min-width:140px;" id="btn-cat-padrao" onclick="setCategory('Padrão Construtora', this)">Padrão Construtora</button>
+        <button class="tab-btn btn-opt" style="flex:1; min-width:140px;" id="btn-cat-reforma" onclick="setCategory('Reforma / Aditivo', this)">Reforma / Aditivo</button>
+    </div>
+
+    <h3 style="margin-top: 15px;">4. Etapa da Vistoria</h3>
+    <div style="display:flex; gap:8px; margin-top:8px;" id="stage-selection-container">
+        <button class="btn btn-stage" id="btn-stage-1" style="flex:1;" onclick="setStage('1ª Vistoria', this)">📋 1ª Vistoria</button>
+        <button class="btn btn-stage" id="btn-stage-rev" style="flex:1; display:none;" onclick="setStage('Revistoria', this)">🔄 Revistoria</button>
+    </div>
+    <div id="stage-info-text" style="margin-top:10px; font-weight:bold; color:var(--primary); font-size:0.9rem;"></div>
+</div>
 
     <script type="module" src="script.js"></script>
 </body>
