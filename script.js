@@ -24,8 +24,8 @@ function navegar(destino) {
                 <button class="btn-primary" onclick="carregarFasesObra('ZEN LIFE')">
                     <h2>📁 ZEN LIFE</h2>
                 </button>
-                <button class="btn-secondary" onclick="voltarInicio()" style="margin-top: 20px; text-align: center;">
-                    ⬅ Voltar ao Início
+                <button class="btn-primary btn-back" onclick="voltarInicio()" style="margin-top: 10px;">
+                    <h2>⬅ Voltar ao Início</h2>
                 </button>
             </main>
         `;
@@ -43,22 +43,38 @@ function navegar(destino) {
                     <h2>CADASTRAR UM NOVO EMPREENDIMENTO</h2>
                     <span>Passo a passo: pavimentos, unidades e regras</span>
                 </button>
-                <button class="btn-secondary" onclick="voltarInicio()" style="margin-top: 20px; text-align: center;">
-                    ⬅ Voltar ao Início
+                <button class="btn-primary btn-back" onclick="voltarInicio()" style="margin-top: 10px;">
+                    <h2>⬅ Voltar ao Início</h2>
                 </button>
             </main>
         `;
     }
 }
 
-// Tela intermediária do fluxo de Vistoria (Estrutural vs Arquitetônico)
+// Tela intermediária do fluxo de Vistoria (Filtra o Estrutural apenas para Grand Garden e Zen Life)
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     
-    let acaoEstrutural = `alert('Abrindo módulo Estrutural')`;
+    let botoesFases = '';
+
+    // Mostra o botão Estrutural apenas para Grand Garden e Zen Life
     if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE') {
-        acaoEstrutural = `carregarEstrutural('${nomeObra}')`;
+        botoesFases += `
+            <button class="btn-primary" onclick="carregarEstrutural('${nomeObra}')">
+                <h2>ESTRUTURAL</h2>
+            </button>
+        `;
     }
+
+    // O módulo arquitetônico aparece para todos
+    botoesFases += `
+        <button class="btn-primary" onclick="carregarListaPavimentos('${nomeObra}')">
+            <h2>ARQUITETÔNICO</h2>
+        </button>
+        <button class="btn-primary btn-back" onclick="navegar('vistoria')" style="margin-top: 10px;">
+            <h2>⬅ Voltar aos Empreendimentos</h2>
+        </button>
+    `;
 
     container.innerHTML = `
         <header>
@@ -66,15 +82,7 @@ function carregarFasesObra(nomeObra) {
             <p>Escolha a frente de serviço</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="${acaoEstrutural}">
-                <h2>ESTRUTURAL</h2>
-            </button>
-            <button class="btn-primary" onclick="carregarListaPavimentos('${nomeObra}')">
-                <h2>ARQUITETÔNICO</h2>
-            </button>
-            <button class="btn-secondary" onclick="navegar('vistoria')" style="margin-top: 20px; text-align: center;">
-                ⬅ Voltar aos Empreendimentos
-            </button>
+            ${botoesFases}
         </main>
     `;
 }
@@ -120,6 +128,9 @@ function carregarEstrutural(nomeObra) {
         <button class="btn-primary" onclick="alert('Abrindo Coberta')">
             <h2>COBERTA</h2>
         </button>
+        <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
+            <h2>⬅ Voltar às Fases</h2>
+        </button>
     `;
 
     container.innerHTML = `
@@ -129,9 +140,6 @@ function carregarEstrutural(nomeObra) {
         </header>
         <main class="menu-inicial">
             ${botoesItens}
-            <button class="btn-secondary" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 20px; text-align: center;">
-                ⬅ Voltar às Fases
-            </button>
         </main>
     `;
 }
@@ -154,8 +162,8 @@ function carregarListaPavimentos(nomeObra) {
             <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Cobertura')">
                 <h2>COBERTURA</h2>
             </button>
-            <button class="btn-secondary" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 20px; text-align: center;">
-                ⬅ Voltar às Fases
+            <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar às Fases</h2>
             </button>
         </main>
     `;
@@ -176,8 +184,8 @@ function carregarTipoArea(nomeObra, pavimento) {
             <button class="btn-primary" onclick="carregarListaApartamentos('${nomeObra}', '${pavimento}')">
                 <h2>ÁREA PRIVATIVA</h2>
             </button>
-            <button class="btn-secondary" onclick="carregarListaPavimentos('${nomeObra}')" style="margin-top: 20px; text-align: center;">
-                ⬅ Voltar aos Pavimentos
+            <button class="btn-primary btn-back" onclick="carregarListaPavimentos('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar aos Pavimentos</h2>
             </button>
         </main>
     `;
@@ -198,8 +206,8 @@ function carregarListaApartamentos(nomeObra, pavimento) {
             <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 102')">
                 <h2>APTO 102</h2>
             </button>
-            <button class="btn-secondary" onclick="carregarTipoArea('${nomeObra}', '${pavimento}')" style="margin-top: 20px; text-align: center;">
-                ⬅ Voltar às Áreas
+            <button class="btn-primary btn-back" onclick="carregarTipoArea('${nomeObra}', '${pavimento}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar às Áreas</h2>
             </button>
         </main>
     `;
