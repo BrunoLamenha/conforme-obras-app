@@ -1,7 +1,7 @@
 {
   "name": "Conforme Obra",
   "short_name": "ConformeObra",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#2563eb",
@@ -15,14 +15,14 @@
       "src": "./icon-512.png.png",
       "sizes": "512x512",
       "type": "image/png"
-    }
+    },
     {
-      "src": "logo.png",
+      "src": "./logo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logo.png",
+      "src": "./logo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
