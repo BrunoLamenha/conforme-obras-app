@@ -6,7 +6,7 @@ function navegar(destino) {
         container.innerHTML = `
             <header>
                 <h1>CONFORME OBRAS</h1>
-                <p>Selecione o empreendimento</p>
+                <p>Sistema Integrado de Gestão e Vistoria</p>
             </header>
             <main class="menu-inicial">
                 <button class="btn-primary" onclick="carregarFasesObra('ZOE')">
@@ -33,7 +33,7 @@ function navegar(destino) {
         container.innerHTML = `
             <header>
                 <h1>CONFORME OBRAS</h1>
-                <p>Gerenciamento de Obras</p>
+                <p>Sistema Integrado de Gestão e Vistoria</p>
             </header>
             <main class="menu-inicial">
                 <button class="btn-primary" onclick="alert('Abrir lista para gerenciar pavimentos, tipologias e checklists')">
