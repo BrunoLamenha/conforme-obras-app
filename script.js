@@ -259,28 +259,22 @@ function carregarPassoWizard(passo) {
             <header>
                 <img src="logo.png" alt="Conforme Obra" class="logo-img">
                 <h1>CADASTRO - PASSO 3/4</h1>
-                <p>Tipologia, Banheiros e Piscina</p>
+                <p>Tipologia e Características</p>
             </header>
             <main class="menu-inicial">
                 <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
                     <label style="color: #94a3b8; font-size: 0.9rem;">Escolha a Tipologia:</label>
-                    <select id="selectTipologia" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <select id="selectTipologia" onchange="atualizarCamposTipologia()" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                         <option value="Studio">Studio</option>
                         <option value="Quarto/Sala">Quarto/Sala</option>
                         <option value="2 Quartos">2 Quartos</option>
                         <option value="3 Quartos">3 Quartos</option>
                     </select>
 
-                    <label style="color: #94a3b8; font-size: 0.9rem;">Quantos Banheiros?</label>
-                    <select id="selectBanheiros" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                        <option value="1 Banheiro">1 Banheiro</option>
-                        <option value="2 Banheiros">2 Banheiros</option>
-                        <option value="3 Banheiros">3 Banheiros</option>
-                        <option value="4+ Banheiros">4+ Banheiros</option>
-                    </select>
+                    <div id="containerCamposExtras"></div>
 
-                    <label style="color: #94a3b8; font-size: 0.9rem;">Piscina Privativa:</label>
-                    <select id="selectPiscina" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <label style="color: #94a3b8; font-size: 0.9rem; display: block; margin-top: 5px;">Piscina Privativa:</label>
+                    <select id="selectPiscina" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                         <option value="Sem piscina">Sem piscina</option>
                         <option value="Com piscina">Com piscina</option>
                     </select>
@@ -293,6 +287,7 @@ function carregarPassoWizard(passo) {
                 </button>
             </main>
         `;
+        setTimeout(atualizarCamposTipologia, 50);
     } else if (passo === 4) {
         container.innerHTML = `
             <header>
@@ -320,6 +315,64 @@ function carregarPassoWizard(passo) {
     }
 }
 
+function atualizarCamposTipologia() {
+    const tipo = document.getElementById('selectTipologia').value;
+    const containerExtras = document.getElementById('containerCamposExtras');
+    
+    if (!containerExtras) return;
+
+    if (tipo === 'Studio') {
+        containerExtras.innerHTML = `
+            <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px dashed #475569; margin-bottom: 15px; color: #94a3b8; font-size: 0.85rem;">
+                ℹ Studio configurado com <strong>1 Banheiro</strong> (sem suíte, lavabo, área de serviço ou varanda obrigatórios).
+            </div>
+        `;
+    } else {
+        containerExtras.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <label style="display: flex; align-items: center; gap: 10px; color: white; cursor: pointer; font-size: 0.95rem;">
+                    <input type="checkbox" id="checkSuite" style="width: 18px; height: 18px; accent-color: #3b82f6;">
+                    Possui Suíte?
+                </label>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="color: #94a3b8; font-size: 0.9rem;">Qtd. de Banheiros (fora suítes):</label>
+                <select id="selectBanheiros" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <option value="1 Banheiro">1 Banheiro</option>
+                    <option value="2 Banheiros">2 Banheiros</option>
+                    <option value="3 Banheiros">3 Banheiros</option>
+                    <option value="4+ Banheiros">4+ Banheiros</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="color: #94a3b8; font-size: 0.9rem;">Lavabo:</label>
+                <select id="selectLavabo" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <option value="Não">Não</option>
+                    <option value="Sim">Sim</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="color: #94a3b8; font-size: 0.9rem;">Área de Serviço:</label>
+                <select id="selectAreaServico" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="color: #94a3b8; font-size: 0.9rem;">Varanda:</label>
+                <select id="selectVaranda" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                </select>
+            </div>
+        `;
+    }
+}
+
 function salvarPasso1() {
     const nome = document.getElementById('inputNomeObra').value.trim();
     const pavimentosStr = document.getElementById('inputPavimentos').value.trim();
@@ -339,11 +392,30 @@ function salvarPasso2() {
 }
 
 function salvarPasso3() {
-    novoEmpreendimentoTemp.tipologia = {
-        tipo: document.getElementById('selectTipologia').value,
-        banheiros: document.getElementById('selectBanheiros').value,
-        piscina: document.getElementById('selectPiscina').value
-    };
+    const tipo = document.getElementById('selectTipologia').value;
+    const piscina = document.getElementById('selectPiscina').value;
+
+    if (tipo === 'Studio') {
+        novoEmpreendimentoTemp.tipologia = {
+            tipo: 'Studio',
+            suite: 'Não',
+            banheiros: '1 Banheiro',
+            lavabo: 'Não',
+            areaServico: 'Não',
+            varanda: 'Não',
+            piscina: piscina
+        };
+    } else {
+        novoEmpreendimentoTemp.tipologia = {
+            tipo: tipo,
+            suite: document.getElementById('checkSuite').checked ? 'Sim' : 'Não',
+            banheiros: document.getElementById('selectBanheiros').value,
+            lavabo: document.getElementById('selectLavabo').value,
+            areaServico: document.getElementById('selectAreaServico').value,
+            varanda: document.getElementById('selectVaranda').value,
+            piscina: piscina
+        };
+    }
     carregarPassoWizard(4);
 }
 
