@@ -5,7 +5,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 const db = getFirestore();
 const storage = getStorage();
 
-// Modelos de Checklists por Disciplina
 const checklistsModelos = {
   "estrutural": [
     {
@@ -24,42 +23,19 @@ const checklistsModelos = {
         "Verificação da rigidez, estabilidade, apoios no solo e contraventamento do escoramento.",
         "Checagem de contra-flechas e alinhamento das vigas e pilares."
       ]
-    },
-    {
-      "etapa": 3,
-      "categoria": "Montagem da Armadura Passiva (Aço)",
-      "itens": [
-        "Conferência dos diâmetros das barras, número de elementos e disposição conforme o projeto estrutural.",
-        "Posicionamento correto dos espaçadores para garantir rigorosamente o cobrimento mínimo."
-      ]
-    },
-    {
-      "etapa": 4,
-      "categoria": "Lançamento, Adensamento e Cura do Concreto",
-      "itens": [
-        "Conferência da Nota Fiscal da concreteira (fck especificado, slump e horário).",
-        "Realização do ensaio de abatimento (Slump Test) na chegada do caminhão.",
-        "Adensamento correto com vibradores de imersão e início imediato da cura."
-      ]
     }
   ],
   "arquitetonico": [
     {
       "etapa": 1,
-      "categoria": "Alvenaria e Vedação",
+      "categoria": "Dormitório / Cozinha",
       "itens": [
-        "Conferência do esquadro, prumo e alinhamento das paredes conforme projeto arquitetônico.",
-        "Verificação da execução de vergas e contravergas em vãos de portas e janelas.",
-        "Conferência de paginação e juntas de movimentação."
-      ]
-    },
-    {
-      "etapa": 2,
-      "categoria": "Revestimentos e Esquadrias",
-      "itens": [
-        "Inspeção de prumo e planeza de paredes antes do revestimento final.",
-        "Verificação de caimentos em áreas molhadas (banheiros, varandas e cozinhas).",
-        "Checagem de vedação, esquadro e fixação de caixilhos e esquadrias."
+        "Contrapiso, Revestimentos e Rodapés",
+        "Forro e Sancas de Gesso",
+        "Tubulações, Tomadas, Interruptores e Luminárias",
+        "Tubulações, Louças, Metais e Sifão",
+        "Infraestrutura / Aparelho Ar-Condicionado",
+        "Bancadas, Soleiras e Peitoris"
       ]
     }
   ]
@@ -111,7 +87,6 @@ function salvarEmpreendimentos(novaListaEmpreendimentos) {
     }
 }
 
-// --- TELA INICIAL: SELEÇÃO DE EMPRESAS ---
 window.voltarInicio = function() {
     const container = document.getElementById('main-content');
     const empresas = obterEmpresas();
@@ -184,7 +159,6 @@ window.salvarNovaEmpresa = function() {
     voltarInicio();
 };
 
-// --- DASHBOARD DA EMPRESA SELECIONADA ---
 window.abrirEmpresa = function(nomeEmpresa) {
     empresaAtual = nomeEmpresa;
     const container = document.getElementById('main-content');
@@ -304,12 +278,10 @@ window.navegar = function(destino) {
     }
 };
 
-// --- SELEÇÃO DE DISCIPLINA PARA VISTORIA (VERIFICA SE É OBRA NOVA OU REFORMA) ---
 window.escolherDisciplinaVistoria = function(nomeObra) {
     const obra = obterObraPorNome(nomeObra);
     const container = document.getElementById('main-content');
 
-    // Se for reforma, direciona para o fluxo reservado de reformas
     if (obra && obra.tipoObra === 'Reforma') {
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
@@ -331,7 +303,6 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
         return;
     }
 
-    // Fluxo padrão completo para Obra Nova (Estrutural + Arquitetônico)
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${nomeObra}</h3>
@@ -339,7 +310,7 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
         </div>
 
         <div class="menu-inicial">
-            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'estrutural', 'Estrutural', 'Geral', 'Geral')">
+            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'estrutural', 'Geral', 'Geral', 'Geral')">
                 <div class="card-icon"><i class="fa-solid fa-helmet-safety"></i></div>
                 <div class="card-info">
                     <h2>PROJETO ESTRUTURAL</h2>
@@ -362,7 +333,6 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
     `;
 };
 
-// --- FLUXO ESPECÍFICO DE PROJETOS ARQUITETÔNICOS (ÁREA PRIVATIVA / COMUM) ---
 window.escolherTipoAreaArquitetonica = function(nomeObra) {
     const container = document.getElementById('main-content');
     container.innerHTML = `
@@ -372,7 +342,7 @@ window.escolherTipoAreaArquitetonica = function(nomeObra) {
         </div>
 
         <div class="menu-inicial">
-            <div class="card-menu" onclick="escolherPavimentoArquitetonico('${nomeObra}', 'Área Privativa')">
+            <div class="card-menu" onclick="abrirPainelVistoriaUnificado('${nomeObra}', 'Área Privativa')">
                 <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
                 <div class="card-info">
                     <h2>ÁREA PRIVATIVA</h2>
@@ -381,7 +351,7 @@ window.escolherTipoAreaArquitetonica = function(nomeObra) {
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="card-menu" onclick="escolherPavimentoArquitetonico('${nomeObra}', 'Área Comum')">
+            <div class="card-menu" onclick="escolherPavimentoComum('${nomeObra}')">
                 <div class="card-icon"><i class="fa-solid fa-people-roof"></i></div>
                 <div class="card-info">
                     <h2>ÁREA COMUM</h2>
@@ -395,64 +365,17 @@ window.escolherTipoAreaArquitetonica = function(nomeObra) {
     `;
 };
 
-window.escolherPavimentoArquitetonico = function(nomeObra, tipoArea) {
+window.escolherPavimentoComum = function(nomeObra) {
     const container = document.getElementById('main-content');
-    const obra = obterObraPorNome(nomeObra);
-    const qtdPav = obra ? obra.pavimentosTipo : 3;
+    const setoresComuns = ['Térreo / Portaria', 'Área de Lazer', 'Cobertura / Comum', 'Subsolo / Garagem'];
     let htmlPavimentos = '';
-    
-    if (tipoArea === 'Área Privativa') {
-        for (let i = 1; i <= qtdPav; i++) {
-            htmlPavimentos += `
-                <div class="card-menu" onclick="escolherUnidadeArquitetonica('${nomeObra}', '${tipoArea}', '${i}º Pavimento')">
-                    <div class="card-icon"><i class="fa-solid fa-building"></i></div>
-                    <div class="card-info">
-                        <h2>${i}º PAVIMENTO</h2>
-                        <span>Selecionar apartamento / unidade</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-            `;
-        }
-    } else {
-        const setoresComuns = ['Térreo / Portaria', 'Área de Lazer', 'Cobertura / Comum', 'Subsolo / Garagem'];
-        setoresComuns.forEach(setor => {
-            htmlPavimentos += `
-                <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'arquitetonico', '${tipoArea}', '${setor}', 'Setor Comum')">
-                    <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
-                    <div class="card-info">
-                        <h2>${setor.toUpperCase()}</h2>
-                        <span>Iniciar checklist de área comum</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-            `;
-        });
-    }
-
-    container.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-building-user"></i> ${nomeObra} (${tipoArea})</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione o pavimento ou setor catalogado</p>
-        </div>
-        <div class="menu-inicial">${htmlPavimentos}</div>
-        <button class="btn-action btn-back" onclick="escolherTipoAreaArquitetonica('${nomeObra}')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-    `;
-};
-
-window.escolherUnidadeArquitetonica = function(nomeObra, tipoArea, pavimento) {
-    const container = document.getElementById('main-content');
-    const numPav = pavimento.replace(/\D/g, '') || '1';
-    const unidades = [`Apto ${numPav}01`, `Apto ${numPav}02`, `Apto ${numPav}03`, `Apto ${numPav}04`];
-
-    let htmlUnidades = '';
-    unidades.forEach(apt => {
-        htmlUnidades += `
-            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'arquitetonico', '${tipoArea}', '${pavimento}', '${apt}')">
-                <div class="card-icon"><i class="fa-solid fa-door-closed"></i></div>
+    setoresComuns.forEach(setor => {
+        htmlPavimentos += `
+            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'arquitetonico', 'Área Comum', '${setor}', 'Setor Comum')">
+                <div class="card-icon"><i class="fa-solid fa-layer-group"></i></div>
                 <div class="card-info">
-                    <h2>${apt.toUpperCase()}</h2>
-                    <span>Aplicar checklist na unidade</span>
+                    <h2>${setor.toUpperCase()}</h2>
+                    <span>Iniciar checklist de área comum</span>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -461,188 +384,232 @@ window.escolherUnidadeArquitetonica = function(nomeObra, tipoArea, pavimento) {
 
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-house"></i> ${nomeObra} - ${pavimento}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione o apartamento</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-building-user"></i> ${nomeObra} (Área Comum)</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione o setor catalogado</p>
         </div>
-        <div class="menu-inicial">${htmlUnidades}</div>
-        <button class="btn-action btn-back" onclick="escolherPavimentoArquitetonico('${nomeObra}', '${tipoArea}')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="menu-inicial">${htmlPavimentos}</div>
+        <button class="btn-action btn-back" onclick="escolherTipoAreaArquitetonica('${nomeObra}')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 };
 
-// --- MÓDULO DE VISTORIA COM CHECKLIST, FOTOS E NÃO CONFORMIDADES (NC) ---
-window.abrirVistoriaObra = function(nomeObra, disciplina, tipoArea = 'Geral', pavimento = 'Geral', unidade = '') {
+// --- NOVO PAINEL UNIFICADO DE VISTORIA COM BOTÕES DE PAVIMENTO E NÚMEROS DE UNIDADES (EXATAMENTE COMO OS PRINTS) ---
+window.abrirPainelVistoriaUnificado = function(nomeObra, tipoArea) {
     const container = document.getElementById('main-content');
-    const nomeDisciplinaFormatado = disciplina === 'estrutural' ? 'Projeto Estrutural' : 'Projeto Arquitetônico';
-    
-    let subTitulo = `${nomeDisciplinaFormatado}`;
-    if (tipoArea !== 'Geral') subTitulo += ` • ${tipoArea}`;
-    if (pavimento !== 'Geral') subTitulo += ` • ${pavimento}`;
-    if (unidade) subTitulo += ` • ${unidade}`;
+    const obra = obterObraPorNome(nomeObra);
+    const qtdPav = obra ? obra.pavimentosTipo : 4;
 
-    container.innerHTML = `
-        <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-list"></i> ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">${subTitulo}</p>
-        </div>
+    let pavSelecionado = 1;
+    let unidadeSelecionada = `${pavSelecionado}01`;
+    let tipoVistoriaSelecionado = 'Padrão Construtora';
 
-        <div class="upload-section">
-            <div id="checklistContainer" style="margin-top: 5px;"></div>
+    function renderizarPainel() {
+        // Gera botões de pavimentos
+        let botoesPav = '';
+        for (let p = 1; p <= qtdPav; p++) {
+            const ativo = pavSelecionado === p ? 'background: var(--primary); color: white; border-color: var(--primary);' : 'background: rgba(255,255,255,0.05); color: var(--text-main);';
+            botoesPav += `<button onclick="window.mudarPavimentoVistoria(${p})" style="padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; ${ativo}">${p}º Pav</button>`;
+        }
 
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-action" onclick="salvarVistoriaCompleta('${nomeObra}', '${disciplina}', '${tipoArea}', '${pavimento}', '${unidade}')" style="margin-top:0;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
-                <button class="btn-action" onclick="enviarRelatorioWhatsApp('${nomeObra}', '${disciplina}', '${tipoArea}', '${pavimento}', '${unidade}')" style="margin-top:0; background-color: #16a34a; color: white;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+        // Gera unidades do pavimento selecionado (14 unidades para 1º, 2º e 3º; 12 unidades para o 4º)
+        const totalUnidades = (pavSelecionado === 4) ? 12 : 14;
+        let botoesUnidades = '';
+        for (let u = 1; u <= totalUnidades; u++) {
+            const numStr = u < 10 ? `0${u}` : `${u}`;
+            const numUnidade = `${pavSelecionado}${numStr}`;
+            const ativoUnit = unidadeSelecionada === numUnidade ? 'background: #ef4444; color: white; border-color: #ef4444;' : 'background: rgba(255,255,255,0.05); color: var(--text-main);';
+            botoesUnidades += `<button onclick="window.mudarUnidadeVistoria('${numUnidade}')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; font-size: 13px; ${ativoUnit}">${numUnidade}</button>`;
+        }
+
+        container.innerHTML = `
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+                <div><i class="fa-solid fa-user-tie"></i> <strong>Responsável Confirmado</strong><br><span style="color: var(--text-muted);">Vistoriador: Bruno</span></div>
             </div>
-        </div>
 
-        <button class="btn-action btn-back" onclick="${disciplina === 'estrutural' ? `escolherDisciplinaVistoria('${nomeObra}')` : (tipoArea === 'Área Privativa' ? `escolherUnidadeArquitetonica('${nomeObra}', '${tipoArea}', '${pavimento}')` : `escolherPavimentoArquitetonico('${nomeObra}', '${tipoArea}')`)}"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-    `;
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 10px; text-align: center;">1. Selecione o Pavimento</label>
+                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">${botoesPav}</div>
+            </div>
 
-    carregarItensChecklist(disciplina);
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 10px; text-align: center;">2. Selecione a Unidade</label>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 6px;">${botoesUnidades}</div>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 10px; text-align: center;">3. Tipo de Vistoria</label>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="window.mudarTipoVistoria('Padrão Construtora')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: bold; cursor: pointer; ${tipoVistoriaSelecionado === 'Padrão Construtora' ? 'background: var(--primary); color: white;' : 'background: rgba(255,255,255,0.05); color: var(--text-main);'}">Padrão Construtora</button>
+                    <button onclick="window.mudarTipoVistoria('Reforma / Aditivo')" style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: bold; cursor: pointer; ${tipoVistoriaSelecionado === 'Reforma / Aditivo' ? 'background: var(--primary); color: white;' : 'background: rgba(255,255,255,0.05); color: var(--text-main);'}">Reforma / Aditivo</button>
+                </div>
+            </div>
+
+            <div id="containerChecklistItens"></div>
+
+            <button class="btn-action btn-back" onclick="escolherTipoAreaArquitetonica('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        `;
+
+        renderizarChecklistItens(nomeObra, tipoArea, `${pavSelecionado}º Pavimento`, `Apto ${unidadeSelecionada}`);
+    }
+
+    window.mudarPavimentoVistoria = function(p) {
+        pavSelecionado = p;
+        unidadeSelecionada = `${p}01`;
+        renderizarPainel();
+    };
+
+    window.mudarUnidadeVistoria = function(u) {
+        unidadeSelecionada = u;
+        renderizarPainel();
+    };
+
+    window.mudarTipoVistoria = function(t) {
+        tipoVistoriaSelecionado = t;
+        renderizarPainel();
+    };
+
+    renderizarPainel();
 };
 
-function carregarItensChecklist(disciplina) {
-    const containerChecklist = document.getElementById('checklistContainer');
-    const checklistData = checklistsModelos[disciplina] || checklistsModelos["estrutural"];
-    let htmlGeral = '';
+function renderizarChecklistItens(nomeObra, tipoArea, pavimento, unidade) {
+    const container = document.getElementById('containerChecklistItens');
+    const checklistData = checklistsModelos["arquitetonico"];
+    let html = '';
 
-    checklistData.forEach((bloco, blocoIndex) => {
-        htmlGeral += `
-            <div style="margin-bottom: 15px; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
-                <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Etapa ${bloco.etapa}: ${bloco.categoria}</h4>
+    checklistData.forEach((bloco, bIdx) => {
+        html += `
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
+                <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 12px;"><i class="fa-solid fa-book"></i> ${bloco.categoria}</h4>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
         `;
 
-        bloco.itens.forEach((itemText, itemIndex) => {
-            const itemId = `chk_${blocoIndex}_${itemIndex}`;
-            htmlGeral += `
-                <div style="background: rgba(255,255,255,0.02); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
-                    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; cursor: pointer;">
-                        <input type="checkbox" id="${itemId}" name="checkItemModel" value="${itemText}" onchange="toggleSecaoNC('${itemId}')" style="margin-top: 2px;">
-                        <span style="flex: 1; color: var(--text-main);">${itemText}</span>
-                    </label>
-                    
-                    <div id="extra_${itemId}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); flex-direction: column; gap: 6px;">
-                        <div style="display: flex; align-items: center; gap: 6px;">
-                            <label style="font-size: 11px; color: #facc15; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation"></i> Não Conformidade Detectada</label>
+        bloco.itens.forEach((itemText, iIdx) => {
+            const itemKey = `chk_${bIdx}_${iIdx}`;
+            html += `
+                <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <span style="font-size: 13px; color: var(--text-main); flex: 1; min-width: 200px;">${iIdx + 1}. ${itemText}</span>
+                    <div style="display: flex; gap: 6px;">
+                        <button id="btn_conf_${itemKey}" onclick="window.marcarStatusItem('${itemKey}', 'conforme')" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #16a34a; background: #16a34a; color: white; font-size: 12px; font-weight: bold; cursor: pointer;">Conforme ✓</button>
+                        <button id="btn_nao_${itemKey}" onclick="window.marcarStatusItem('${itemKey}', 'nao_conforme')" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: var(--text-muted); font-size: 12px; font-weight: bold; cursor: pointer;">Não Conforme X</button>
+                    </div>
+                </div>
+                <div id="painel_nc_${itemKey}" style="display: none; background: rgba(239, 68, 68, 0.05); border: 1px dashed #ef4444; border-radius: 6px; padding: 12px; margin-top: 6px; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #ef4444; font-weight: bold; font-size: 12px;"><i class="fa-solid fa-triangle-exclamation"></i> PENDÊNCIA #1</span>
+                        <div style="display: flex; gap: 10px; font-size: 12px;">
+                            <span style="color: #16a34a; cursor: pointer; font-weight: bold;" onclick="window.fecharNC('${itemKey}')">Sanar ✓</span>
+                            <span style="color: #ef4444; cursor: pointer; font-weight: bold;" onclick="window.fecharNC('${itemKey}')">Excluir X</span>
                         </div>
-                        <input type="text" id="nc_desc_${itemId}" placeholder="Descrição da falha / Não conformidade" style="font-size: 11px; padding: 6px;">
-                        <input type="text" id="nc_resp_${itemId}" placeholder="Responsável pela correção" style="font-size: 11px; padding: 6px;">
-                        
-                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                            <label style="font-size: 11px; color: var(--text-muted); cursor: pointer; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
-                                <i class="fa-solid fa-camera"></i> Anexar Foto <input type="file" id="foto_${itemId}" accept="image/*" style="display:none;">
-                            </label>
-                            <span id="foto_nome_${itemId}" style="font-size: 10px; color: var(--text-muted);">Nenhuma foto anexada</span>
+                    </div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px;">
+                        <label><input type="checkbox"> Peça Oca / Solta</label>
+                        <label><input type="checkbox"> Junta Desalinhada</label>
+                        <label><input type="checkbox"> Caimento Incorreto (Poça)</label>
+                        <label><input type="checkbox"> Rodapé Solto / Danificado</label>
+                        <label><input type="checkbox"> Falta Rejunte no Piso</label>
+                        <label><input type="checkbox"> Piso Riscado / Manchado</label>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted);">Serviço / Responsável:</label>
+                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Escolher depois / A definir...</option></select>
                         </div>
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted);">Data Início:</label>
+                            <input type="date" value="2026-08-01" style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted);">Dias Úteis:</label>
+                            <input type="number" value="3" style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted);">Status:</label>
+                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Aguardando Início</option></select>
+                        </div>
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted);">Gravidade:</label>
+                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Baixa</option><option>Média</option><option>Alta</option></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted);">Observação Técnica:</label>
+                        <input type="text" placeholder="Detalhes..." style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted);">Fotos Anexadas:</label>
+                        <input type="file" style="font-size: 11px; width: 100%; padding: 4px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
                     </div>
                 </div>
             `;
         });
 
-        htmlGeral += `</div></div>`;
+        html += `</div></div>`;
     });
 
-    containerChecklist.innerHTML = htmlGeral;
-
-    document.querySelectorAll('input[type="file"][id^="foto_"]').forEach(input => {
-        input.addEventListener('change', (e) => {
-            const id = e.target.id.replace('foto_', '');
-            const nomeSpan = document.getElementById(`foto_nome_${id}`);
-            if (e.target.files.length > 0) {
-                nomeSpan.textContent = e.target.files[0].name;
-                nomeSpan.style.color = '#22c55e';
-            }
-        });
-    });
+    container.innerHTML = html;
 }
 
-window.toggleSecaoNC = function(itemId) {
-    const chk = document.getElementById(itemId);
-    const extraDiv = document.getElementById(`extra_${itemId}`);
-    if (!chk.checked) {
-        extraDiv.style.display = 'flex';
+window.marcarStatusItem = function(itemKey, status) {
+    const btnConf = document.getElementById(`btn_conf_${itemKey}`);
+    const btnNao = document.getElementById(`btn_nao_${itemKey}`);
+    const painelNC = document.getElementById(`painel_nc_${itemKey}`);
+
+    if (status === 'conforme') {
+        btnConf.style.background = '#16a34a';
+        btnConf.style.borderColor = '#16a34a';
+        btnConf.style.color = 'white';
+        btnNao.style.background = 'rgba(255,255,255,0.05)';
+        btnNao.style.color = 'var(--text-muted)';
+        btnNao.style.borderColor = 'var(--border-color)';
+        painelNC.style.display = 'none';
     } else {
-        extraDiv.style.display = 'none';
+        btnNao.style.background = '#ef4444';
+        btnNao.style.borderColor = '#ef4444';
+        btnNao.style.color = 'white';
+        btnConf.style.background = 'rgba(255,255,255,0.05)';
+        btnConf.style.color = 'var(--text-muted)';
+        btnConf.style.borderColor = 'var(--border-color)';
+        painelNC.style.display = 'flex';
     }
 };
 
-window.salvarVistoriaCompleta = function(nomeObra, disciplina, tipoArea, pavimento, unidade) {
-    const todosChecks = document.querySelectorAll('input[name="checkItemModel"]');
-    let totalVerificados = 0;
-    let naoConformidades = [];
-
-    todosChecks.forEach(chk => {
-        if (chk.checked) {
-            totalVerificados++;
-        } else {
-            const id = chk.id;
-            const desc = document.getElementById(`nc_desc_${id}`)?.value || 'Não verificado / Falha';
-            const resp = document.getElementById(`nc_resp_${id}`)?.value || 'Não atribuído';
-            naoConformidades.push({ item: chk.value, descricao: desc, responsabilizados: resp, status: 'Pendente' });
-        }
-    });
-
-    const dadosVistoria = {
-        empresa: empresaAtual,
-        obra: nomeObra,
-        disciplina: disciplina,
-        tipoArea: tipoArea,
-        pavimento: pavimento,
-        unidade: unidade,
-        totalItens: todosChecks.length,
-        totalVerificados: totalVerificados,
-        naoConformidades: naoConformidades,
-        data: new Date().toISOString()
-    };
-
-    localStorage.setItem(`vistoria_${empresaAtual}_${nomeObra}_${disciplina}_${pavimento}_${unidade}`, JSON.stringify(dadosVistoria));
-    alert(`Vistoria salva com sucesso! Conformes: ${totalVerificados}/${todosChecks.length}. NCs: ${naoConformidades.length}.`);
+window.fecharNC = function(itemKey) {
+    document.getElementById(`painel_nc_${itemKey}`).style.display = 'none';
+    window.marcarStatusItem(itemKey, 'conforme');
 };
 
-window.enviarRelatorioWhatsApp = function(nomeObra, disciplina, tipoArea, pavimento, unidade) {
-    const todosChecks = document.querySelectorAll('input[name="checkItemModel"]');
-    let conformes = 0;
-    let ncsCount = 0;
-
-    todosChecks.forEach(chk => {
-        if (chk.checked) conformes++;
-        else ncsCount++;
-    });
-
-    const texto = `*RELATÓRIO DE VISTORIA - ${empresaAtual}*\n\n` +
-                  `🏢 *Obra:* ${nomeObra}\n` +
-                  `📐 *Disciplina:* ${disciplina.toUpperCase()} (${tipoArea})\n` +
-                  `📍 *Local:* ${pavimento} ${unidade ? '• ' + unidade : ''}\n` +
-                  `✅ *Conformes:* ${conformes} / ${todosChecks.length}\n` +
-                  `⚠️ *Não Conformidades:* ${ncsCount}\n` +
-                  `📅 *Data:* ${new Date().toLocaleDateString('pt-BR')}`;
-
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+window.abrirVistoriaObra = function(nomeObra, disciplina, tipoArea, pavimento, unidade) {
+    const container = document.getElementById('main-content');
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-list"></i> ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">${disciplina} • ${tipoArea} • ${pavimento} • ${unidade}</p>
+        </div>
+        <div id="containerChecklistItens"></div>
+        <button class="btn-action btn-back" onclick="escolherPavimentoComum('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+    `;
+    renderizarChecklistItens(nomeObra, tipoArea, pavimento, unidade);
 };
 
-// --- CRONOGRAMA & INDICADORES & CADASTROS ---
 window.carregarCronogramaGeral = function() {
     const container = document.getElementById('main-content');
     const lista = obterEmpreendimentos();
     let htmlObra = '';
 
-    if (lista.length === 0) {
-        htmlObra = `<p style="color: var(--text-muted); text-align:center; padding: 20px;">Nenhum empreendimento cadastrado.</p>`;
-    } else {
-        lista.forEach((obra, idx) => {
-            htmlObra += `
-                <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
-                    <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome} <span style="font-size: 11px; color: var(--text-muted);">(${obra.tipoObra || 'Obra Nova'})</span></h4>
-                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
-                    <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                        <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
-                        <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
-                    </div>
+    lista.forEach((obra, idx) => {
+        htmlObra += `
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome} <span style="font-size: 11px; color: var(--text-muted);">(${obra.tipoObra || 'Obra Nova'})</span></h4>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
+                <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                    <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
                 </div>
-            `;
-        });
-    }
+            </div>
+        `;
+    });
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
@@ -699,7 +666,7 @@ window.carregarListaCadastro = function() {
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-list-check"></i> Escolher Obra</h3>
             <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para gerenciar os projetos</p>
         </div>
-        <div class="menu-inicial">${htmlObras.length > 0 ? htmlObras : '<p style="color:var(--text-muted); text-align:center;">Nenhum empreendimento cadastrado.</p>'}</div>
+        <div class="menu-inicial">${htmlObras}</div>
         <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 };
@@ -738,12 +705,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
     const obraId = nomeObra.toLowerCase().replace(/\s+/g, '_');
     const disciplinaNome = disciplina === 'estrutural' ? 'Projeto Estrutural' : 'Projeto Arquitetônico';
 
-    let pavimentosLista = ['Térreo', '1º Pavimento', '2º Pavimento', '3º Pavimento', 'Cobertura'];
-    let optionsPavimentos = '';
-    pavimentosLista.forEach(pav => {
-        const val = pav.toLowerCase().replace(/[ºª]/g, '').replace(/\s+/g, '_');
-        optionsPavimentos += `<option value="${val}">${pav}</option>`;
-    });
+    let optionsPavimentos = '<option value="terreo">Térreo</option><option value="1_pavimento">1º Pavimento</option><option value="2_pavimento">2º Pavimento</option><option value="3_pavimento">3º Pavimento</option><option value="4_pavimento">4º Pavimento</option>';
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
@@ -834,7 +796,7 @@ window.iniciarWizardCadastro = function() {
             </div>
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Quantidade de Pavimentos Tipo:</label>
-                <input type="number" id="novoQtdPavimentos" value="3" min="1" max="50">
+                <input type="number" id="novoQtdPavimentos" value="4" min="1" max="50">
             </div>
             <button class="btn-action" onclick="salvarNovoEmpreendimento()"><i class="fa-solid fa-check"></i> Salvar Empreendimento</button>
         </div>
