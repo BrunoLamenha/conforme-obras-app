@@ -1,11 +1,31 @@
-// Lista global de empreendimentos (inclui os padrões e os novos cadastrados)
-let listaEmpreendimentos = ['ZOE', 'NAOKI', 'ZEUS', 'GRAND GARDEN', 'ZEN LIFE'];
+// Dados padrão iniciais
+let empreendimentosPadrao = [
+    { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
+    { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: 'Studio' }, fechamentoInterno: 'Drywall' },
+    { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '3 Quartos' }, fechamentoInterno: 'Alvenaria' },
+    { nome: 'GRAND GARDEN', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
+    { nome: 'ZEN LIFE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 4, tipologia: { tipo: 'Quarto e Sala' }, fechamentoInterno: 'Drywall' }
+];
+
+// Funções de Gerenciamento de Estado (LocalStorage)
+function obterEmpreendimentos() {
+    const salvo = localStorage.getItem('conformeObra_empreendimentos');
+    if (salvo) {
+        return JSON.parse(salvo);
+    }
+    localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(empreendimentosPadrao));
+    return empreendimentosPadrao;
+}
+
+function salvarEmpreendimentos(lista) {
+    localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(lista));
+}
 
 // Objeto temporário para armazenar os dados do cadastro em andamento
 let novoEmpreendimentoTemp = {
     nome: '',
     pavimentos: [],
-    unidadesPorPavimento: 0,
+    unidadesPorPavimento: 2,
     tipologia: {},
     fechamentoInterno: ''
 };
@@ -13,13 +33,14 @@ let novoEmpreendimentoTemp = {
 // Função principal de navegação baseada no fluxograma
 function navegar(destino) {
     const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
 
     if (destino === 'vistoria') {
         let botoesObras = '';
-        listaEmpreendimentos.forEach(obra => {
+        lista.forEach(obra => {
             botoesObras += `
-                <button class="btn-primary" onclick="carregarFasesObra('${obra}')">
-                    <h2>📁 ${obra}</h2>
+                <button class="btn-primary" onclick="carregarFasesObra('${obra.nome}')">
+                    <h2>📁 ${obra.nome}</h2>
                 </button>
             `;
         });
@@ -65,13 +86,14 @@ function navegar(destino) {
 
 function carregarListaCadastro() {
     const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
     let botoesObras = '';
     
-    listaEmpreendimentos.forEach(obra => {
+    lista.forEach(obra => {
         botoesObras += `
-            <button class="btn-primary" onclick="gerenciarEmpreendimento('${obra}')">
-                <h2>📁 ${obra}</h2>
-                <span>Clique para gerenciar pavimentos e regras</span>
+            <button class="btn-primary" onclick="gerenciarEmpreendimento('${obra.nome}')">
+                <h2>📁 ${obra.nome}</h2>
+                <span>Tipologia: ${obra.tipologia?.tipo || 'Padrão'} | Unidades/Pav: ${obra.unidadesPorPavimento}</span>
             </button>
         `;
     });
@@ -100,7 +122,7 @@ function gerenciarEmpreendimento(nomeObra) {
             <p>Gerenciando: ${nomeObra}</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Editar pavimentos e unidades de ${nomeObra}')">
+            <button class="btn-primary" onclick="alert('Configurações detalhadas de ${nomeObra}')">
                 <h2>⚙ EDITAR CONFIGURAÇÕES</h2>
             </button>
             <button class="btn-primary" onclick="alert('Visualizar checklist e tipologias de ${nomeObra}')">
@@ -116,7 +138,7 @@ function gerenciarEmpreendimento(nomeObra) {
 // ================= WIZARD DE CADASTRO DE NOVO EMPREENDIMENTO =================
 
 function iniciarWizardCadastro() {
-    novoEmpreendimentoTemp = { nome: '', pavimentos: [], unidadesPorPavimento: 0, tipologia: {}, fechamentoInterno: '' };
+    novoEmpreendimentoTemp = { nome: '', pavimentos: [], unidadesPorPavimento: 2, tipologia: {}, fechamentoInterno: '' };
     carregarPassoWizard(1);
 }
 
@@ -136,7 +158,7 @@ function carregarPassoWizard(passo) {
                     <input type="text" id="inputNomeObra" placeholder="Ex: Horizon Tower" style="width: 100%; padding: 12px; margin: 8px 0 20px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                     
                     <label style="color: #94a3b8; font-size: 0.9rem;">Descrição dos Pavimentos (separados por vírgula):</label>
-                    <input type="text" id="inputPavimentos" placeholder="Ex: Térreo, 1º Pavimento Tipo, Cobertura" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <input type="text" id="inputPavimentos" placeholder="Ex: Térreo, 1º Pavimento Tipo, 2º Pavimento Tipo, Cobertura" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                 </div>
                 <button class="btn-primary" onclick="salvarPasso1()" style="text-align: center; margin-top: 15px;">
                     <h2>Avançar ➡</h2>
@@ -156,7 +178,7 @@ function carregarPassoWizard(passo) {
             <main class="menu-inicial">
                 <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
                     <label style="color: #94a3b8; font-size: 0.9rem;">Quantidade de unidades por pavimento tipo:</label>
-                    <input type="number" id="inputQtdUnidades" placeholder="Ex: 4" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <input type="number" id="inputQtdUnidades" placeholder="Ex: 4" value="4" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                 </div>
                 <button class="btn-primary" onclick="salvarPasso2()" style="text-align: center; margin-top: 15px;">
                     <h2>Avançar ➡</h2>
@@ -238,7 +260,7 @@ function salvarPasso1() {
         return;
     }
     novoEmpreendimentoTemp.nome = nome.toUpperCase();
-    novoEmpreendimentoTemp.pavimentos = pavimentosStr ? pavimentosStr.split(',').map(p => p.trim()) : ['Térreo', 'Pavimento Tipo', 'Cobertura'];
+    novoEmpreendimentoTemp.pavimentos = pavimentosStr ? pavimentosStr.split(',').map(p => p.trim()) : ['Térreo', '1º Pavimento Tipo', 'Cobertura'];
     carregarPassoWizard(2);
 }
 
@@ -261,22 +283,28 @@ function salvarPasso3() {
 function concluirCadastro() {
     novoEmpreendimentoTemp.fechamentoInterno = document.getElementById('selectFechamento').value;
     
-    // Adiciona o novo empreendimento na lista global se já não existir
-    if (!listaEmpreendimentos.includes(novoEmpreendimentoTemp.nome)) {
-        listaEmpreendimentos.push(novoEmpreendimentoTemp.nome);
+    let lista = obterEmpreendimentos();
+    let index = lista.findIndex(e => e.nome === novoEmpreendimentoTemp.nome);
+    
+    if (index >= 0) {
+        lista[index] = novoEmpreendimentoTemp; // Atualiza se já existir
+    } else {
+        lista.push(novoEmpreendimentoTemp); // Adiciona novo
     }
+    
+    salvarEmpreendimentos(lista);
 
-    alert(`Empreendimento "${novoEmpreendimentoTemp.nome}" cadastrado e integrado com sucesso!`);
+    alert(`Empreendimento "${novoEmpreendimentoTemp.nome}" cadastrado e salvo com sucesso!`);
     voltarInicio();
 }
 
-// ================= FLUXO DE VISTORIA E PAVIMENTOS =================
+// ================= FLUXO DE VISTORIA E PAVIMENTOS DINÂMICOS =================
 
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     let botoesFases = '';
 
-    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE') {
+    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE' || nomeObra.includes('GARDEN')) {
         botoesFases += `
             <button class="btn-primary" onclick="carregarEstrutural('${nomeObra}')">
                 <h2>ESTRUTURAL</h2>
@@ -307,49 +335,6 @@ function carregarFasesObra(nomeObra) {
 
 function carregarEstrutural(nomeObra) {
     const container = document.querySelector('.container');
-    let botoesItens = '';
-
-    if (nomeObra === 'ZEN LIFE') {
-        botoesItens += `
-            <button class="btn-primary" onclick="alert('Abrindo Fundações e Supraestrutura')">
-                <h2>FUNDAÇÕES E SUPRAESTRUTURA</h2>
-            </button>
-        `;
-    }
-
-    botoesItens += `
-        <button class="btn-primary" onclick="alert('Abrindo Subsolo')">
-            <h2>SUBSOLO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo Pilotis')">
-            <h2>PILOTIS</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo 1º Pavimento')">
-            <h2>1º PAVIMENTO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo 2º Pavimento')">
-            <h2>2º PAVIMENTO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo 3º Pavimento')">
-            <h2>3º PAVIMENTO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo 4º Pavimento')">
-            <h2>4º PAVIMENTO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo 4º Pavimento Mezanino')">
-            <h2>4º PAVIMENTO MEZANINO</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo Cobertura')">
-            <h2>COBERTURA</h2>
-        </button>
-        <button class="btn-primary" onclick="alert('Abrindo Coberta')">
-            <h2>COBERTA</h2>
-        </button>
-        <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
-            <h2>⬅ Voltar às Fases</h2>
-        </button>
-    `;
-
     container.innerHTML = `
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
@@ -357,13 +342,38 @@ function carregarEstrutural(nomeObra) {
             <p>${nomeObra} - Estrutural</p>
         </header>
         <main class="menu-inicial">
-            ${botoesItens}
+            <button class="btn-primary" onclick="alert('Abrindo Subsolo')">
+                <h2>SUBSOLO</h2>
+            </button>
+            <button class="btn-primary" onclick="alert('Abrindo Pilotis')">
+                <h2>PILOTIS</h2>
+            </button>
+            <button class="btn-primary" onclick="alert('Abrindo Cobertura')">
+                <h2>COBERTURA</h2>
+            </button>
+            <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar às Fases</h2>
+            </button>
         </main>
     `;
 }
 
 function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
+    const obraObj = lista.find(e => e.nome === nomeObra);
+    
+    let botoesPavimentos = '';
+    const pavimentos = obraObj ? obraObj.pavimentos : ['Térreo', '1º Pavimento Tipo', 'Cobertura'];
+
+    pavimentos.forEach(pav => {
+        botoesPavimentos += `
+            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', '${pav}')">
+                <h2>${pav.toUpperCase()}</h2>
+            </button>
+        `;
+    });
+
     container.innerHTML = `
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
@@ -371,15 +381,7 @@ function carregarListaPavimentos(nomeObra) {
             <p>${nomeObra} - Lista de Pavimentos</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Térreo')">
-                <h2>TÉRREO</h2>
-            </button>
-            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', '1º Pavimento Tipo')">
-                <h2>1º PAVIMENTO TIPO</h2>
-            </button>
-            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Cobertura')">
-                <h2>COBERTURA</h2>
-            </button>
+            ${botoesPavimentos}
             <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Fases</h2>
             </button>
@@ -411,19 +413,33 @@ function carregarTipoArea(nomeObra, pavimento) {
 
 function carregarListaApartamentos(nomeObra, pavimento) {
     const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
+    const obraObj = lista.find(e => e.nome === nomeObra);
+    
+    let qtdUnidades = obraObj ? obraObj.unidadesPorPavimento : 2;
+    let botoesUnidades = '';
+
+    // Gera dinamicamente as unidades baseadas na quantidade cadastrada
+    for (let i = 1; i <= qtdUnidades; i++) {
+        // Exemplo de numeração: 101, 102... ou baseada no andar
+        let numeroApto = i < 10 ? `0${i}` : `${i}`;
+        let idUnidade = `1${numeroApto}`; // Ex: 101, 102, 103, 104
+        
+        botoesUnidades += `
+            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento ${idUnidade} - ${pavimento}')">
+                <h2>APTO ${idUnidade}</h2>
+            </button>
+        `;
+    }
+
     container.innerHTML = `
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
-            <p>${nomeObra} - ${pavimento} - Selecione a Unidade (Apto)</p>
+            <p>${nomeObra} - ${pavimento} - Selecione a Unidade</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 101')">
-                <h2>APTO 101</h2>
-            </button>
-            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 102')">
-                <h2>APTO 102</h2>
-            </button>
+            ${botoesUnidades}
             <button class="btn-primary btn-back" onclick="carregarTipoArea('${nomeObra}', '${pavimento}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Áreas</h2>
             </button>
