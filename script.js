@@ -981,34 +981,23 @@ window.renderChecklist = function(titulo) {
             `).join('')}
         </div>
     `;
-  function selectUnit(u, el) {
+function selectUnit(u, el) {
     selectedUnitNum = u;
     document.querySelectorAll('#units .btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
 
+    // Exibe o card de tipos, mas NÃO seleciona nada automaticamente
     document.getElementById('type-card').style.display = 'block';
     
-    // Define os valores padrão automaticamente para abrir o formulário direto
-    selectedCategory = 'Padrão Construtora';
-    selectedStage = '1ª Vistoria';
+    selectedCategory = "";
+    selectedStage = "";
 
-    const btnPadrao = document.getElementById('btn-cat-padrao');
-    if (btnPadrao) {
-        document.querySelectorAll('#category-selection-container .btn-opt').forEach(b => b.classList.remove('active'));
-        btnPadrao.classList.add('active');
-    }
+    // Limpa os botões visuais para você clicar manualmente
+    document.querySelectorAll('#category-selection-container .btn-opt').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#stage-selection-container .btn-stage').forEach(b => b.classList.remove('active'));
 
-    const btnStage1 = document.getElementById('btn-stage-1');
-    const btnStageRev = document.getElementById('btn-stage-rev');
-    if (btnStage1 && btnStageRev) {
-        document.querySelectorAll('#stage-selection-container .btn-stage').forEach(b => b.classList.remove('active'));
-        btnStage1.style.display = 'block';
-        btnStageRev.style.display = 'none';
-        btnStage1.classList.add('active');
-    }
-
-    updateCategoryAndStageState();
+    // Esconde o formulário de inspeção até que você escolha a categoria e a etapa
+    document.getElementById('inspection-area').style.display = 'none';
+    
     renderUnitHistory();
-    checkReadyToInspect();
 }
-};
