@@ -5,6 +5,76 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 const db = getFirestore();
 const storage = getStorage();
 
+// Modelo de checklist estrutural oficial importado diretamente da base[cite: 11]
+const checklistEstruturalModel = {
+  "checklist_vistoria_estrutural": [
+    {
+      "etapa": 1,
+      "categoria": "Preparação e Locação Inicial",
+      "itens": [
+        "Verificação dos eixos, alinhamento e prumos em relação ao projeto geométrico.",
+        "Limpeza inicial da base ou laje anterior, removendo poeira, serragem, pregos e detritos."
+      ]
+    },
+    {
+      "etapa": 2,
+      "categoria": "Montagem de Fôrmas e Escoramento",
+      "itens": [
+        "Conferência das dimensões geométricas das fôrmas (largura, altura, espessura de paredes/lajes).",
+        "Verificação da rigidez, estabilidade, apoios no solo e contraventamento do escoramento.",
+        "Checagem de contra-flechas e alinhamento das vigas e pilares.",
+        "Verificação da estanqueidade e vedação das juntas para evitar fuga de pasta de cimento.",
+        "Aplicação correta do produto desmoldante nas faces internas (evitando contato excessivo com o aço)."
+      ]
+    },
+    {
+      "etapa": 3,
+      "categoria": "Elementos Embutidos e Passagens",
+      "itens": [
+        "Posicionamento de esperas, caixas de passagem, eletrodutos e tubulações hidráulicas/elétricas.",
+        "Fixação adequada dos elementos embutidos para evitar deslocamento durante o lançamento."
+      ]
+    },
+    {
+      "etapa": 4,
+      "categoria": "Montagem da Armadura Passiva (Aço)",
+      "itens": [
+        "Conferência dos diâmetros das barras, número de elementos e disposição conforme o projeto estrutural.",
+        "Verificação do comprimento de ancoragem, ganchos e traspasses (emendas).",
+        "Posicionamento correto dos espaçadores (plásticos ou de argamassa) para garantir rigorosamente o cobrimento mínimo.",
+        "Inspeção da limpeza do aço (livre de ferrugem escamosa/não aderente, graxas ou tintas)."
+      ]
+    },
+    {
+      "etapa": 5,
+      "categoria": "Instalação de Armadura de Protensão (Quando Aplicável)",
+      "itens": [
+        "Posicionamento e fixação das bainhas e cordoas conforme o traçado teórico previsto em projeto.",
+        "Conferência do posicionamento das ancoragens ativas e passivas."
+      ]
+    },
+    {
+      "etapa": 6,
+      "categoria": "Vistoria Final Pré-Concretagem (Liberação)",
+      "itens": [
+        "Remoção de qualquer resíduo restante dentro das fôrmas (serragem, pontas de arame, lixo).",
+        "Conferência final integrada (fôrma + armadura + embutidos) e liberação formal para a concreteira."
+      ]
+    },
+    {
+      "etapa": 7,
+      "categoria": "Lançamento, Adensamento e Cura do Concreto",
+      "itens": [
+        "Conferência da Nota Fiscal da concreteira (fck especificado, slump/abatimento e horário de emissão).",
+        "Realização do ensaio de abatimento (Slump Test) na chegada do caminhão.",
+        "Acompanhamento do lançamento, controlando a altura de queda para evitar segregação dos agregados (máximo de 2 metros).",
+        "Adensamento correto com vibradores de imersão em camadas adequadas, evitando contato prolongado com fôrmas e armações.",
+        "Acabamento superficial da peça e início imediato do procedimento de cura."
+      ]
+    }
+  ]
+};
+
 let empreendimentosPadrao = [
     { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'] },
     { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'] },
@@ -82,29 +152,12 @@ function navegar(destino) {
     }
 }
 
-// --- MÓDULO DE VISTORIA ESTRUTURAL COM CHECKLISTS ESPECÍFICOS ---
+// --- MÓDULO DE VISTORIA ESTRUTURAL COM O CHECKLIST COMPLETO ---
 
 window.abrirVistoriaObra = function(nomeObra) {
     const container = document.getElementById('main-content');
-    
-    // Validar se a obra possui vistoria estrutural configurada
-    if (nomeObra !== 'GRAND GARDEN' && nomeObra !== 'ZEN LIFE') {
-        container.innerHTML = `
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> ${nomeObra}</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Módulo de vistoria estrutural indisponível para este empreendimento.</p>
-            </div>
-            <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
-        `;
-        return;
-    }
 
-    let pavimentosVistoria = [];
-    if (nomeObra === 'GRAND GARDEN') {
-        pavimentosVistoria = ['2º Pavimento', '3º Pavimento', '4º Pavimento', '4º Pavimento Mezanino', 'Cobertura', 'Coberta'];
-    } else if (nomeObra === 'ZEN LIFE') {
-        pavimentosVistoria = ['Fundações', 'Subsolo', 'Pilotis', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta'];
-    }
+    let pavimentosVistoria = ['Fundações', 'Subsolo', 'Pilotis', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta'];
 
     let optionsVistoria = '';
     pavimentosVistoria.forEach(pav => {
@@ -115,7 +168,7 @@ window.abrirVistoriaObra = function(nomeObra) {
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-helmet-safety"></i> Vistoria Estrutural: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione o pavimento para realizar o checklist de execução</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione o pavimento e aplique o checklist completo de execução</p>
         </div>
 
         <div class="upload-section">
@@ -125,10 +178,13 @@ window.abrirVistoriaObra = function(nomeObra) {
             </select>
 
             <div id="checklistContainer" style="margin-top: 15px;">
-                <!-- O checklist injetado via JS aparecerá aqui -->
+                <!-- O checklist injetado baseado no checklist.json aparecerá aqui -->
             </div>
 
-            <button class="btn-action" onclick="salvarVistoria('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-action" onclick="salvarVistoria('${nomeObra}')" style="margin-top:0;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
+                <button class="btn-action" onclick="enviarRelatorioWhatsApp('${nomeObra}')" style="margin-top:0; background-color: #16a34a; color: white;"><i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp</button>
+            </div>
         </div>
 
         <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Obras</button>
@@ -137,74 +193,74 @@ window.abrirVistoriaObra = function(nomeObra) {
     const selectPavVistoria = document.getElementById('selectPavimentoVistoria');
     
     function atualizarChecklist() {
-        const pavSelecionado = selectPavVistoria.value;
-        gerarItensChecklist(nomeObra, pavSelecionado);
+        gerarItensChecklistDoModelo();
     }
 
     selectPavVistoria.addEventListener('change', atualizarChecklist);
     atualizarChecklist();
 };
 
-function gerarItensChecklist(nomeObra, pavimentoId) {
+function gerarItensChecklistDoModelo() {
     const containerChecklist = document.getElementById('checklistContainer');
-    let itens = [];
+    const checklistData = checklistEstruturalModel.checklist_vistoria_estrutural;
 
-    // Regras específicas baseadas nos parâmetros da construtora fornecidos
-    if (nomeObra === 'ZEN LIFE' && pavimentoId === 'fundacoes') {
-        itens = [
-            "Conferência de gabarito e locação dos eixos",
-            "Escavação e conformidade das cavas de fundação",
-            "Armadura dos blocos de concreto armado (bitolas, espaçadores e cobrimento)",
-            "Lançamento e adensamento do concreto nos blocos e baldramas",
-            "Tratamento de impermeabilização nas vigas baldrame"
-        ];
-    } else if (nomeObra === 'ZEN LIFE' && pavimentoId === 'subsolo') {
-        itens = [
-            "Execução e armação das paredes de contensão (cortinas/diafragma)",
-            "Sistema de drenagem profunda e barbacãs",
-            "Preparação do subleito e lastro de concreto magro",
-            "Armação e instalação de juntas de dilatação/waterstop para laje de subpressão",
-            "Concretagem da laje de subpressão (controle de patologias e fissuras)"
-        ];
-    } else {
-        // Pavimentos com Laje Protendida (Grand Garden e demais andares do Zen Life)
-        let tipoEstruturaMsg = nomeObra === 'GRAND GARDEN' ? "Concreto Armado com Protensão (Cabo Engraxado/Gordura protendida)" : "Laje Maciça Protendida";
-        itens = [
-            `Verificação de formas, escoramento e prumo (${tipoEstruturaMsg})`,
-            "Posicionamento das armações passivas (inferior e superior) e estribos de pilares e vigas",
-            "Montagem e traçado das cordoalhas de protensão (perfil e alinhamento em planta)",
-            "Conferência de ancoragens ativas e passivas, nichos e inserções metálicas",
-            "Inspeção pré-concretagem (limpeza de formas, gabaritos de eletrodutos)",
-            "Acompanhamento da concretagem e adensamento rigoroso com vibrador",
-            "Controle tecnológico (corpos de prova e abatimento do concreto)",
-            "Operação de protensão (tração das cordoalhas) e liberação de escoramento conforme projeto estrutural"
-        ];
-    }
+    let htmlGeral = '';
 
-    let htmlItens = `<h4 style="font-size: 13px; color: var(--primary); margin-bottom: 8px;"><i class="fa-solid fa-list-check"></i> Fases de Execução e Verificação:</h4>`;
-    htmlItens += `<div class="checkbox-group" style="grid-template-columns: 1fr; gap: 10px;">`;
-    
-    itens.forEach((item, index) => {
-        htmlItens += `
-            <label style="align-items: flex-start; line-height: 1.4;">
-                <input type="checkbox" name="checkItem" value="${item}" style="margin-top: 3px;">
-                <span>${item}</span>
-            </label>
+    checklistData.forEach(bloco => {
+        htmlGeral += `
+            <div style="margin-bottom: 15px; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
+                <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Etapa ${bloco.etapa}: ${bloco.categoria}</h4>
+                <div class="checkbox-group" style="grid-template-columns: 1fr; gap: 8px;">
         `;
-    });
-    htmlItens += `</div>`;
 
-    containerChecklist.innerHTML = htmlItens;
+        bloco.itens.forEach((itemText) => {
+            htmlGeral += `
+                <label style="align-items: flex-start; line-height: 1.4;">
+                    <input type="checkbox" name="checkItemModel" value="${itemText}" style="margin-top: 3px;">
+                    <span>${itemText}</span>
+                </label>
+            `;
+        });
+
+        htmlGeral += `</div></div>`;
+    });
+
+    containerChecklist.innerHTML = htmlGeral;
 }
 
 window.salvarVistoria = function(nomeObra) {
-    const checks = document.querySelectorAll('input[name="checkItem"]:checked');
-    const total = document.querySelectorAll('input[name="checkItem"]').length;
+    const checks = document.querySelectorAll('input[name="checkItemModel"]:checked');
+    const total = document.querySelectorAll('input[name="checkItemModel"]').length;
+    const pavimento = document.getElementById('selectPavimentoVistoria').value;
     
-    alert(`Vistoria salva com sucesso para ${nomeObra}! Itens verificados: ${checks.length} de ${total}.`);
+    const dadosVistoria = {
+        obra: nomeObra,
+        pavimento: pavimento,
+        totalVerificados: checks.length,
+        totalItens: total,
+        data: new Date().toISOString()
+    };
+
+    localStorage.setItem(`vistoria_${nomeObra}_${pavimento}`, JSON.stringify(dadosVistoria));
+    alert(`Vistoria salva com sucesso para ${nomeObra} (${pavimento.toUpperCase()})! Itens verificados: ${checks.length} de ${total}.`);
 };
 
-// --- MÓDULOS DE CADASTRO E UPLOAD ANTERIORES ---
+window.enviarRelatorioWhatsApp = function(nomeObra) {
+    const checks = document.querySelectorAll('input[name="checkItemModel"]:checked');
+    const total = document.querySelectorAll('input[name="checkItemModel"]').length;
+    const pavimento = document.getElementById('selectPavimentoVistoria').value;
+
+    const textoMensagem = `*RELATÓRIO DE VISTORIA - CONFORME OBRA*\n\n` +
+                          `🏢 *Obra:* ${nomeObra}\n` +
+                          `📍 *Pavimento:* ${pavimento.toUpperCase()}\n` +
+                          `✅ *Itens Conformes:* ${checks.length} / ${total}\n` +
+                          `📅 *Data:* ${new Date().toLocaleDateString('pt-BR')}`;
+
+    const urlWpp = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoMensagem)}`;
+    window.open(urlWpp, '_blank');
+};
+
+// --- MÓDULOS DE CADASTRO E UPLOAD[cite: 12] ---
 
 window.carregarListaCadastro = function() {
     const container = document.getElementById('main-content');
