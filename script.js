@@ -805,3 +805,15 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
 function voltarInicio() {
     location.reload(); 
 }
+async function salvarUnidade(nomeUnidade, tipologia) {
+    try {
+        const docRef = await addDoc(collection(db, "unidades"), {
+            unidade: nomeUnidade,
+            tipologia: tipologia,
+            criadoEm: new Date()
+        });
+        console.log("Documento gravado com ID: ", docRef.id);
+    } catch (e) {
+        console.error("Erro ao gravar: ", e);
+    }
+}
