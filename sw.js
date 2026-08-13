@@ -1,11 +1,17 @@
 const CACHE_NAME = 'conforme-obra-v1';
 const urlsToCache = [
+  './',
   './index.html',
   './style.css',
   './script.js',
+  './manifest.json',
   './firebaseConfig.js',
-  './logo.png'
+  './checklist.json',
+  './logo.png',
+  './icon-192.png.png',
+  './icon-512.png.png'
 ];
+
 
 self.addEventListener('install', event => {
   event.waitUntil(
