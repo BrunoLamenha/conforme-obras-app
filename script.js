@@ -984,7 +984,7 @@ function renderUnitHistory() {
     
     container.innerHTML = `
         <div>
-            ${meuArray.map(item => `
+            ${meuArray.map(item => `}
                 <div>${item.nome}</div>
             `).join('')}
         </div>
