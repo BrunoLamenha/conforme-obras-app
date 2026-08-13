@@ -9,11 +9,20 @@ function navegar(destino) {
                 <p>Selecione o empreendimento</p>
             </header>
             <main class="menu-inicial">
-                <button class="btn-primary" onclick="carregarFasesObra('Empreendimento Exemplo A')">
-                    <h2>📁 Empreendimento Exemplo A</h2>
+                <button class="btn-primary" onclick="carregarFasesObra('ZOE')">
+                    <h2>📁 ZOE</h2>
                 </button>
-                <button class="btn-primary" onclick="carregarFasesObra('Empreendimento Exemplo B')">
-                    <h2>📁 Empreendimento Exemplo B</h2>
+                <button class="btn-primary" onclick="carregarFasesObra('NAOKI')">
+                    <h2>📁 NAOKI</h2>
+                </button>
+                <button class="btn-primary" onclick="carregarFasesObra('ZEUS')">
+                    <h2>📁 ZEUS</h2>
+                </button>
+                <button class="btn-primary" onclick="carregarFasesObra('GRAND GARDEN')">
+                    <h2>📁 GRAND GARDEN</h2>
+                </button>
+                <button class="btn-primary" onclick="carregarFasesObra('ZEN LIFE')">
+                    <h2>📁 ZEN LIFE</h2>
                 </button>
                 <button class="btn-secondary" onclick="voltarInicio()" style="margin-top: 20px; text-align: center;">
                     ⬅ Voltar ao Início
