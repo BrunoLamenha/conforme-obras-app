@@ -242,12 +242,6 @@ window.salvarNovaEmpresa = function() {
     if (tipoEmpresa === 'Reforma') {
         const checkboxes = document.querySelectorAll('input[name="itemReformaEmpresa"]:checked');
         itensReforma = Array.from(checkboxes).map(cb => cb.value);
-        
-        // Default environments
-        ambientesIniciais = [
-            { nome: 'Cozinha', projetoPdf: null, itens: JSON.parse(JSON.stringify(itensReforma)).map(desc => ({ descricao: desc, status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] })) },
-            { nome: 'Sala de Estar', projetoPdf: null, itens: JSON.parse(JSON.stringify(itensReforma)).map(desc => ({ descricao: desc, status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] })) }
-        ];
     }
 
     empresas.push({ 
@@ -379,7 +373,7 @@ window.abrirEmpresa = function(nomeEmpresa) {
     `;
 };
 
-// --- GESTÃO DE AMBIENTES E UPLOAD DE PDF PARA REFORMA ---
+// --- GESTÃO DE AMBIENTES E UPLOAD DE PDF PARA REFORMA (ATUALIZADO) ---
 window.gerenciarAmbientesReforma = function(nomeObra) {
     const container = document.getElementById('main-content');
     const empObj = obterEmpresaAtualObj();
@@ -390,7 +384,10 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
         htmlAmbientes += `
             <div style="background: rgba(15, 23, 42, 0.6); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <h4 style="color: var(--primary); font-size: 14px; margin: 0;"><i class="fa-solid fa-door-open"></i> ${amb.nome}</h4>
+                    <h4 style="color: var(--primary); font-size: 14px; margin: 0; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-door-open"></i> ${amb.nome}
+                        <button onclick="window.editarNomeAmbiente('${amb.nome}')" style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px;" title="Editar Nome"><i class="fa-solid fa-pen"></i></button>
+                    </h4>
                     <button onclick="window.removerAmbienteReforma('${amb.nome}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;" title="Excluir Ambiente"><i class="fa-solid fa-trash-can"></i> Excluir</button>
                 </div>
                 <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
@@ -404,18 +401,53 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
         `;
     });
 
+    const comodosComuns = [
+        "Sala de Estar", "Sala de Jantar", "Cozinha", "Área de Serviço", "Varanda / Sacada", "Lavabo", "Escritório / Home Office"
+    ];
+
+    let checkboxesHtml = '';
+    comodosComuns.forEach(comodo => {
+        checkboxesHtml += `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 0;">
+                <input type="checkbox" name="comodoComum" value="${comodo}" style="width: 15px; height: 15px; accent-color: var(--primary);">
+                <span>${comodo}</span>
+            </label>
+        `;
+    });
+
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-door-open"></i> Ambientes & Projetos: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Cadastre os cômodos e envie os respectivos projetos em PDF</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione os cômodos comuns e defina a quantidade de suítes, quartos e banheiros</p>
         </div>
 
-        <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
-            <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Adicionar Novo Ambiente:</label>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="novoNomeAmbiente" placeholder="Ex: Quarto Casal, Banheiro..." style="flex: 1; padding: 8px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
-                <button class="btn-action" style="padding: 8px 16px; margin-top: 0;" onclick="window.adicionarAmbienteReforma()">Adicionar</button>
+        <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px;">
+            <div>
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Cômodos Comuns:</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                    ${checkboxesHtml}
+                </div>
             </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 10px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Cômodos Múltiplos (com numeração):</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Suítes:</label>
+                        <input type="number" id="qtdSuites" min="0" value="1" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Quartos:</label>
+                        <input type="number" id="qtdQuartos" min="0" value="0" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Banheiros:</label>
+                        <input type="number" id="qtdBanheiros" min="0" value="1" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 13px;">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-action" style="margin-top: 5px;" onclick="window.adicionarComodosSelecionados()">Adicionar Selecionados</button>
         </div>
 
         <div style="margin-bottom: 15px;">
@@ -427,30 +459,89 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
     `;
 };
 
-window.adicionarAmbienteReforma = function() {
-    const nomeAmb = document.getElementById('novoNomeAmbiente').value.trim();
-    if (!nomeAmb) {
-        alert("Informe o nome do ambiente.");
-        return;
-    }
+window.adicionarComodosSelecionados = function() {
     const empresas = obterEmpresas();
     const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
-    if (empIndex >= 0) {
-        if (!empresas[empIndex].ambientes) empresas[empIndex].ambientes = [];
-        if (empresas[empIndex].ambientes.some(a => a.nome.toUpperCase() === nomeAmb.toUpperCase())) {
-            alert("Este ambiente já está cadastrado.");
-            return;
+    if (empIndex < 0) return;
+
+    if (!empresas[empIndex].ambientes) empresas[empIndex].ambientes = [];
+    const ambientesAtuais = empresas[empIndex].ambientes;
+    const itensBase = empresas[empIndex].itensReforma && empresas[empIndex].itensReforma.length > 0 ? empresas[empIndex].itensReforma : ["Serviço Geral"];
+
+    let novosAdicionados = [];
+
+    // Checkboxes comuns
+    const checkboxes = document.querySelectorAll('input[name="comodoComum"]:checked');
+    checkboxes.forEach(cb => {
+        const nome = cb.value.toUpperCase();
+        if (!ambientesAtuais.some(a => a.nome === nome) && !novosAdicionados.includes(nome)) {
+            novosAdicionados.push(nome);
         }
-        const itensBase = empresas[empIndex].itensReforma && empresas[empIndex].itensReforma.length > 0 ? empresas[empIndex].itensReforma : ["Serviço Geral"];
-        
-        empresas[empIndex].ambientes.push({
-            nome: nomeAmb.toUpperCase(),
+    });
+
+    // Suítes
+    const qtdSuites = parseInt(document.getElementById('qtdSuites').value) || 0;
+    for (let i = 1; i <= qtdSuites; i++) {
+        const nome = `SUÍTE ${i}`;
+        if (!ambientesAtuais.some(a => a.nome === nome) && !novosAdicionados.includes(nome)) {
+            novosAdicionados.push(nome);
+        }
+    }
+
+    // Quartos
+    const qtdQuartos = parseInt(document.getElementById('qtdQuartos').value) || 0;
+    for (let i = 1; i <= qtdQuartos; i++) {
+        const nome = `QUARTO ${i}`;
+        if (!ambientesAtuais.some(a => a.nome === nome) && !novosAdicionados.includes(nome)) {
+            novosAdicionados.push(nome);
+        }
+    }
+
+    // Banheiros
+    const qtdBanheiros = parseInt(document.getElementById('qtdBanheiros').value) || 0;
+    for (let i = 1; i <= qtdBanheiros; i++) {
+        const nome = `BANHEIRO ${i}`;
+        if (!ambientesAtuais.some(a => a.nome === nome) && !novosAdicionados.includes(nome)) {
+            novosAdicionados.push(nome);
+        }
+    }
+
+    if (novosAdicionados.length === 0) {
+        alert("Selecione pelo menos um cômodo ou informe uma quantidade maior que zero.");
+        return;
+    }
+
+    novosAdicionados.forEach(nomeAmb => {
+        ambientesAtuais.push({
+            nome: nomeAmb,
             projetoPdf: null,
             itens: itensBase.map(desc => ({ descricao: desc, status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] }))
         });
-        salvarEmpresas(empresas);
-        alert("Ambiente adicionado com sucesso!");
-        gerenciarAmbientesReforma(empresaAtual);
+    });
+
+    salvarEmpresas(empresas);
+    alert(`${novosAdicionados.length} ambiente(s) adicionado(s) com sucesso!`);
+    gerenciarAmbientesReforma(empresaAtual);
+};
+
+window.editarNomeAmbiente = function(nomeAntigo) {
+    const novoNome = prompt(`Editar nome do ambiente "${nomeAntigo}":`, nomeAntigo);
+    if (!novoNome || novoNome.trim() === "") return;
+    const nomeFormatado = novoNome.trim().toUpperCase();
+
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0 && empresas[empIndex].ambientes) {
+        if (empresas[empIndex].ambientes.some(a => a.nome === nomeFormatado && a.nome !== nomeAntigo)) {
+            alert("Já existe um ambiente com este nome.");
+            return;
+        }
+        const amb = empresas[empIndex].ambientes.find(a => a.nome === nomeAntigo);
+        if (amb) {
+            amb.nome = nomeFormatado;
+            salvarEmpresas(empresas);
+            gerenciarAmbientesReforma(empresaAtual);
+        }
     }
 };
 
@@ -575,13 +666,11 @@ window.renderizarChecklistAmbiente = function(ambIndex) {
                     </span>
                 </div>
                 <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <!-- Botões Conforme / Não Conforme -->
                     <div style="display: flex; gap: 8px;">
                         <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${itemIdx}, 'conforme')" style="flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; background: ${isConforme ? '#16a34a' : '#334155'};">Conforme ✓</button>
                         <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${itemIdx}, 'nao-conforme')" style="flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; background: ${isNaoConforme ? '#dc2626' : '#334155'};">Não Conforme ✗</button>
                     </div>
 
-                    <!-- Campos Responsável, Data de Início, Prazo -->
                     <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
                         <div>
                             <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Responsável:</label>
@@ -597,7 +686,6 @@ window.renderizarChecklistAmbiente = function(ambIndex) {
                         </div>
                     </div>
 
-                    <!-- Fotos -->
                     <div>
                         <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Fotos / Evidências:</label>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -743,7 +831,6 @@ window.enviarWhatsAppReforma = function(nomeObra) {
     window.open(url, '_blank');
 };
 
-// --- MÉTODOS EXISTENTES DE SUPORTE ---
 window.carregarCronogramaGeral = function() {
     const container = document.getElementById('main-content');
     const empObj = obterEmpresaAtualObj();
