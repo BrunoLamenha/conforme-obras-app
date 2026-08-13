@@ -329,14 +329,14 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
                     <option value="Reforma">Reforma</option>
                 </select>
 
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <button class="btn-primary" id="btnSalvarUnidade" onclick="salvarUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}')" style="flex: 1; text-align: center; background: #2563eb; margin: 0;">
-                        <h2>+ Salvar Unidade</h2>
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                    <button id="btnSalvarUnidade" onclick="salvarUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}')" style="flex: 1; background: #2563eb; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <span>+ Salvar Unidade</span>
                     </button>
-                    <button id="btnCancelarEdicao" onclick="cancelarEdicaoUnidade('${nomeObra}', '${pavimento}', '${tipoArea}')" style="display: none; background: #64748b; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                    <button id="btnCancelarEdicao" onclick="cancelarEdicaoUnidade('${nomeObra}', '${pavimento}', '${tipoArea}')" style="display: none; background: #475569; border: none; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
                         Cancelar
                     </button>
-                    <button id="btnDeletarEdicao" style="display: none; background: #ef4444; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                    <button id="btnDeletarEdicao" style="display: none; background: #dc2626; border: none; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">
                         Excluir
                     </button>
                 </div>
@@ -388,7 +388,7 @@ function carregarUnidadeParaEdicao(nomeObra, pavimento, tipoArea, index) {
     document.getElementById('selectReformaUnidade').value = u.reforma || 'Padrão';
 
     document.getElementById('tituloFormUnidade').innerText = `Editando Unidade ${u.unidade}`;
-    document.getElementById('btnSalvarUnidade').innerHTML = '<h2>💾 Atualizar Unidade</h2>';
+    document.getElementById('btnSalvarUnidade').innerHTML = '<span>💾 Atualizar Unidade</span>';
     document.getElementById('btnCancelarEdicao').style.display = 'block';
     
     const btnDel = document.getElementById('btnDeletarEdicao');
