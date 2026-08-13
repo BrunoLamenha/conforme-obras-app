@@ -977,26 +977,34 @@ window.renderChecklist = function(titulo) {
                         <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Conforme ✓</button>
                         <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Não Conforme ✗</button>
                     </div>
-                </div>
+              // Exemplo da função anterior que renderiza com .join('')
+function renderUnitHistory() {
+    const container = document.getElementById('history-container');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div>
+            ${meuArray.map(item => `
+                <div>${item.nome}</div>
             `).join('')}
         </div>
     `;
+} // <-- A chave de fechamento da função anterior precisa estar aqui!
+
+// Função selectUnit limpa e fechada corretamente
 function selectUnit(u, el) {
     selectedUnitNum = u;
     document.querySelectorAll('#units .btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
 
-    // Exibe o card de tipos, mas NÃO seleciona nada automaticamente
     document.getElementById('type-card').style.display = 'block';
     
     selectedCategory = "";
     selectedStage = "";
 
-    // Limpa os botões visuais para você clicar manualmente
     document.querySelectorAll('#category-selection-container .btn-opt').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('#stage-selection-container .btn-stage').forEach(b => b.classList.remove('active'));
 
-    // Esconde o formulário de inspeção até que você escolha a categoria e a etapa
     document.getElementById('inspection-area').style.display = 'none';
     
     renderUnitHistory();
