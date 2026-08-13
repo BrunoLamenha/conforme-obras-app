@@ -250,7 +250,7 @@ function gerenciarEstrutural(nomeObra) {
     let botoesPavimentos = '';
     pavimentosEstruturais.forEach(pav => {
         botoesPavimentos += `
-            <button class="btn-primary" onclick="abrirCadastroUnidadesPavimento('${nomeObra}', '${pav}', 'estrutural')">
+            <button class="btn-primary" onclick="gerenciarPdfEstrutural('${nomeObra}', '${pav}')">
                 <h2>📌 ${pav.toUpperCase()}</h2>
             </button>
         `;
@@ -260,7 +260,7 @@ function gerenciarEstrutural(nomeObra) {
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
-            <p>${nomeObra} - Estrutural</p>
+            <p>${nomeObra} - Estrutural (Upload de Projetos)</p>
         </header>
         <main class="menu-inicial">
             ${botoesPavimentos}
@@ -269,6 +269,104 @@ function gerenciarEstrutural(nomeObra) {
             </button>
         </main>
     `;
+}
+
+function gerenciarPdfEstrutural(nomeObra, pavimento) {
+    const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
+    const obraObj = lista.find(e => e.nome === nomeObra);
+    if (!obraObj.pdfsEstruturais) obraObj.pdfsEstruturais = {};
+    if (!obraObj.pdfsEstruturais[pavimento]) obraObj.pdfsEstruturais[pavimento] = [];
+
+    const pdfs = obraObj.pdfsEstruturais[pavimento];
+    let listaPdfsHtml = '';
+
+    pdfs.forEach((p, idx) => {
+        listaPdfsHtml += `
+            <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
+                <span style="color: #f8fafc; font-size: 0.95rem; flex: 1; word-break: break-all;">📄 ${p.nome}</span>
+                <div style="display: flex; gap: 6px;">
+                    <button onclick="visualizarPdfEstrutural('${p.dados}', '${p.nome}')" style="background: #3b82f6; border: none; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Visualizar</button>
+                    <button onclick="removerPdfEstrutural('${nomeObra}', '${pavimento}', ${idx})" style="background: #ef4444; border: none; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;">Apagar</button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>${nomeObra}</h1>
+            <p>ESTRUTURAL | ${pavimento}</p>
+        </header>
+        <main class="menu-inicial">
+            <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px;">
+                <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 0.95rem;">Adicionar Projeto em PDF</h3>
+                <input type="file" id="inputPdfFile" accept="application/pdf" style="width: 100%; padding: 10px; margin: 6px 0 12px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                <button onclick="salvarPdfEstrutural('${nomeObra}', '${pavimento}')" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">
+                    + Enviar PDF
+                </button>
+            </div>
+
+            <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px; max-height: 250px; overflow-y: auto;">
+                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 0.95rem;">PDFs Cadastrados</h3>
+                ${listaPdfsHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhum PDF cadastrado ainda.</p>'}
+            </div>
+
+            <button class="btn-primary btn-back" onclick="gerenciarEstrutural('${nomeObra}')">
+                <h2>⬅ Voltar</h2>
+            </button>
+        </main>
+    `;
+}
+
+function salvarPdfEstrutural(nomeObra, pavimento) {
+    const input = document.getElementById('inputPdfFile');
+    if (!input.files || input.files.length === 0) {
+        alert('Selecione um arquivo PDF.');
+        return;
+    }
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Data = e.target.result;
+        let lista = obterEmpreendimentos();
+        let obraObj = lista.find(e => e.nome === nomeObra);
+        if (!obraObj.pdfsEstruturais) obraObj.pdfsEstruturais = {};
+        if (!obraObj.pdfsEstruturais[pavimento]) obraObj.pdfsEstruturais[pavimento] = [];
+
+        obraObj.pdfsEstruturais[pavimento].push({
+            nome: file.name,
+            dados: base64Data
+        });
+        salvarEmpreendimentos(lista);
+        gerenciarPdfEstrutural(nomeObra, pavimento);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removerPdfEstrutural(nomeObra, pavimento, index) {
+    if (confirm('Deseja realmente apagar este PDF?')) {
+        let lista = obterEmpreendimentos();
+        let obraObj = lista.find(e => e.nome === nomeObra);
+        if (obraObj && obraObj.pdfsEstruturais && obraObj.pdfsEstruturais[pavimento]) {
+            obraObj.pdfsEstruturais[pavimento].splice(index, 1);
+            salvarEmpreendimentos(lista);
+            gerenciarPdfEstrutural(nomeObra, pavimento);
+        }
+    }
+}
+
+function visualizarPdfEstrutural(dadosBase64, nomeArquivo) {
+    const win = window.open();
+    win.document.write(`
+        <html>
+        <head><title>${nomeArquivo}</title></head>
+        <body style="margin:0; background:#0f172a;">
+            <iframe src="${dadosBase64}" style="width:100vw; height:100vh; border:none;"></iframe>
+        </body>
+        </html>
+    `);
 }
 
 function obterPavimentosPorTipo(nomeObra, tipoArea) {
@@ -415,7 +513,7 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
                 ${listaUnidadesHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhuma unidade cadastrada ainda.</p>'}
             </div>
 
-            <button class="btn-primary btn-back" onclick="${tipoArea.toUpperCase() === 'ESTRUTURAL' ? `gerenciarEstrutural('${nomeObra}')` : `escolherPavimentosArea('${nomeObra}', '${tipoArea}')`}">
+            <button class="btn-primary btn-back" onclick="escolherPavimentosArea('${nomeObra}', '${tipoArea}')">
                 <h2>⬅ Voltar</h2>
             </button>
         </main>
@@ -781,7 +879,7 @@ function carregarEstrutural(nomeObra) {
     let botoesPavimentos = '';
     pavimentosEstruturais.forEach(pav => {
         botoesPavimentos += `
-            <button class="btn-primary" onclick="alert('Abrindo Vistoria Estrutural - ${pav}')">
+            <button class="btn-primary" onclick="carregarListaPdfsEstruturalVistoria('${nomeObra}', '${pav}')">
                 <h2>📌 ${pav.toUpperCase()}</h2>
             </button>
         `;
@@ -791,12 +889,46 @@ function carregarEstrutural(nomeObra) {
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
-            <p>${nomeObra} - Estrutural</p>
+            <p>${nomeObra} - Vistoria Estrutural</p>
         </header>
         <main class="menu-inicial">
             ${botoesPavimentos}
             <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Fases</h2>
+            </button>
+        </main>
+    `;
+}
+
+function carregarListaPdfsEstruturalVistoria(nomeObra, pavimento) {
+    const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
+    const obraObj = lista.find(e => e.nome === nomeObra);
+    const pdfs = (obraObj && obraObj.pdfsEstruturais && obraObj.pdfsEstruturais[pavimento]) || [];
+
+    let listaPdfsHtml = '';
+    pdfs.forEach(p => {
+        listaPdfsHtml += `
+            <div style="background: #0f172a; padding: 12px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
+                <span style="color: #f8fafc; font-size: 0.95rem; flex: 1; word-break: break-all;">📄 ${p.nome}</span>
+                <button onclick="visualizarPdfEstrutural('${p.dados}', '${p.nome}')" style="background: #3b82f6; border: none; color: white; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">Visualizar Projeto</button>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>${nomeObra}</h1>
+            <p>Vistoria Estrutural | ${pavimento}</p>
+        </header>
+        <main class="menu-inicial">
+            <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px; max-height: 350px; overflow-y: auto;">
+                <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 0.95rem;">Projetos em PDF Disponíveis</h3>
+                ${listaPdfsHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhum projeto PDF cadastrado para este pavimento estrutural.</p>'}
+            </div>
+            <button class="btn-primary btn-back" onclick="carregarEstrutural('${nomeObra}')">
+                <h2>⬅ Voltar</h2>
             </button>
         </main>
     `;
@@ -923,6 +1055,10 @@ window.iniciarWizardCadastro = iniciarWizardCadastro;
 window.gerenciarEmpreendimento = gerenciarEmpreendimento;
 window.gerenciarArquitetonico = gerenciarArquitetonico;
 window.gerenciarEstrutural = gerenciarEstrutural;
+window.gerenciarPdfEstrutural = gerenciarPdfEstrutural;
+window.salvarPdfEstrutural = salvarPdfEstrutural;
+window.removerPdfEstrutural = removerPdfEstrutural;
+window.visualizarPdfEstrutural = visualizarPdfEstrutural;
 window.escolherPavimentosArea = escolherPavimentosArea;
 window.abrirCadastroUnidadesPavimento = abrirCadastroUnidadesPavimento;
 window.verificarTipologiaUnidade = verificarTipologiaUnidade;
@@ -938,6 +1074,7 @@ window.concluirCadastro = concluirCadastro;
 window.verificarOutroFechamento = verificarOutroFechamento;
 window.carregarFasesObra = carregarFasesObra;
 window.carregarEstrutural = carregarEstrutural;
+window.carregarListaPdfsEstruturalVistoria = carregarListaPdfsEstruturalVistoria;
 window.carregarListaPavimentos = carregarListaPavimentos;
 window.carregarVistoriaPavimentosTipo = carregarVistoriaPavimentosTipo;
 window.carregarTipoArea = carregarTipoArea;
