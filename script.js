@@ -813,6 +813,19 @@ async function salvarUnidade(nomeUnidade, tipologia) {
             criadoEm: new Date()
         });
         console.log("Documento gravado com ID: ", docRef.id);
+        import { collection, onSnapshot } from "firebase/firestore";
+
+// Toda vez que alguém salvar algo no Firebase, isso aqui roda e atualiza a tela
+onSnapshot(collection(db, "unidades"), (snapshot) => {
+    const unidades = [];
+    snapshot.forEach((doc) => {
+        unidades.push(doc.data());
+    });
+    
+    // AQUI VOCÊ ATUALIZA SEU HTML
+    console.log("Lista atualizada:", unidades);
+    // Exemplo: document.getElementById('lista').innerHTML = ... (seu código de exibição)
+});
     } catch (e) {
         console.error("Erro ao gravar: ", e);
     }
