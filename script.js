@@ -108,7 +108,7 @@ function salvarEmpreendimentos(novaListaEmpreendimentos) {
 }
 
 // --- TELA INICIAL: SELEÇÃO DE EMPRESAS ---
-function voltarInicio() {
+window.voltarInicio = function() {
     const container = document.getElementById('main-content');
     const empresas = obterEmpresas();
 
@@ -143,7 +143,7 @@ function voltarInicio() {
             </div>
         </div>
     `;
-}
+};
 
 window.iniciarCadastroEmpresa = function() {
     const container = document.getElementById('main-content');
@@ -243,7 +243,7 @@ window.abrirEmpresa = function(nomeEmpresa) {
     `;
 };
 
-function navegar(destino) {
+window.navegar = function(destino) {
     const container = document.getElementById('main-content');
     const lista = obterEmpreendimentos();
 
@@ -305,7 +305,7 @@ function navegar(destino) {
     } else if (destino === 'indicadores') {
         carregarPainelIndicadores();
     }
-}
+};
 
 // --- SELEÇÃO DE DISCIPLINA PARA VISTORIA ---
 window.escolherDisciplinaVistoria = function(nomeObra) {
