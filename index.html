@@ -4,50 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conforme Obras</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
-            <h1>CONFORME OBRA</h1>
-            <p>Sistema Integrado de Gestão e Vistoria</p>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo-wrapper">
+                <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            </div>
+            <div class="header-titles">
+                <h1>CONFORME OBRA</h1>
+                <p>Sistema Integrado de Gestão e Vistoria</p>
+            </div>
         </header>
         
-        <main class="menu-inicial">
-            <button class="btn-primary" onclick="navegar('vistoria')">
-                <h2>VISTORIA</h2>
-                <span>Acompanhamento de campo, estrutura e acabamentos</span>
-            </button>
+        <main id="main-content" class="menu-inicial">
+            <div class="card-menu" onclick="navegar('vistoria')">
+                <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <div class="card-info">
+                    <h2>VISTORIA</h2>
+                    <span>Acompanhamento de campo, estrutura e acabamentos</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
             
-            <button class="btn-secondary" onclick="navegar('cadastros')">
-                <h2>CADASTROS</h2>
-                <span>Gerenciamento de empreendimentos e configurações</span>
-            </button>
+            <div class="card-menu" onclick="navegar('cadastros')">
+                <div class="card-icon"><i class="fa-solid fa-building-shield"></i></div>
+                <div class="card-info">
+                    <h2>CADASTROS</h2>
+                    <span>Gerenciamento de empreendimentos, projetos e configurações</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
         </main>
-    </div>
-
-    <!-- Área de Upload e Gerenciamento de Projetos por Pavimento Unificada -->
-    <div class="upload-container">
-        <h3>Gerenciamento de Projetos por Pavimento</h3>
-        
-        <select id="selectPavimento">
-            <option value="terreo">Térreo</option>
-            <option value="1_andar">1º Pavimento</option>
-            <option value="2_andar">2º Pavimento</option>
-            <option value="cobertura">Cobertura</option>
-        </select>
-
-        <input type="file" id="pdfFile" accept="application/pdf">
-        <button id="uploadBtn">Enviar Arquivo</button>
-
-        <!-- Área onde a lista de arquivos vai aparecer -->
-        <div class="arquivos-list-section">
-            <h4>Projetos em PDF Disponíveis</h4>
-            <ul id="listaArquivos">
-                <li>Selecione um pavimento para carregar os projetos.</li>
-            </ul>
-        </div>
     </div>
 
     <script type="module" src="script.js"></script>
