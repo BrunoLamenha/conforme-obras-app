@@ -1,5 +1,6 @@
 import { db } from './firebaseConfig.js';
 import { collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
+
 let empreendimentosPadrao = [
     { 
         nome: 'ZEN LIFE', 
@@ -802,6 +803,4 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
 
 function voltarInicio() {
     location.reload(); 
-}
-
 }
