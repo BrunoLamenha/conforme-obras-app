@@ -1,5 +1,5 @@
 import { db as dbConfig } from './firebaseConfig.js';
-import { getFirestore, doc, getDoc, setDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
+import { getFirestore, doc, getDoc, setDoc, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const db = getFirestore();
@@ -105,13 +105,18 @@ window.voltarInicio = function() {
         const subtitulo = isReforma ? 'Projeto de Reforma' : `${emp.empreendimentos.length} empreendimento(s) cadastrado(s)`;
 
         htmlEmpresas += `
-            <div class="card-menu" onclick="abrirEmpresa('${emp.nome}')">
-                <div class="card-icon"><i class="fa-solid ${icone}"></i></div>
-                <div class="card-info">
-                    <h2>${emp.nome} ${badgeTipo}</h2>
-                    <span>${subtitulo}</span>
+            <div class="card-menu" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer;" onclick="abrirEmpresa('${emp.nome}')">
+                    <div class="card-icon" style="margin-bottom: 0;"><i class="fa-solid ${icone}"></i></div>
+                    <div class="card-info" style="flex: 1;">
+                        <h2>${emp.nome} ${badgeTipo}</h2>
+                        <span>${subtitulo}</span>
+                    </div>
                 </div>
-                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button onclick="event.stopPropagation(); solicitarExclusaoEmpresa('${emp.nome}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 14px;" title="Excluir Empresa"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="card-arrow" onclick="abrirEmpresa('${emp.nome}')" style="cursor: pointer;"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
             </div>
         `;
     });
@@ -133,6 +138,31 @@ window.voltarInicio = function() {
             </div>
         </div>
     `;
+};
+
+window.solicitarExclusaoEmpresa = function(nomeEmpresa) {
+    const senhaAdmin = prompt(`Excluir empresa ou reforma "${nomeEmpresa}"?\n\n- Para exclusão LOCAL, clique em OK sem digitar senha.\n- Para exclusão PERMANENTE (Administrador), digite a senha de acesso:`);
+    
+    if (senhaAdmin === null) return; // Cancelado pelo usuário
+
+    const empresas = obterEmpresas();
+    const senhaAdminCorreta = "admin123"; // Defina a senha de administrador desejada
+
+    if (senhaAdmin === senhaAdminCorreta) {
+        // Exclusão Permanente (Admin)
+        const novasEmpresas = empresas.filter(e => e.nome !== nomeEmpresa);
+        salvarEmpresas(novasEmpresas);
+        alert(`Empresa "${nomeEmpresa}" excluída PERMANENTEMENTE pelo Administrador.`);
+    } else if (senhaAdmin === "") {
+        // Exclusão Local padrão
+        const novasEmpresas = empresas.filter(e => e.nome !== nomeEmpresa);
+        salvarEmpresas(novasEmpresas);
+        alert(`Empresa "${nomeEmpresa}" excluída do armazenamento local.`);
+    } else {
+        alert("Senha de administrador incorreta. A exclusão foi cancelada.");
+        return;
+    }
+    voltarInicio();
 };
 
 window.iniciarCadastroEmpresa = function() {
