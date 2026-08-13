@@ -1,78 +1,78 @@
-// Dados padrão iniciais (incluindo o empreendimento configurado)
+// Dados padrão iniciais (incluindo o ZEN LIFE configurado com a numeração correta das unidades)
 let empreendimentosPadrao = [
     { 
-        nome: 'RESIDENCIAL', 
+        nome: 'ZEN LIFE', 
         pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
         detalhesPavimentos: {
             '1º Pavimento': [
-                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+                { unidade: '101', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '102', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '103', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '104', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '105', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '106', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '108', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '109', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '110', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '111', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '112', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '113', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '114', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
             ],
             '2º Pavimento': [
-                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+                { unidade: '201', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '202', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '203', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '204', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '205', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '206', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '208', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '209', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '210', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '211', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '212', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '213', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '214', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
             ],
             '3º Pavimento': [
-                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
-                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
-                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+                { unidade: '301', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '302', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '303', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '304', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '305', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '306', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '308', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '309', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '310', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '311', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '312', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '313', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '314', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
             ],
             '4º Pavimento (c/ piscina)': [
-                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
-                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
-                { unidade: '06', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
-                { unidade: '07', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
-                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
-                { unidade: '12', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' }
+                { unidade: '401', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '402', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '403', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '404', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '405', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '406', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '407', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '408', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '409', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '410', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '411', tipologia: 'Quarto/Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '412', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' }
             ]
         },
         unidadesPorPavimento: 14,
         tipologia: { tipo: 'Misto', banheiros: 'Variável', piscina: 'Variável' },
         fechamentoInterno: 'Drywall'
     },
+    { nome: 'RESIDENCIAL', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: 'Studio' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '3 Quartos' }, fechamentoInterno: 'Alvenaria' },
-    { nome: 'GRAND GARDEN', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
-    { nome: 'ZEN LIFE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 4, tipologia: { tipo: 'Quarto e Sala' }, fechamentoInterno: 'Drywall' }
+    { nome: 'GRAND GARDEN', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' }
 ];
 
 // Funções de Gerenciamento de Estado (LocalStorage)
@@ -160,7 +160,6 @@ function carregarListaCadastro() {
         botoesObras += `
             <button class="btn-primary" onclick="gerenciarEmpreendimento('${obra.nome}')">
                 <h2>📁 ${obra.nome}</h2>
-                <span>Tipologia: ${obra.tipologia?.tipo || 'Padrão'}</span>
             </button>
         `;
     });
@@ -267,7 +266,7 @@ function carregarPassoWizard(passo) {
                     <label style="color: #94a3b8; font-size: 0.9rem;">Escolha a Tipologia:</label>
                     <select id="selectTipologia" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                         <option value="Studio">Studio</option>
-                        <option value="Quarto e Sala">Quarto e Sala</option>
+                        <option value="Quarto/Sala">Quarto/Sala</option>
                         <option value="2 Quartos">2 Quartos</option>
                         <option value="3 Quartos">3 Quartos</option>
                     </select>
@@ -489,7 +488,6 @@ function carregarListaApartamentos(nomeObra, pavimento) {
             botoesUnidades += `
                 <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apto ${item.unidade} - ${pavimento} | Tipologia: ${item.tipologia} | ${item.banheiros} | ${item.piscina}')">
                     <h2>APTO ${item.unidade}</h2>
-                    <span>${item.tipologia} | ${item.banheiros} | ${item.piscina}</span>
                 </button>
             `;
         });
