@@ -1042,6 +1042,41 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
         </main>
     `;
 }
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-storage.js";
+
+// Inicializa o Storage vinculado ao seu app Firebase
+const storage = getStorage();
+
+document.getElementById('uploadBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('pdfFile');
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Por favor, selecione um arquivo PDF.");
+    return;
+  }
+
+  try {
+    // Define o caminho e o nome do arquivo no Storage
+    const storageRef = ref(storage, `projetos/${file.name}`);
+
+    // Realiza o upload do arquivo
+    const snapshot = await uploadBytes(storageRef, file);
+    
+    // Obtém a URL pública do PDF para exibir na interface ou salvar no banco de dados
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    
+    alert("Upload realizado com sucesso!");
+    console.log("URL do arquivo:", downloadURL);
+
+    // Aqui você pode adicionar a lógica para salvar a referência da URL no seu banco de dados 
+    // e atualizar a tela removendo a mensagem "Nenhum projeto PDF cadastrado".
+
+  } catch (error) {
+    console.error("Erro ao fazer upload do arquivo:", error);
+    alert("Erro ao enviar o arquivo. Verifique o console.");
+  }
+});
 
 function voltarInicio() {
     location.reload(); 
