@@ -1,5 +1,73 @@
-// Dados padrão iniciais
+// Dados padrão iniciais (incluindo o empreendimento configurado)
 let empreendimentosPadrao = [
+    { 
+        nome: 'RESIDENCIAL', 
+        pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
+        detalhesPavimentos: {
+            '1º Pavimento': [
+                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+            ],
+            '2º Pavimento': [
+                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+            ],
+            '3º Pavimento': [
+                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '06', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' },
+                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '12', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '13', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Sem piscina' },
+                { unidade: '14', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Sem piscina' }
+            ],
+            '4º Pavimento (c/ piscina)': [
+                { unidade: '01', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '02', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '03', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '04', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '05', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '06', tipologia: '2 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '07', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' },
+                { unidade: '08', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '09', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '10', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '11', tipologia: 'Quarto e Sala', banheiros: '1 Banheiro', piscina: 'Com piscina' },
+                { unidade: '12', tipologia: '3 Quartos', banheiros: '2 Banheiros', piscina: 'Com piscina' }
+            ]
+        },
+        unidadesPorPavimento: 14,
+        tipologia: { tipo: 'Misto', banheiros: 'Variável', piscina: 'Variável' },
+        fechamentoInterno: 'Drywall'
+    },
     { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: 'Studio' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '3 Quartos' }, fechamentoInterno: 'Alvenaria' },
@@ -21,7 +89,6 @@ function salvarEmpreendimentos(lista) {
     localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(lista));
 }
 
-// Objeto temporário para armazenar os dados do cadastro em andamento
 let novoEmpreendimentoTemp = {
     nome: '',
     pavimentos: [],
@@ -93,7 +160,7 @@ function carregarListaCadastro() {
         botoesObras += `
             <button class="btn-primary" onclick="gerenciarEmpreendimento('${obra.nome}')">
                 <h2>📁 ${obra.nome}</h2>
-                <span>Tipologia: ${obra.tipologia?.tipo || 'Padrão'} | Unidades/Pav: ${obra.unidadesPorPavimento}</span>
+                <span>Tipologia: ${obra.tipologia?.tipo || 'Padrão'}</span>
             </button>
         `;
     });
@@ -158,7 +225,7 @@ function carregarPassoWizard(passo) {
                     <input type="text" id="inputNomeObra" placeholder="Ex: Horizon Tower" style="width: 100%; padding: 12px; margin: 8px 0 20px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                     
                     <label style="color: #94a3b8; font-size: 0.9rem;">Descrição dos Pavimentos (separados por vírgula):</label>
-                    <input type="text" id="inputPavimentos" placeholder="Ex: Térreo, 1º Pavimento Tipo, 2º Pavimento Tipo, Cobertura" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <input type="text" id="inputPavimentos" placeholder="Ex: Térreo, 1º Pavimento, Cobertura" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                 </div>
                 <button class="btn-primary" onclick="salvarPasso1()" style="text-align: center; margin-top: 15px;">
                     <h2>Avançar ➡</h2>
@@ -193,7 +260,7 @@ function carregarPassoWizard(passo) {
             <header>
                 <img src="logo.png" alt="Conforme Obra" class="logo-img">
                 <h1>CADASTRO - PASSO 3/4</h1>
-                <p>Tipologia e Composição</p>
+                <p>Tipologia, Banheiros e Piscina</p>
             </header>
             <main class="menu-inicial">
                 <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
@@ -205,17 +272,19 @@ function carregarPassoWizard(passo) {
                         <option value="3 Quartos">3 Quartos</option>
                     </select>
 
-                    <label style="color: #94a3b8; font-size: 0.9rem;">Possui Suíte?</label>
-                    <select id="selectSuite" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Quantos Banheiros?</label>
+                    <select id="selectBanheiros" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="1 Banheiro">1 Banheiro</option>
+                        <option value="2 Banheiros">2 Banheiros</option>
+                        <option value="3 Banheiros">3 Banheiros</option>
+                        <option value="4+ Banheiros">4+ Banheiros</option>
                     </select>
 
-                    <label style="color: #94a3b8; font-size: 0.9rem;">Áreas de Lazer / Extras na Unidade:</label>
-                    <div style="color: white; margin-top: 5px; display: flex; flex-direction: column; gap: 8px;">
-                        <label><input type="checkbox" id="checkVaranda" value="Varanda"> Varanda</label>
-                        <label><input type="checkbox" id="checkPiscina" value="Piscina"> Piscina privativa</label>
-                    </div>
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Piscina Privativa:</label>
+                    <select id="selectPiscina" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="Sem piscina">Sem piscina</option>
+                        <option value="Com piscina">Com piscina</option>
+                    </select>
                 </div>
                 <button class="btn-primary" onclick="salvarPasso3()" style="text-align: center; margin-top: 15px;">
                     <h2>Avançar ➡</h2>
@@ -273,9 +342,8 @@ function salvarPasso2() {
 function salvarPasso3() {
     novoEmpreendimentoTemp.tipologia = {
         tipo: document.getElementById('selectTipologia').value,
-        suite: document.getElementById('selectSuite').value,
-        varanda: document.getElementById('checkVaranda').checked,
-        piscina: document.getElementById('checkPiscina').checked
+        banheiros: document.getElementById('selectBanheiros').value,
+        piscina: document.getElementById('selectPiscina').value
     };
     carregarPassoWizard(4);
 }
@@ -287,9 +355,9 @@ function concluirCadastro() {
     let index = lista.findIndex(e => e.nome === novoEmpreendimentoTemp.nome);
     
     if (index >= 0) {
-        lista[index] = novoEmpreendimentoTemp; // Atualiza se já existir
+        lista[index] = novoEmpreendimentoTemp;
     } else {
-        lista.push(novoEmpreendimentoTemp); // Adiciona novo
+        lista.push(novoEmpreendimentoTemp);
     }
     
     salvarEmpreendimentos(lista);
@@ -298,13 +366,13 @@ function concluirCadastro() {
     voltarInicio();
 }
 
-// ================= FLUXO DE VISTORIA E PAVIMENTOS DINÂMICOS =================
+// ================= FLUXO DE VISTORIA E PAVIMENTOS =================
 
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     let botoesFases = '';
 
-    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE' || nomeObra.includes('GARDEN')) {
+    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE' || nomeObra.includes('GARDEN') || nomeObra === 'RESIDENCIAL') {
         botoesFases += `
             <button class="btn-primary" onclick="carregarEstrutural('${nomeObra}')">
                 <h2>ESTRUTURAL</h2>
@@ -342,14 +410,11 @@ function carregarEstrutural(nomeObra) {
             <p>${nomeObra} - Estrutural</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Abrindo Subsolo')">
-                <h2>SUBSOLO</h2>
+            <button class="btn-primary" onclick="alert('Abrindo Fundações')">
+                <h2>FUNDAÇÕES</h2>
             </button>
-            <button class="btn-primary" onclick="alert('Abrindo Pilotis')">
-                <h2>PILOTIS</h2>
-            </button>
-            <button class="btn-primary" onclick="alert('Abrindo Cobertura')">
-                <h2>COBERTURA</h2>
+            <button class="btn-primary" onclick="alert('Abrindo Estrutura Geral')">
+                <h2>ESTRUTURA GERAL</h2>
             </button>
             <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Fases</h2>
@@ -416,20 +481,28 @@ function carregarListaApartamentos(nomeObra, pavimento) {
     const lista = obterEmpreendimentos();
     const obraObj = lista.find(e => e.nome === nomeObra);
     
-    let qtdUnidades = obraObj ? obraObj.unidadesPorPavimento : 2;
     let botoesUnidades = '';
 
-    // Gera dinamicamente as unidades baseadas na quantidade cadastrada
-    for (let i = 1; i <= qtdUnidades; i++) {
-        // Exemplo de numeração: 101, 102... ou baseada no andar
-        let numeroApto = i < 10 ? `0${i}` : `${i}`;
-        let idUnidade = `1${numeroApto}`; // Ex: 101, 102, 103, 104
-        
-        botoesUnidades += `
-            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento ${idUnidade} - ${pavimento}')">
-                <h2>APTO ${idUnidade}</h2>
-            </button>
-        `;
+    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[pavimento]) {
+        const unidadesDoPav = obraObj.detalhesPavimentos[pavimento];
+        unidadesDoPav.forEach(item => {
+            botoesUnidades += `
+                <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apto ${item.unidade} - ${pavimento} | Tipologia: ${item.tipologia} | ${item.banheiros} | ${item.piscina}')">
+                    <h2>APTO ${item.unidade}</h2>
+                    <span>${item.tipologia} | ${item.banheiros} | ${item.piscina}</span>
+                </button>
+            `;
+        });
+    } else {
+        let qtdUnidades = obraObj ? obraObj.unidadesPorPavimento : 2;
+        for (let i = 1; i <= qtdUnidades; i++) {
+            let numeroApto = i < 10 ? `0${i}` : `${i}`;
+            botoesUnidades += `
+                <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apartamento 1${numeroApto}')">
+                    <h2>APTO 1${numeroApto}</h2>
+                </button>
+            `;
+        }
     }
 
     container.innerHTML = `
