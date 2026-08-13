@@ -54,13 +54,19 @@ function navegar(destino) {
 // Tela intermediária do fluxo de Vistoria (Estrutural vs Arquitetônico)
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
+    
+    let acaoEstrutural = `alert('Abrindo módulo Estrutural')`;
+    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE') {
+        acaoEstrutural = `carregarEstrutural('${nomeObra}')`;
+    }
+
     container.innerHTML = `
         <header>
             <h1>${nomeObra}</h1>
             <p>Escolha a frente de serviço</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Abrindo módulo Estrutural: Concreto, Estacas, Insumos e XML')">
+            <button class="btn-primary" onclick="${acaoEstrutural}">
                 <h2>ESTRUTURAL</h2>
             </button>
             <button class="btn-primary" onclick="carregarListaPavimentos('${nomeObra}')">
@@ -68,6 +74,63 @@ function carregarFasesObra(nomeObra) {
             </button>
             <button class="btn-secondary" onclick="navegar('vistoria')" style="margin-top: 20px; text-align: center;">
                 ⬅ Voltar aos Empreendimentos
+            </button>
+        </main>
+    `;
+}
+
+// Fluxo Específico do Estrutural para Grand Garden e Zen Life
+function carregarEstrutural(nomeObra) {
+    const container = document.querySelector('.container');
+    let botoesItens = '';
+
+    if (nomeObra === 'ZEN LIFE') {
+        botoesItens += `
+            <button class="btn-primary" onclick="alert('Abrindo Fundações e Supraestrutura')">
+                <h2>FUNDAÇÕES E SUPRAESTRUTURA</h2>
+            </button>
+        `;
+    }
+
+    botoesItens += `
+        <button class="btn-primary" onclick="alert('Abrindo Subsolo')">
+            <h2>SUBSOLO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo Pilotis')">
+            <h2>PILOTIS</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo 1º Pavimento')">
+            <h2>1º PAVIMENTO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo 2º Pavimento')">
+            <h2>2º PAVIMENTO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo 3º Pavimento')">
+            <h2>3º PAVIMENTO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo 4º Pavimento')">
+            <h2>4º PAVIMENTO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo 4º Pavimento Mezanino')">
+            <h2>4º PAVIMENTO MEZANINO</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo Cobertura')">
+            <h2>COBERTURA</h2>
+        </button>
+        <button class="btn-primary" onclick="alert('Abrindo Coberta')">
+            <h2>COBERTA</h2>
+        </button>
+    `;
+
+    container.innerHTML = `
+        <header>
+            <h1>${nomeObra}</h1>
+            <p>Estrutural</p>
+        </header>
+        <main class="menu-inicial">
+            ${botoesItens}
+            <button class="btn-secondary" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 20px; text-align: center;">
+                ⬅ Voltar às Fases
             </button>
         </main>
     `;
