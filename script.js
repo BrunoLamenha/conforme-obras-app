@@ -45,8 +45,9 @@ function navegar(destino) {
                 <p>Gerenciamento de Obras</p>
             </header>
             <main class="menu-inicial">
-                <button class="btn-primary" onclick="alert('Funcionalidade de escolha e edição rápida da lista existente')">
+                <button class="btn-primary" onclick="carregarListaCadastro()">
                     <h2>ESCOLHER DA LISTA</h2>
+                    <span>Gerenciar empreendimentos já cadastrados</span>
                 </button>
                 <button class="btn-secondary" onclick="iniciarWizardCadastro()">
                     <h2>CADASTRAR UM NOVO EMPREENDIMENTO</h2>
@@ -58,6 +59,58 @@ function navegar(destino) {
             </main>
         `;
     }
+}
+
+// ================= GERENCIAR ESCOLHA DA LISTA =================
+
+function carregarListaCadastro() {
+    const container = document.querySelector('.container');
+    let botoesObras = '';
+    
+    listaEmpreendimentos.forEach(obra => {
+        botoesObras += `
+            <button class="btn-primary" onclick="gerenciarEmpreendimento('${obra}')">
+                <h2>📁 ${obra}</h2>
+                <span>Clique para gerenciar pavimentos e regras</span>
+            </button>
+        `;
+    });
+
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>CONFORME OBRA</h1>
+            <p>Selecione o empreendimento para gerenciar</p>
+        </header>
+        <main class="menu-inicial">
+            ${botoesObras}
+            <button class="btn-primary btn-back" onclick="navegar('cadastros')" style="margin-top: 10px;">
+                <h2>⬅ Voltar aos Cadastros</h2>
+            </button>
+        </main>
+    `;
+}
+
+function gerenciarEmpreendimento(nomeObra) {
+    const container = document.querySelector('.container');
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>CONFORME OBRA</h1>
+            <p>Gerenciando: ${nomeObra}</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="alert('Editar pavimentos e unidades de ${nomeObra}')">
+                <h2>⚙ EDITAR CONFIGURAÇÕES</h2>
+            </button>
+            <button class="btn-primary" onclick="alert('Visualizar checklist e tipologias de ${nomeObra}')">
+                <h2>📋 VER TIPOLOGIAS E CHECKLISTS</h2>
+            </button>
+            <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
+                <h2>⬅ Voltar à Lista</h2>
+            </button>
+        </main>
+    `;
 }
 
 // ================= WIZARD DE CADASTRO DE NOVO EMPREENDIMENTO =================
@@ -208,7 +261,7 @@ function salvarPasso3() {
 function concluirCadastro() {
     novoEmpreendimentoTemp.fechamentoInterno = document.getElementById('selectFechamento').value;
     
-    // Adiciona o novo empreendimento na lista global
+    // Adiciona o novo empreendimento na lista global se já não existir
     if (!listaEmpreendimentos.includes(novoEmpreendimentoTemp.nome)) {
         listaEmpreendimentos.push(novoEmpreendimentoTemp.nome);
     }
