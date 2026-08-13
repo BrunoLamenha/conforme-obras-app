@@ -972,7 +972,7 @@ window.renderChecklist = function(titulo) {
                     <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b; display:flex; justify-content:space-between; align-items:center;">
                         <span>${item.id}. ${item.desc}</span>
                         <i class="fa-solid fa-chevron-down" style="font-size:12px; color:#94a3b8;"></i>
-                    function renderUnitHistory() {
+                   function renderUnitHistory() {
     const container = document.getElementById('history-container');
     if (!container) return;
     
@@ -989,22 +989,6 @@ window.renderChecklist = function(titulo) {
 }
 
 function selectUnit(u, el) {
-    selectedUnitNum = u;
-    document.querySelectorAll('#units .btn').forEach(b => b.classList.remove('active'));
-    if (el) el.classList.add('active');
-
-    document.getElementById('type-card').style.display = 'block';
-    
-    selectedCategory = "";
-    selectedStage = "";
-
-    document.querySelectorAll('#category-selection-container .btn-opt').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('#stage-selection-container .btn-stage').forEach(b => b.classList.remove('active'));
-
-    document.getElementById('inspection-area').style.display = 'none';
-    
-    renderUnitHistory();
-}
     selectedUnitNum = u;
     document.querySelectorAll('#units .btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
