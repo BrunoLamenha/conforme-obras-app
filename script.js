@@ -1,9 +1,74 @@
-// Dados padrão iniciais
+// Dados padrão iniciais com unidades pré-cadastradas para o ZEN LIFE
 let empreendimentosPadrao = [
     { 
         nome: 'ZEN LIFE', 
         pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
-        detalhesPavimentos: {},
+        detalhesPavimentos: {
+            'PRIVATIVA - 1º Pavimento': [
+                { unidade: '101', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '102', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '103', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '104', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '105', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '106', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '107', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '108', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '109', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '110', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '111', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '112', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '113', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '114', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+            ],
+            'PRIVATIVA - 2º Pavimento': [
+                { unidade: '201', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '202', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '203', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '204', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '205', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '206', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '207', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '208', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '209', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '210', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '211', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '212', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '213', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '214', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+            ],
+            'PRIVATIVA - 3º Pavimento': [
+                { unidade: '301', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '302', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '303', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '304', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '305', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '306', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '307', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '308', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '309', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '310', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '311', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '312', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '313', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '314', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+            ],
+            'PRIVATIVA - 4º Pavimento (c/ piscina)': [
+                { unidade: '401', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '402', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '403', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '404', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '405', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '406', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '407', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '408', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '409', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '410', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '411', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '412', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '413', tipologia: '2 Quartos', suite: 'Sim', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', reforma: 'Padrão' },
+                { unidade: '414', tipologia: 'Studio', suite: 'Não', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', reforma: 'Padrão' }
+            ]
+        },
         unidadesPorPavimento: 14,
         tipologia: { tipo: 'Misto' },
         fechamentoInterno: 'Drywall'
@@ -37,6 +102,8 @@ let novoEmpreendimentoTemp = {
     tipologia: {},
     fechamentoInterno: ''
 };
+
+let indiceEdicaoUnidade = null;
 
 // Função principal de navegação baseada no fluxograma
 function navegar(destino) {
@@ -120,7 +187,6 @@ function carregarListaCadastro() {
     `;
 }
 
-// Tela intermediária: Escolher entre Privativa ou Comum antes de ver os pavimentos
 function gerenciarEmpreendimento(nomeObra) {
     const container = document.querySelector('.container');
 
@@ -144,7 +210,6 @@ function gerenciarEmpreendimento(nomeObra) {
     `;
 }
 
-// Retorna os pavimentos corretos conforme as regras de cada empreendimento e tipo de área
 function obterPavimentosPorTipo(nomeObra, tipoArea) {
     const nome = nomeObra.toUpperCase();
     if (tipoArea === 'comum') {
@@ -154,9 +219,8 @@ function obterPavimentosPorTipo(nomeObra, tipoArea) {
             return ['Subsolo', 'Pilotis', 'Cobertura', 'Coberta'];
         }
     } else {
-        // Privativa
         if (nome.includes('ZEN LIFE')) {
-            return ['1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento (c/ piscina)'];
+            return ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'];
         } else if (nome.includes('ZOE') || nome.includes('ZEUS')) {
             return ['Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
         } else if (nome.includes('GRAND GARDEN')) {
@@ -211,10 +275,10 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
 
     unidadesSalvas.forEach((u, idx) => {
         listaUnidadesHtml += `
-            <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
-                <span style="color: #f8fafc; font-size: 0.9rem;"><strong>Item ${u.unidade}</strong> - ${u.tipologia} ${u.suite === 'Sim' ? '(C/ Suíte)' : ''} | ${u.banheiros} | Lavabo: ${u.lavabo} | Serv.: ${u.areaServico} | Varanda: ${u.varanda}</span>
-                <button onclick="removerUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Excluir</button>
-            </div>
+            <button onclick="carregarUnidadeParaEdicao('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="width: 100%; background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; cursor: pointer; text-align: left;">
+                <span style="color: #f8fafc; font-size: 0.9rem;"><strong>Unidade ${u.unidade}</strong> - ${u.tipologia} | ${u.suite === 'Sim' ? 'Suíte' : ''} | ${u.varanda === 'Sim' ? 'Varanda' : ''} | ${u.reforma || 'Padrão'}</span>
+                <span style="color: #38bdf8; font-size: 0.8rem;">✏ Editar</span>
+            </button>
         `;
     });
 
@@ -226,28 +290,52 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
         </header>
         <main class="menu-inicial">
             <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px;">
-                <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 0.95rem;">Adicionar Unidade / Terminação</h3>
+                <h3 id="tituloFormUnidade" style="color: #38bdf8; margin-bottom: 10px; font-size: 0.95rem;">Adicionar Unidade / Terminação</h3>
                 
                 <label style="color: #94a3b8; font-size: 0.85rem;">Número ou Terminação da Unidade (Ex: 101, 01):</label>
                 <input type="text" id="inputTerminacao" placeholder="Ex: 101" style="width: 100%; padding: 10px; margin: 6px 0 12px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
 
                 <label style="color: #94a3b8; font-size: 0.85rem;">Escolha a Tipologia:</label>
-                <select id="selectTipologiaUnidade" onchange="atualizarCamposUnidade()" style="width: 100%; padding: 10px; margin: 6px 0 12px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                <select id="selectTipologiaUnidade" style="width: 100%; padding: 10px; margin: 6px 0 12px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                     <option value="Studio">Studio</option>
                     <option value="Quarto/Sala">Quarto/Sala</option>
                     <option value="2 Quartos">2 Quartos</option>
                     <option value="3 Quartos">3 Quartos</option>
                 </select>
 
-                <div id="containerCamposUnidadeExtras"></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0;">
+                    <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="checkSuiteUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Suíte
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="checkVarandaUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Varanda
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="checkLavaboUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Lavabo
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="checkAreaServicoUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Área de Serviço
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="checkReformaUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Reforma (vs Padrão)
+                    </label>
+                </div>
 
-                <button class="btn-primary" onclick="adicionarUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}')" style="margin-top: 10px; text-align: center; background: #2563eb;">
-                    <h2>+ Salvar Unidade</h2>
-                </button>
+                <div style="display: flex; gap: 8px; margin-top: 10px;">
+                    <button class="btn-primary" id="btnSalvarUnidade" onclick="salvarUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}')" style="flex: 1; text-align: center; background: #2563eb; margin: 0;">
+                        <h2>+ Salvar Unidade</h2>
+                    </button>
+                    <button id="btnCancelarEdicao" onclick="cancelarEdicaoUnidade('${nomeObra}', '${pavimento}', '${tipoArea}')" style="display: none; background: #64748b; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        Cancelar
+                    </button>
+                    <button id="btnDeletarEdicao" style="display: none; background: #ef4444; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        Excluir
+                    </button>
+                </div>
             </div>
 
-            <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px; max-height: 200px; overflow-y: auto;">
-                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 0.95rem;">Unidades Cadastradas neste Pavimento</h3>
+            <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px; max-height: 250px; overflow-y: auto;">
+                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 0.95rem;">Unidades Cadastradas (Clique para Editar)</h3>
                 ${listaUnidadesHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhuma unidade cadastrada ainda.</p>'}
             </div>
 
@@ -256,66 +344,45 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
             </button>
         </main>
     `;
-    setTimeout(atualizarCamposUnidade, 50);
+    indiceEdicaoUnidade = null;
 }
 
-function atualizarCamposUnidade() {
-    const tipo = document.getElementById('selectTipologiaUnidade').value;
-    const containerExtras = document.getElementById('containerCamposUnidadeExtras');
-    if (!containerExtras) return;
+function carregarUnidadeParaEdicao(nomeObra, pavimento, tipoArea, index) {
+    let lista = obterEmpreendimentos();
+    let obraObj = lista.find(e => e.nome === nomeObra);
+    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
+    const u = obraObj.detalhesPavimentos[chavePav][index];
 
-    if (tipo === 'Studio') {
-        containerExtras.innerHTML = `
-            <div style="background: #0f172a; padding: 10px; border-radius: 8px; border: 1px dashed #475569; color: #94a3b8; font-size: 0.85rem;">
-                ℹ Studio: Padrão de <strong>1 Banheiro</strong> (sem suíte, lavabo, área de serviço ou varanda).
-            </div>
-        `;
-    } else {
-        containerExtras.innerHTML = `
-            <div style="margin-bottom: 10px;">
-                <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
-                    <input type="checkbox" id="checkSuiteUnidade" style="width: 16px; height: 16px; accent-color: #3b82f6;">
-                    Possui Suíte?
-                </label>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                <div>
-                    <label style="color: #94a3b8; font-size: 0.8rem;">Banheiros (fora suítes):</label>
-                    <select id="selectBanheirosUnidade" style="width: 100%; padding: 8px; margin-top: 4px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 6px; font-size: 0.85rem;">
-                        <option value="1 Banheiro">1 Banheiro</option>
-                        <option value="2 Banheiros">2 Banheiros</option>
-                        <option value="3 Banheiros">3 Banheiros</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="color: #94a3b8; font-size: 0.8rem;">Lavabo:</label>
-                    <select id="selectLavaboUnidade" style="width: 100%; padding: 8px; margin-top: 4px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 6px; font-size: 0.85rem;">
-                        <option value="Não">Não</option>
-                        <option value="Sim">Sim</option>
-                    </select>
-                </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <div>
-                    <label style="color: #94a3b8; font-size: 0.8rem;">Área de Serviço:</label>
-                    <select id="selectAreaServicoUnidade" style="width: 100%; padding: 8px; margin-top: 4px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 6px; font-size: 0.85rem;">
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="color: #94a3b8; font-size: 0.8rem;">Varanda:</label>
-                    <select id="selectVarandaUnidade" style="width: 100%; padding: 8px; margin-top: 4px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 6px; font-size: 0.85rem;">
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
-                </div>
-            </div>
-        `;
-    }
+    indiceEdicaoUnidade = index;
+
+    document.getElementById('inputTerminacao').value = u.unidade;
+    document.getElementById('selectTipologiaUnidade').value = u.tipologia;
+    document.getElementById('checkSuiteUnidade').checked = (u.suite === 'Sim');
+    document.getElementById('checkVarandaUnidade').checked = (u.varanda === 'Sim');
+    document.getElementById('checkLavaboUnidade').checked = (u.lavabo === 'Sim');
+    document.getElementById('checkAreaServicoUnidade').checked = (u.areaServico === 'Sim');
+    document.getElementById('checkReformaUnidade').checked = (u.reforma === 'Reforma');
+
+    document.getElementById('tituloFormUnidade').innerText = `Editando Unidade ${u.unidade}`;
+    document.getElementById('btnSalvarUnidade').innerHTML = '<h2>💾 Atualizar Unidade</h2>';
+    document.getElementById('btnCancelarEdicao').style.display = 'block';
+    
+    const btnDel = document.getElementById('btnDeletarEdicao');
+    btnDel.style.display = 'block';
+    btnDel.onclick = () => {
+        if (confirm(`Deseja excluir a unidade ${u.unidade}?`)) {
+            removerUnidadePavimento(nomeObra, pavimento, tipoArea, index);
+        }
+    };
+
+    document.getElementById('inputTerminacao').scrollIntoView({ behavior: 'smooth' });
 }
 
-function adicionarUnidadePavimento(nomeObra, pavimento, tipoArea) {
+function cancelarEdicaoUnidade(nomeObra, pavimento, tipoArea) {
+    abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
+}
+
+function salvarUnidadePavimento(nomeObra, pavimento, tipoArea) {
     const terminacao = document.getElementById('inputTerminacao').value.trim();
     if (!terminacao) {
         alert('Informe a terminação ou número da unidade.');
@@ -323,30 +390,16 @@ function adicionarUnidadePavimento(nomeObra, pavimento, tipoArea) {
     }
     const tipo = document.getElementById('selectTipologiaUnidade').value;
 
-    let novaUnidade = {};
-    if (tipo === 'Studio') {
-        novaUnidade = {
-            unidade: terminacao,
-            tipologia: 'Studio',
-            suite: 'Não',
-            banheiros: '1 Banheiro',
-            lavabo: 'Não',
-            areaServico: 'Não',
-            varanda: 'Não',
-            piscina: 'Sem piscina'
-        };
-    } else {
-        novaUnidade = {
-            unidade: terminacao,
-            tipologia: tipo,
-            suite: document.getElementById('checkSuiteUnidade').checked ? 'Sim' : 'Não',
-            banheiros: document.getElementById('selectBanheirosUnidade').value,
-            lavabo: document.getElementById('selectLavaboUnidade').value,
-            areaServico: document.getElementById('selectAreaServicoUnidade').value,
-            varanda: document.getElementById('selectVarandaUnidade').value,
-            piscina: 'Sem piscina'
-        };
-    }
+    const novaUnidade = {
+        unidade: terminacao,
+        tipologia: tipo,
+        suite: document.getElementById('checkSuiteUnidade').checked ? 'Sim' : 'Não',
+        lavabo: document.getElementById('checkLavaboUnidade').checked ? 'Sim' : 'Não',
+        areaServico: document.getElementById('checkAreaServicoUnidade').checked ? 'Sim' : 'Não',
+        varanda: document.getElementById('checkVarandaUnidade').checked ? 'Sim' : 'Não',
+        reforma: document.getElementById('checkReformaUnidade').checked ? 'Reforma' : 'Padrão',
+        piscina: 'Sem piscina'
+    };
 
     let lista = obterEmpreendimentos();
     let obraObj = lista.find(e => e.nome === nomeObra);
@@ -354,9 +407,13 @@ function adicionarUnidadePavimento(nomeObra, pavimento, tipoArea) {
     const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
     if (!obraObj.detalhesPavimentos[chavePav]) obraObj.detalhesPavimentos[chavePav] = [];
 
-    obraObj.detalhesPavimentos[chavePav].push(novaUnidade);
-    salvarEmpreendimentos(lista);
+    if (indiceEdicaoUnidade !== null && indiceEdicaoUnidade >= 0) {
+        obraObj.detalhesPavimentos[chavePav][indiceEdicaoUnidade] = novaUnidade;
+    } else {
+        obraObj.detalhesPavimentos[chavePav].push(novaUnidade);
+    }
 
+    salvarEmpreendimentos(lista);
     abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
 }
 
@@ -434,16 +491,32 @@ function carregarPassoWizard(passo) {
             <main class="menu-inicial">
                 <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
                     <label style="color: #94a3b8; font-size: 0.9rem;">Escolha a Tipologia:</label>
-                    <select id="selectTipologia" onchange="atualizarCamposTipologia()" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <select id="selectTipologia" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                         <option value="Studio">Studio</option>
                         <option value="Quarto/Sala">Quarto/Sala</option>
                         <option value="2 Quartos">2 Quartos</option>
                         <option value="3 Quartos">3 Quartos</option>
                     </select>
 
-                    <div id="containerCamposExtras"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0;">
+                        <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="checkSuite" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Suíte
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="checkVaranda" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Varanda
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="checkLavabo" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Lavabo
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="checkAreaServico" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Área de Serviço
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; color: white; cursor: pointer; font-size: 0.9rem;">
+                            <input type="checkbox" id="checkReforma" style="width: 16px; height: 16px; accent-color: #3b82f6;"> Reforma
+                        </label>
+                    </div>
 
-                    <label style="color: #94a3b8; font-size: 0.9rem; display: block; margin-top: 5px;">Piscina Privativa:</label>
+                    <label style="color: #94a3b8; font-size: 0.9rem; display: block; margin-top: 10px;">Piscina Privativa:</label>
                     <select id="selectPiscina" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
                         <option value="Sem piscina">Sem piscina</option>
                         <option value="Com piscina">Com piscina</option>
@@ -457,7 +530,6 @@ function carregarPassoWizard(passo) {
                 </button>
             </main>
         `;
-        setTimeout(atualizarCamposTipologia, 50);
     } else if (passo === 4) {
         container.innerHTML = `
             <header>
@@ -503,59 +575,6 @@ function verificarOutroFechamento() {
     }
 }
 
-function atualizarCamposTipologia() {
-    const tipo = document.getElementById('selectTipologia').value;
-    const containerExtras = document.getElementById('containerCamposExtras');
-    if (!containerExtras) return;
-
-    if (tipo === 'Studio') {
-        containerExtras.innerHTML = `
-            <div style="background: #0f172a; padding: 12px; border-radius: 8px; border: 1px dashed #475569; margin-bottom: 15px; color: #94a3b8; font-size: 0.85rem;">
-                ℹ Studio configurado com <strong>1 Banheiro</strong> (sem suíte, lavabo, área de serviço ou varanda obrigatórios).
-            </div>
-        `;
-    } else {
-        containerExtras.innerHTML = `
-            <div style="margin-bottom: 15px;">
-                <label style="display: flex; align-items: center; gap: 10px; color: white; cursor: pointer; font-size: 0.95rem;">
-                    <input type="checkbox" id="checkSuite" style="width: 18px; height: 18px; accent-color: #3b82f6;">
-                    Possui Suíte?
-                </label>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="color: #94a3b8; font-size: 0.9rem;">Qtd. de Banheiros (fora suítes):</label>
-                <select id="selectBanheiros" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                    <option value="1 Banheiro">1 Banheiro</option>
-                    <option value="2 Banheiros">2 Banheiros</option>
-                    <option value="3 Banheiros">3 Banheiros</option>
-                    <option value="4+ Banheiros">4+ Banheiros</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="color: #94a3b8; font-size: 0.9rem;">Lavabo:</label>
-                <select id="selectLavabo" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                    <option value="Não">Não</option>
-                    <option value="Sim">Sim</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="color: #94a3b8; font-size: 0.9rem;">Área de Serviço:</label>
-                <select id="selectAreaServico" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="color: #94a3b8; font-size: 0.9rem;">Varanda:</label>
-                <select id="selectVaranda" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
-                </select>
-            </div>
-        `;
-    }
-}
-
 function salvarPasso1() {
     const nome = document.getElementById('inputNomeObra').value.trim();
     const pavimentosStr = document.getElementById('inputPavimentos').value.trim();
@@ -578,27 +597,15 @@ function salvarPasso3() {
     const tipo = document.getElementById('selectTipologia').value;
     const piscina = document.getElementById('selectPiscina').value;
 
-    if (tipo === 'Studio') {
-        novoEmpreendimentoTemp.tipologia = {
-            tipo: 'Studio',
-            suite: 'Não',
-            banheiros: '1 Banheiro',
-            lavabo: 'Não',
-            areaServico: 'Não',
-            varanda: 'Não',
-            piscina: piscina
-        };
-    } else {
-        novoEmpreendimentoTemp.tipologia = {
-            tipo: tipo,
-            suite: document.getElementById('checkSuite').checked ? 'Sim' : 'Não',
-            banheiros: document.getElementById('selectBanheiros').value,
-            lavabo: document.getElementById('selectLavabo').value,
-            areaServico: document.getElementById('selectAreaServico').value,
-            varanda: document.getElementById('selectVaranda').value,
-            piscina: piscina
-        };
-    }
+    novoEmpreendimentoTemp.tipologia = {
+        tipo: tipo,
+        suite: document.getElementById('checkSuite').checked ? 'Sim' : 'Não',
+        lavabo: document.getElementById('checkLavabo').checked ? 'Sim' : 'Não',
+        areaServico: document.getElementById('checkAreaServico').checked ? 'Sim' : 'Não',
+        varanda: document.getElementById('checkVaranda').checked ? 'Sim' : 'Não',
+        reforma: document.getElementById('checkReforma').checked ? 'Reforma' : 'Padrão',
+        piscina: piscina
+    };
     carregarPassoWizard(4);
 }
 
@@ -768,8 +775,8 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
         const unidadesDoPav = obraObj.detalhesPavimentos[chavePav];
         unidadesDoPav.forEach(item => {
             botoesUnidades += `
-                <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apto ${item.unidade} - ${pavimento} | Tipologia: ${item.tipologia} | ${item.banheiros} | Suíte: ${item.suite} | Lavabo: ${item.lavabo} | Serv: ${item.areaServico} | Varanda: ${item.varanda}')">
-                    <h2>APTO ${item.unidade}</h2>
+                <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apto ${item.unidade} - ${pavimento} | Tipologia: ${item.tipologia} | Suíte: ${item.suite} | Varanda: ${item.varanda} | ${item.reforma || 'Padrão'}')">
+                    <h2>APTO ${item.unidade} (${item.tipologia})</h2>
                 </button>
             `;
         });
