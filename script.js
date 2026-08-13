@@ -45,11 +45,11 @@ let empresasPadrao = [
     {
         nome: 'VIVER BEM',
         empreendimentos: [
-            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
-            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
-            { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
-            { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'], tipoObra: 'Obra Nova' },
-            { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova' }
+            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] },
+            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] },
+            { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] },
+            { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'], tipoObra: 'Obra Nova', itensReforma: [] },
+            { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] }
         ]
     }
 ];
@@ -283,17 +283,18 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
     const container = document.getElementById('main-content');
 
     if (obra && obra.tipoObra === 'Reforma') {
+        const itensReformaObra = obra.itensReforma && obra.itensReforma.length > 0 ? obra.itensReforma : ["Nenhum item específico cadastrado"];
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
                 <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-hammer"></i> ${nomeObra} (Reforma)</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Módulo de vistorias e controle específico para Reformas</p>
+                <p style="font-size: 13px; color: var(--text-muted);">Módulo de vistorias baseado no escopo cadastrado</p>
             </div>
             <div class="menu-inicial">
-                <div class="card-menu" onclick="alert('Módulo de Reformas em estruturação. Em breve!')">
+                <div class="card-menu" onclick="abrirChecklistReformaDinamico('${nomeObra}', ${JSON.stringify(itensReformaObra).replace(/"/g, '&quot;')})">
                     <div class="card-icon"><i class="fa-solid fa-list-check"></i></div>
                     <div class="card-info">
-                        <h2>CHECKLIST DE REFORMA</h2>
-                        <span>Acompanhamento de diretrizes de reforma</span>
+                        <h2>INICIAR CHECKLIST DE REFORMA</h2>
+                        <span>Ver ${itensReformaObra.length} item(ns) configurado(s)</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -330,6 +331,37 @@ window.escolherDisciplinaVistoria = function(nomeObra) {
         </div>
 
         <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-arrow-left"></i> Voltar para Obras</button>
+    `;
+};
+
+window.abrirChecklistReformaDinamico = function(nomeObra, itens) {
+    const container = document.getElementById('main-content');
+    let itensHtml = '';
+    
+    itens.forEach((desc, idx) => {
+        const id = idx + 1;
+        itensHtml += `
+            <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px; overflow:hidden;">
+                <div onclick="toggleItem(${id})" style="padding:15px; cursor:pointer; background:#1e293b; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${id}. ${desc}</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size:12px; color:#94a3b8;"></i>
+                </div>
+                <div id="content-${id}" style="display:none; padding:15px; border-top:1px solid #475569; background:#0f172a;">
+                    <button id="btn-c-${id}" onclick="setOption(${id}, 'conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Conforme ✓</button>
+                    <button id="btn-nc-${id}" onclick="setOption(${id}, 'nao-conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Não Conforme ✗</button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria de Reforma: ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Checklist baseado no escopo cadastrado</p>
+        </div>
+        <div id="status-tag-container"></div>
+        <div id="items-container">${itensHtml}</div>
+        <button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
 };
 
@@ -734,6 +766,28 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
 
 window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
+    
+    const itensPadraoReforma = [
+        "Demolição / Remoção de Paredes ou Estruturas",
+        "Substituição de Revestimentos (Pisos e Azulejos)",
+        "Ampliação ou Adequação de Pontos Elétricos e Iluminação",
+        "Modificações nas Instalações Hidráulicas / Sanitárias",
+        "Instalação de Forro de Gesso ou Sancas",
+        "Pintura Geral (Paredes e Tetos)",
+        "Substituição de Portas, Janelas ou Esquadrias",
+        "Instalação de Novas Bancadas e Pedras"
+    ];
+
+    let htmlCheckboxes = '';
+    itensPadraoReforma.forEach(item => {
+        htmlCheckboxes += `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 0;">
+                <input type="checkbox" name="itemReformaWizard" value="${item}" style="width: 15px; height: 15px; accent-color: var(--primary);">
+                <span>${item}</span>
+            </label>
+        `;
+    });
+
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento (${empresaAtual})</h3>
@@ -746,7 +800,7 @@ window.iniciarWizardCadastro = function() {
             </div>
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Tipo de Empreendimento:</label>
-                <select id="novoTipoObra" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
+                <select id="novoTipoObra" onchange="window.toggleSecaoReformaWizard(this.value)" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
                     <option value="Obra Nova">Obra Nova (Padrão Completo: Estrutural + Arquitetônico)</option>
                     <option value="Reforma">Reforma (Módulo Específico)</option>
                 </select>
@@ -755,10 +809,27 @@ window.iniciarWizardCadastro = function() {
                 <label style="font-size: 13px; font-weight: 600;">Quantidade de Pavimentos Tipo:</label>
                 <input type="number" id="novoQtdPavimentos" value="4" min="1" max="50">
             </div>
+
+            <div id="secao-reforma-wizard" style="display: none; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 5px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Itens de Reforma (Escopo):</label>
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
+                    ${htmlCheckboxes}
+                </div>
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; margin-top: 10px;">Outros Itens (especificar):</label>
+                <textarea id="novoOutrosReforma" placeholder="Digite outros itens separados por vírgula ou linha..." style="width: 100%; height: 60px; padding: 8px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; resize: vertical;"></textarea>
+            </div>
+
             <button class="btn-action" onclick="salvarNovoEmpreendimento()"><i class="fa-solid fa-check"></i> Salvar Empreendimento</button>
         </div>
         <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
+};
+
+window.toggleSecaoReformaWizard = function(tipo) {
+    const secao = document.getElementById('secao-reforma-wizard');
+    if (secao) {
+        secao.style.display = tipo === 'Reforma' ? 'block' : 'none';
+    }
 };
 
 window.salvarNovoEmpreendimento = function() {
@@ -767,6 +838,17 @@ window.salvarNovoEmpreendimento = function() {
     const qtdPavimentos = parseInt(document.getElementById('novoQtdPavimentos').value) || 1;
     if (!nome) { alert("Por favor, informe o nome da obra."); return; }
 
+    let itensReforma = [];
+    if (tipoObra === 'Reforma') {
+        const checkboxes = document.querySelectorAll('input[name="itemReformaWizard"]:checked');
+        itensReforma = Array.from(checkboxes).map(cb => cb.value);
+        const outrosTexto = document.getElementById('novoOutrosReforma').value.trim();
+        if (outrosTexto) {
+            const outrosSeparados = outrosTexto.split(/[\n,]+/).map(i => i.trim()).filter(i => i.length > 0);
+            itensReforma.push(...outrosSeparados);
+        }
+    }
+
     const lista = obterEmpreendimentos();
     lista.push({ 
         nome: nome.toUpperCase(), 
@@ -774,7 +856,8 @@ window.salvarNovoEmpreendimento = function() {
         pavimentosTipo: qtdPavimentos, 
         cobertura: 'Privativa', 
         fechamento: ['Drywall'],
-        tipoObra: tipoObra 
+        tipoObra: tipoObra,
+        itensReforma: itensReforma
     });
     salvarEmpreendimentos(lista);
     alert("Empreendimento cadastrado com sucesso!");
