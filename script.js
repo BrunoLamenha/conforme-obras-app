@@ -5,7 +5,7 @@ function navegar(destino) {
     if (destino === 'vistoria') {
         container.innerHTML = `
             <header>
-                <img src="logo.png" alt="Conforme Obras" class="logo-img">
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
                 <h1>CONFORME OBRA</h1>
                 <p>Selecione o empreendimento</p>
             </header>
@@ -33,7 +33,7 @@ function navegar(destino) {
     } else if (destino === 'cadastros') {
         container.innerHTML = `
             <header>
-                <img src="logo.png" alt="Conforme Obras" class="logo-img">
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
                 <h1>CONFORME OBRA</h1>
                 <p>Gerenciamento de Obras</p>
             </header>
@@ -78,7 +78,7 @@ function carregarFasesObra(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Escolha a frente de serviço</p>
         </header>
@@ -136,7 +136,7 @@ function carregarEstrutural(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Estrutural</p>
         </header>
@@ -151,7 +151,7 @@ function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Lista de Pavimentos</p>
         </header>
@@ -177,7 +177,7 @@ function carregarTipoArea(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - ${pavimento} - Selecione a área</p>
         </header>
@@ -200,7 +200,7 @@ function carregarListaApartamentos(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - ${pavimento} - Selecione a Unidade (Apto)</p>
         </header>
