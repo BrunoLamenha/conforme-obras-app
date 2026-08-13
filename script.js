@@ -81,7 +81,6 @@ let empreendimentosPadrao = [
     { nome: 'GRAND GARDEN', pavimentos: ['Pilotis', 'Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' }
 ];
 
-// Funções de Gerenciamento de Estado (LocalStorage)
 function obterEmpreendimentos() {
     const salvo = localStorage.getItem('conformeObra_empreendimentos');
     if (salvo) {
@@ -107,7 +106,6 @@ let novoEmpreendimentoTemp = {
 
 let indiceEdicaoUnidade = null;
 
-// Função principal de navegação baseada no fluxograma
 function navegar(destino) {
     const container = document.querySelector('.container');
     const lista = obterEmpreendimentos();
@@ -158,8 +156,6 @@ function navegar(destino) {
         `;
     }
 }
-
-// ================= GERENCIAR ESCOLHA DA LISTA =================
 
 function carregarListaCadastro() {
     const container = document.querySelector('.container');
@@ -430,8 +426,6 @@ function removerUnidadePavimento(nomeObra, pavimento, tipoArea, index) {
     }
 }
 
-// ================= WIZARD DE CADASTRO DE NOVO EMPREENDIMENTO =================
-
 function iniciarWizardCadastro() {
     novoEmpreendimentoTemp = { nome: '', pavimentos: [], unidadesPorPavimento: 2, tipologia: {}, fechamentoInterno: '' };
     carregarPassoWizard(1);
@@ -635,8 +629,6 @@ function concluirCadastro() {
     voltarInicio();
 }
 
-// ================= FLUXO DE VISTORIA E PAVIMENTOS =================
-
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     let botoesFases = '';
@@ -804,3 +796,27 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
 function voltarInicio() {
     location.reload(); 
 }
+
+// ================= EXPOSIÇÃO GLOBAL PARA O WINDOW =================
+window.navegar = navegar;
+window.voltarInicio = voltarInicio;
+window.carregarListaCadastro = carregarListaCadastro;
+window.iniciarWizardCadastro = iniciarWizardCadastro;
+window.gerenciarEmpreendimento = gerenciarEmpreendimento;
+window.escolherPavimentosArea = escolherPavimentosArea;
+window.abrirCadastroUnidadesPavimento = abrirCadastroUnidadesPavimento;
+window.carregarUnidadeParaEdicao = carregarUnidadeParaEdicao;
+window.cancelarEdicaoUnidade = cancelarEdicaoUnidade;
+window.salvarUnidadePavimento = salvarUnidadePavimento;
+window.carregarPassoWizard = carregarPassoWizard;
+window.salvarPasso1 = salvarPasso1;
+window.salvarPasso2 = salvarPasso2;
+window.salvarPasso3 = salvarPasso3;
+window.concluirCadastro = concluirCadastro;
+window.verificarOutroFechamento = verificarOutroFechamento;
+window.carregarFasesObra = carregarFasesObra;
+window.carregarEstrutural = carregarEstrutural;
+window.carregarListaPavimentos = carregarListaPavimentos;
+window.carregarVistoriaPavimentosTipo = carregarVistoriaPavimentosTipo;
+window.carregarTipoArea = carregarTipoArea;
+window.carregarListaApartamentos = carregarListaApartamentos;
