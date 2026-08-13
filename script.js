@@ -392,7 +392,6 @@ window.escolherPavimentoComum = function(nomeObra) {
     `;
 };
 
-// --- NOVO PAINEL UNIFICADO DE VISTORIA COM BOTÕES DE PAVIMENTO E NÚMEROS DE UNIDADES (EXATAMENTE COMO OS PRINTS) ---
 window.abrirPainelVistoriaUnificado = function(nomeObra, tipoArea) {
     const container = document.getElementById('main-content');
     const obra = obterObraPorNome(nomeObra);
@@ -403,14 +402,12 @@ window.abrirPainelVistoriaUnificado = function(nomeObra, tipoArea) {
     let tipoVistoriaSelecionado = 'Padrão Construtora';
 
     function renderizarPainel() {
-        // Gera botões de pavimentos
         let botoesPav = '';
         for (let p = 1; p <= qtdPav; p++) {
             const ativo = pavSelecionado === p ? 'background: var(--primary); color: white; border-color: var(--primary);' : 'background: rgba(255,255,255,0.05); color: var(--text-main);';
             botoesPav += `<button onclick="window.mudarPavimentoVistoria(${p})" style="padding: 8px 16px; border-radius: 6px; border: 1px solid var(--border-color); font-weight: 600; cursor: pointer; ${ativo}">${p}º Pav</button>`;
         }
 
-        // Gera unidades do pavimento selecionado (14 unidades para 1º, 2º e 3º; 12 unidades para o 4º)
         const totalUnidades = (pavSelecionado === 4) ? 12 : 14;
         let botoesUnidades = '';
         for (let u = 1; u <= totalUnidades; u++) {
@@ -443,12 +440,13 @@ window.abrirPainelVistoriaUnificado = function(nomeObra, tipoArea) {
                 </div>
             </div>
 
+            <div id="status-tag-container"></div>
             <div id="containerChecklistItens"></div>
 
             <button class="btn-action btn-back" onclick="escolherTipoAreaArquitetonica('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
         `;
 
-        renderizarChecklistItens(nomeObra, tipoArea, `${pavSelecionado}º Pavimento`, `Apto ${unidadeSelecionada}`);
+        renderChecklist(`Vistoria ${tipoVistoriaSelecionado}`);
     }
 
     window.mudarPavimentoVistoria = function(p) {
@@ -470,126 +468,85 @@ window.abrirPainelVistoriaUnificado = function(nomeObra, tipoArea) {
     renderizarPainel();
 };
 
-function renderizarChecklistItens(nomeObra, tipoArea, pavimento, unidade) {
-    const container = document.getElementById('containerChecklistItens');
-    const checklistData = checklistsModelos["arquitetonico"];
-    let html = '';
+let respostas = {};
 
-    checklistData.forEach((bloco, bIdx) => {
-        html += `
-            <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
-                <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 12px;"><i class="fa-solid fa-book"></i> ${bloco.categoria}</h4>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-        `;
-
-        bloco.itens.forEach((itemText, iIdx) => {
-            const itemKey = `chk_${bIdx}_${iIdx}`;
-            html += `
-                <div style="background: rgba(255,255,255,0.02); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <span style="font-size: 13px; color: var(--text-main); flex: 1; min-width: 200px;">${iIdx + 1}. ${itemText}</span>
-                    <div style="display: flex; gap: 6px;">
-                        <button id="btn_conf_${itemKey}" onclick="window.marcarStatusItem('${itemKey}', 'conforme')" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #16a34a; background: #16a34a; color: white; font-size: 12px; font-weight: bold; cursor: pointer;">Conforme ✓</button>
-                        <button id="btn_nao_${itemKey}" onclick="window.marcarStatusItem('${itemKey}', 'nao_conforme')" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: rgba(255,255,255,0.05); color: var(--text-muted); font-size: 12px; font-weight: bold; cursor: pointer;">Não Conforme X</button>
-                    </div>
-                </div>
-                <div id="painel_nc_${itemKey}" style="display: none; background: rgba(239, 68, 68, 0.05); border: 1px dashed #ef4444; border-radius: 6px; padding: 12px; margin-top: 6px; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="color: #ef4444; font-weight: bold; font-size: 12px;"><i class="fa-solid fa-triangle-exclamation"></i> PENDÊNCIA #1</span>
-                        <div style="display: flex; gap: 10px; font-size: 12px;">
-                            <span style="color: #16a34a; cursor: pointer; font-weight: bold;" onclick="window.fecharNC('${itemKey}')">Sanar ✓</span>
-                            <span style="color: #ef4444; cursor: pointer; font-weight: bold;" onclick="window.fecharNC('${itemKey}')">Excluir X</span>
-                        </div>
-                    </div>
-                    <div style="display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px;">
-                        <label><input type="checkbox"> Peça Oca / Solta</label>
-                        <label><input type="checkbox"> Junta Desalinhada</label>
-                        <label><input type="checkbox"> Caimento Incorreto (Poça)</label>
-                        <label><input type="checkbox"> Rodapé Solto / Danificado</label>
-                        <label><input type="checkbox"> Falta Rejunte no Piso</label>
-                        <label><input type="checkbox"> Piso Riscado / Manchado</label>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted);">Serviço / Responsável:</label>
-                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Escolher depois / A definir...</option></select>
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted);">Data Início:</label>
-                            <input type="date" value="2026-08-01" style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted);">Dias Úteis:</label>
-                            <input type="number" value="3" style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted);">Status:</label>
-                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Aguardando Início</option></select>
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted);">Gravidade:</label>
-                            <select style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;"><option>Baixa</option><option>Média</option><option>Alta</option></select>
-                        </div>
-                    </div>
-                    <div>
-                        <label style="font-size: 11px; color: var(--text-muted);">Observação Técnica:</label>
-                        <input type="text" placeholder="Detalhes..." style="width:100%; padding: 6px; font-size: 11px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
-                    </div>
-                    <div>
-                        <label style="font-size: 11px; color: var(--text-muted);">Fotos Anexadas:</label>
-                        <input type="file" style="font-size: 11px; width: 100%; padding: 4px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px;">
-                    </div>
-                </div>
-            `;
-        });
-
-        html += `</div></div>`;
+window.setOption = function(id, option) {
+    respostas[id] = option;
+    
+    document.querySelectorAll(`#content-${id} .btn-state`).forEach(btn => {
+        btn.style.background = '#334155';
     });
+    const selectedBtn = document.getElementById(`btn-${option === 'conforme' ? 'c' : 'nc'}-${id}`);
+    if (selectedBtn) {
+        selectedBtn.style.background = option === 'conforme' ? '#16a34a' : '#dc2626';
+    }
 
-    container.innerHTML = html;
+    updateStatusTag();
+};
+
+function updateStatusTag() {
+    const container = document.getElementById('status-tag-container');
+    if (!container) return;
+    const valores = Object.values(respostas);
+    
+    if (valores.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const temNaoConforme = valores.includes('nao-conforme');
+    
+    if (temNaoConforme) {
+        container.innerHTML = `
+            <div style="background:#dc2626; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-triangle-exclamation"></i> PENDÊNCIAS IDENTIFICADAS
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div style="background:#16a34a; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-check"></i> TUDO OK
+            </div>
+        `;
+    }
 }
 
-window.marcarStatusItem = function(itemKey, status) {
-    const btnConf = document.getElementById(`btn_conf_${itemKey}`);
-    const btnNao = document.getElementById(`btn_nao_${itemKey}`);
-    const painelNC = document.getElementById(`painel_nc_${itemKey}`);
-
-    if (status === 'conforme') {
-        btnConf.style.background = '#16a34a';
-        btnConf.style.borderColor = '#16a34a';
-        btnConf.style.color = 'white';
-        btnNao.style.background = 'rgba(255,255,255,0.05)';
-        btnNao.style.color = 'var(--text-muted)';
-        btnNao.style.borderColor = 'var(--border-color)';
-        painelNC.style.display = 'none';
-    } else {
-        btnNao.style.background = '#ef4444';
-        btnNao.style.borderColor = '#ef4444';
-        btnNao.style.color = 'white';
-        btnConf.style.background = 'rgba(255,255,255,0.05)';
-        btnConf.style.color = 'var(--text-muted)';
-        btnConf.style.borderColor = 'var(--border-color)';
-        painelNC.style.display = 'flex';
+window.toggleItem = function(id) {
+    const content = document.getElementById(`content-${id}`);
+    if (content) {
+        content.style.display = content.style.display === 'none' ? 'block' : 'none';
     }
 };
 
-window.fecharNC = function(itemKey) {
-    document.getElementById(`painel_nc_${itemKey}`).style.display = 'none';
-    window.marcarStatusItem(itemKey, 'conforme');
-};
+window.renderChecklist = function(titulo) {
+    const container = document.getElementById('containerChecklistItens');
+    if (!container) return;
 
-window.abrirVistoriaObra = function(nomeObra, disciplina, tipoArea, pavimento, unidade) {
-    const container = document.getElementById('main-content');
+    const itens = [
+        { id: 1, desc: "Contrapiso, Revestimentos e Rodapés" },
+        { id: 2, desc: "Forro e Sancas de Gesso" }
+    ];
+
     container.innerHTML = `
-        <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-list"></i> ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">${disciplina} • ${tipoArea} • ${pavimento} • ${unidade}</p>
+        <div style="margin-bottom:20px;">
+            <h3 style="color:#3b82f6; margin-bottom:10px;">${titulo}</h3>
         </div>
-        <div id="containerChecklistItens"></div>
-        <button class="btn-action btn-back" onclick="escolherPavimentoComum('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        
+        <div id="items-container">
+            ${itens.map(item => `
+                <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px; overflow:hidden;">
+                    <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${item.id}. ${item.desc}</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:12px; color:#94a3b8;"></i>
+                    </div>
+                    <div id="content-${item.id}" style="display:none; padding:15px; border-top:1px solid #475569; background:#0f172a;">
+                        <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Conforme ✓</button>
+                        <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Não Conforme ✗</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
     `;
-    renderizarChecklistItens(nomeObra, tipoArea, pavimento, unidade);
 };
 
 window.carregarCronogramaGeral = function() {
@@ -832,176 +789,4 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou', err));
     });
-}
-// --- Estrutura de Dados Mockada (Persistência) ---
-function getDb() {
-    const data = localStorage.getItem('vistoria_db');
-    return data ? JSON.parse(data) : { obras: { "Obra Exemplo": { unidades: {} } } };
-}
-
-function saveDb(db) {
-    localStorage.setItem('vistoria_db', JSON.stringify(db));
-}
-
-// --- Variáveis de Estado ---
-let state = {
-    obra: "Obra Exemplo",
-    pavimento: null,
-    unidade: null,
-    tipoVistoria: null, // "padrao" ou "reforma"
-    checklist: [] // Itens da vistoria atual
-};
-
-// --- Funções de Navegação ---
-
-window.renderPavimentos = function() {
-    const container = document.getElementById('main-content');
-    container.innerHTML = `
-        <h3>1. Selecione o Pavimento</h3>
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            ${[1, 2, 3, 4].map(p => `<button onclick="selecionarPavimento(${p})" class="btn-nav">${p}º Pav</button>`).join('')}
-        </div>
-    `;
-};
-
-window.selecionarPavimento = function(pav) {
-    state.pavimento = pav;
-    const container = document.getElementById('main-content');
-    
-    // Gera unidades baseadas na lógica anterior
-    const total = (pav === 4) ? 12 : 14;
-    let unidadesHtml = '';
-    for(let i=1; i<=total; i++) {
-        const num = `${pav}${i < 10 ? '0'+i : i}`;
-        unidadesHtml += `<button onclick="selecionarUnidade('${num}')" class="btn-unidade">${num}</button>`;
-    }
-
-    container.innerHTML += `
-        <h3>2. Selecione a Unidade</h3>
-        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">${unidadesHtml}</div>
-    `;
-};
-
-window.selecionarUnidade = function(unidade) {
-    state.unidade = unidade;
-    const container = document.getElementById('main-content');
-    container.innerHTML += `
-        <h3>3. Tipo de Vistoria</h3>
-        <div style="display:flex; gap:10px;">
-            <button onclick="iniciarVistoria('padrao')" class="btn-nav">Padrão Construtora</button>
-            <button onclick="iniciarVistoria('reforma')" class="btn-nav">Reforma / Aditivo</button>
-        </div>
-    `;
-};
-
-window.iniciarVistoria = function(tipo) {
-    state.tipoVistoria = tipo;
-    const db = getDb();
-    const unidadeData = db.obras[state.obra].unidades[state.unidade] || { vistorias: [] };
-    
-    // Lógica 1ª Vistoria vs Revistoria
-    const count = unidadeData.vistorias.length;
-    const labelVistoria = count === 0 ? "1ª Vistoria" : `${count}ª Revistoria`;
-
-    renderChecklist(labelVistoria);
-};
-
-// --- Funções de Estado ---
-let respostas = {}; // Armazena { id: 'conforme' ou 'nao-conforme' }
-const totalItens = 2; // Quantidade total de itens no seu checklist atual
-
-window.setOption = function(id, option) {
-    respostas[id] = option;
-    
-    // Atualiza visual dos botões
-    document.querySelectorAll(`#content-${id} button`).forEach(btn => btn.style.background = '#334155');
-    const selectedBtn = document.getElementById(`btn-${option === 'conforme' ? 'c' : 'nc'}-${id}`);
-    selectedBtn.style.background = option === 'conforme' ? '#16a34a' : '#dc2626';
-
-    // Atualiza a fita (tag) instantaneamente
-    updateStatusTag();
-};
-
-function updateStatusTag() {
-    const container = document.getElementById('status-tag-container');
-    const valores = Object.values(respostas);
-    
-    // Se não houver nada marcado, não mostra nada
-    if (valores.length === 0) {
-        container.innerHTML = '';
-        return;
-    }
-
-    const temNaoConforme = valores.includes('nao-conforme');
-    
-    if (temNaoConforme) {
-        // Fita Vermelha
-        container.innerHTML = `
-            <div style="background:#dc2626; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                <i class="fa-solid fa-triangle-exclamation"></i> PENDÊNCIAS IDENTIFICADAS
-            </div>
-        `;
-    } else {
-        // Fita Verde
-        container.innerHTML = `
-            <div style="background:#16a34a; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                <i class="fa-solid fa-check"></i> TUDO OK
-            </div>
-        `;
-    }
-}
-
-// --- Renderização (Atualizada) ---
-window.renderChecklist = function(titulo) {
-    const container = document.getElementById('main-content');
-    const itens = [
-        { id: 1, desc: "Contrapiso, Revestimentos e Rodapés" },
-        { id: 2, desc: "Forro e Sancas de Gesso" }
-    ];
-
-    container.innerHTML = `
-        <div style="margin-bottom:20px;">
-            <h3 style="color:#3b82f6; margin-bottom:10px;">${titulo} - ${state.unidade}</h3>
-            <!-- Container onde as fitas aparecerão -->
-            <div id="status-tag-container"></div> 
-        </div>
-        
-        <div id="items-container">
-            ${itens.map(item => `
-                <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px; overflow:hidden;">
-                    <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b; display:flex; justify-content:space-between; align-items:center;">
-                        <span>${item.id}. ${item.desc}</span>
-                        <i class="fa-solid fa-chevron-down" style="font-size:12px; color:#94a3b8;"></i>
-                   function renderUnitHistory() {
-    const container = document.getElementById('history-container');
-    if (!container) return;
-    
-    container.innerHTML = `
-        <div>
-            ${meuArray.map(item => `
-                <div id="content-${item.id}" style="display:none; padding:15px; border-top:1px solid #475569; background:#0f172a;">
-                    <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Conforme ✓</button>
-                    <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Não Conforme ✗</button>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
-
-function selectUnit(u, el) {
-    selectedUnitNum = u;
-    document.querySelectorAll('#units .btn').forEach(b => b.classList.remove('active'));
-    if (el) el.classList.add('active');
-
-    document.getElementById('type-card').style.display = 'block';
-    
-    selectedCategory = "";
-    selectedStage = "";
-
-    document.querySelectorAll('#category-selection-container .btn-opt').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('#stage-selection-container .btn-stage').forEach(b => b.classList.remove('active'));
-
-    document.getElementById('inspection-area').style.display = 'none';
-    
-    renderUnitHistory();
 }
