@@ -1,4 +1,4 @@
-// Dados padrão iniciais (incluindo o ZEN LIFE configurado com a numeração correta das unidades)
+// Dados padrão iniciais (sem o empreendimento Residencial)
 let empreendimentosPadrao = [
     { 
         nome: 'ZEN LIFE', 
@@ -68,7 +68,6 @@ let empreendimentosPadrao = [
         tipologia: { tipo: 'Misto', banheiros: 'Variável', piscina: 'Variável' },
         fechamentoInterno: 'Drywall'
     },
-    { nome: 'RESIDENCIAL', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: 'Studio' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], unidadesPorPavimento: 2, tipologia: { tipo: '3 Quartos' }, fechamentoInterno: 'Alvenaria' },
@@ -79,7 +78,10 @@ let empreendimentosPadrao = [
 function obterEmpreendimentos() {
     const salvo = localStorage.getItem('conformeObra_empreendimentos');
     if (salvo) {
-        return JSON.parse(salvo);
+        let lista = JSON.parse(salvo);
+        // Garante que 'RESIDENCIAL' seja removido caso esteja no cache
+        lista = lista.filter(e => e.nome !== 'RESIDENCIAL');
+        return lista;
     }
     localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(empreendimentosPadrao));
     return empreendimentosPadrao;
@@ -181,6 +183,16 @@ function carregarListaCadastro() {
 
 function gerenciarEmpreendimento(nomeObra) {
     const container = document.querySelector('.container');
+    const lista = obterEmpreendimentos();
+    const obraObj = lista.find(e => e.nome === nomeObra);
+
+    let pavimentosHtml = '';
+    if (obraObj && obraObj.pavimentos) {
+        obraObj.pavimentos.forEach(pav => {
+            pavimentosHtml += `<li style="padding: 6px 0; border-bottom: 1px solid #334155; color: #cbd5e1; font-size: 0.9rem;">📌 ${pav}</li>`;
+        });
+    }
+
     container.innerHTML = `
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
@@ -188,11 +200,16 @@ function gerenciarEmpreendimento(nomeObra) {
             <p>Gerenciando: ${nomeObra}</p>
         </header>
         <main class="menu-inicial">
+            <div style="text-align: left; background: #1e293b; padding: 15px 20px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px;">
+                <h3 style="color: #38bdf8; margin-bottom: 8px; font-size: 1rem;">Detalhes Cadastrados</h3>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 4px;"><strong>Fechamento:</strong> ${obraObj ? obraObj.fechamentoInterno : 'N/A'}</p>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px;"><strong>Pavimentos:</strong></p>
+                <ul style="list-style: none; padding-left: 0; max-height: 130px; overflow-y: auto;">
+                    ${pavimentosHtml}
+                </ul>
+            </div>
             <button class="btn-primary" onclick="alert('Configurações detalhadas de ${nomeObra}')">
                 <h2>⚙ EDITAR CONFIGURAÇÕES</h2>
-            </button>
-            <button class="btn-primary" onclick="alert('Visualizar checklist e tipologias de ${nomeObra}')">
-                <h2>📋 VER TIPOLOGIAS E CHECKLISTS</h2>
             </button>
             <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
                 <h2>⬅ Voltar à Lista</h2>
@@ -443,7 +460,7 @@ function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     let botoesFases = '';
 
-    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE' || nomeObra.includes('GARDEN') || nomeObra === 'RESIDENCIAL') {
+    if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE' || nomeObra.includes('GARDEN')) {
         botoesFases += `
             <button class="btn-primary" onclick="carregarEstrutural('${nomeObra}')">
                 <h2>ESTRUTURAL</h2>
