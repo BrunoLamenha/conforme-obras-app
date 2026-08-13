@@ -1231,3 +1231,324 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou', err));
     });
 }
+// --- CONTINUAÇÃO DO CHECKLIST E MÓDULOS DE VISTORIA COMPLETA (VERSÃO 1233 LINHAS) ---
+
+window.renderizarChecklistAmbiente = function(ambIndex) {
+    const empObj = obterEmpresaAtualObj();
+    const ambientes = empObj.ambientes || [];
+    const amb = ambientes[ambIndex];
+    if (!amb) return;
+
+    // Atualizar abas visuais
+    document.querySelectorAll('.btn-amb-tab').forEach((btn, idx) => {
+        if (idx === ambIndex) {
+            btn.style.background = 'var(--primary)';
+            btn.style.color = 'white';
+        } else {
+            btn.style.background = 'rgba(255,255,255,0.05)';
+            btn.style.color = 'var(--text-main)';
+        }
+    });
+
+    const containerConteudo = document.getElementById('conteudoChecklistAmbiente');
+    if (!containerConteudo) return;
+
+    // Agrupar itens por categoria dentro do ambiente
+    const categoriasMap = {};
+    if (amb.itens) {
+        amb.itens.forEach((it, itemRealIdx) => {
+            const cat = it.categoria || 'Geral';
+            if (!categoriasMap[cat]) categoriasMap[cat] = [];
+            categoriasMap[cat].push({ item: it, index: itemRealIdx });
+        });
+    }
+
+    let htmlCategorias = '';
+    Object.entries(categoriasMap).forEach(([catNome, lista]) => {
+        let itensHtml = '';
+        lista.forEach(({ item, index }) => {
+            const statusColor = item.status === 'concluido' ? '#22c55e' : item.status === 'andamento' ? '#3b82f6' : '#f59e0b';
+            const statusTexto = item.status === 'concluido' ? 'Concluído' : item.status === 'andamento' ? 'Em Andamento' : 'Pendente';
+            
+            let fotosHtml = '';
+            if (item.fotos && item.fotos.length > 0) {
+                item.fotos.forEach((fUrl, fIdx) => {
+                    fotosHtml += `<a href="${fUrl}" target="_blank" style="margin-right: 4px; display: inline-block;"><img src="${fUrl}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" title="Foto ${fIdx+1}"></a>`;
+                });
+            }
+
+            itensHtml += `
+                <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px;">
+                        <span style="font-size: 13px; font-weight: 500; color: var(--text-main); flex: 1;">${item.descricao}</span>
+                        <select onchange="window.atualizarStatusItemReforma(${ambIndex}, ${index}, this.value)" style="background: rgba(15,23,42,0.8); color: ${statusColor}; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px; padding: 2px 6px; font-weight: bold;">
+                            <option value="pendente" ${item.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+                            <option value="andamento" ${item.status === 'andamento' ? 'selected' : ''}>Em Andamento</option>
+                            <option value="concluido" ${item.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); display: block;">Responsável:</label>
+                            <input type="text" value="${item.responsavel || ''}" onchange="window.atualizarCampoItemReforma(${ambIndex}, ${index}, 'responsavel', this.value)" placeholder="Nome / Empresa" style="width: 100%; padding: 4px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); display: block;">Início:</label>
+                            <input type="date" value="${item.dataInicio || ''}" onchange="window.atualizarCampoItemReforma(${ambIndex}, ${index}, 'dataInicio', this.value)" style="width: 100%; padding: 4px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+                        </div>
+                        <div>
+                            <label style="font-size: 10px; color: var(--text-muted); display: block;">Prazo:</label>
+                            <input type="date" value="${item.prazo || ''}" onchange="window.atualizarCampoItemReforma(${ambIndex}, ${index}, 'prazo', this.value)" style="width: 100%; padding: 4px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 11px;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border-color); padding-top: 6px; margin-top: 4px;">
+                        <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                            <span style="font-size: 10px; color: var(--text-muted);">Fotos:</span>
+                            ${fotosHtml || '<span style="font-size: 10px; color: var(--text-muted);">Nenhuma</span>'}
+                        </div>
+                        <div style="display: flex; gap: 4px; align-items: center;">
+                            <input type="file" id="fotoItem_${ambIndex}_${index}" accept="image/*" style="display: none;" onchange="window.uploadFotoItemReforma(${ambIndex}, ${index})">
+                            <button onclick="document.getElementById('fotoItem_${ambIndex}_${index}').click()" style="background: rgba(37,99,235,0.2); border: 1px solid var(--primary); color: white; border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer;" title="Adicionar Foto"><i class="fa-solid fa-camera"></i> Foto</button>
+                            <button onclick="window.removerItemReforma(${ambIndex}, ${index})" style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 4px; padding: 2px 6px; font-size: 11px; cursor: pointer;" title="Excluir Item"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        htmlCategorias += `
+            <div style="margin-bottom: 15px;">
+                <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 8px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">📂 ${catNome}</h4>
+                ${itensHtml}
+            </div>
+        `;
+    });
+
+    containerConteudo.innerHTML = `
+        <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 style="color: var(--primary); font-size: 14px; margin: 0;"><i class="fa-solid fa-door-open"></i> ${amb.nome}</h4>
+                <button onclick="window.adicionarItemAvulsoReforma(${ambIndex})" style="background: var(--primary); color: white; border: none; border-radius: 4px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-plus"></i> Adicionar Modificação</button>
+            </div>
+            ${htmlCategorias || '<p style="font-size: 12px; color: var(--text-muted);">Nenhuma modificação cadastrada para este ambiente.</p>'}
+        </div>
+    `;
+};
+
+window.atualizarStatusItemReforma = function(ambIndex, itemIndex, novoStatus) {
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0 && empresas[empIndex].ambientes && empresas[empIndex].ambientes[ambIndex]) {
+        empresas[empIndex].ambientes[ambIndex].itens[itemIndex].status = novoStatus;
+        salvarEmpresas(empresas);
+        window.renderizarChecklistAmbiente(ambIndex);
+    }
+};
+
+window.atualizarCampoItemReforma = function(ambIndex, itemIndex, campo, valor) {
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0 && empresas[empIndex].ambientes && empresas[empIndex].ambientes[ambIndex]) {
+        empresas[empIndex].ambientes[ambIndex].itens[itemIndex][campo] = valor;
+        salvarEmpresas(empresas);
+    }
+};
+
+window.uploadFotoItemReforma = async function(ambIndex, itemIndex) {
+    const fileInput = document.getElementById(`fotoItem_${ambIndex}_${itemIndex}`);
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    try {
+        const empresas = obterEmpresas();
+        const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+        const amb = empresas[empIndex].ambientes[ambIndex];
+        
+        const storageRef = ref(storage, `reformas/${empresaAtual}/${amb.nome}/fotos/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const urlDownload = await getDownloadURL(snapshot.ref);
+
+        if (!amb.itens[itemIndex].fotos) amb.itens[itemIndex].fotos = [];
+        amb.itens[itemIndex].fotos.push(urlDownload);
+        
+        salvarEmpresas(empresas);
+        alert("Foto enviada com sucesso!");
+        window.renderizarChecklistAmbiente(ambIndex);
+    } catch (e) {
+        alert("Erro ao enviar foto.");
+    }
+};
+
+window.removerItemReforma = function(ambIndex, itemIndex) {
+    if (!confirm("Deseja excluir esta modificação?")) return;
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0 && empresas[empIndex].ambientes && empresas[empIndex].ambientes[ambIndex]) {
+        empresas[empIndex].ambientes[ambIndex].itens.splice(itemIndex, 1);
+        salvarEmpresas(empresas);
+        window.renderizarChecklistAmbiente(ambIndex);
+    }
+};
+
+window.adicionarItemAvulsoReforma = function(ambIndex) {
+    const desc = prompt("Descrição da nova modificação:");
+    if (!desc || desc.trim() === "") return;
+    const cat = prompt("Categoria (ex: Demolição e Preparação, Civil e Revestimentos, Instalações, Acabamentos e Forro):", "Geral");
+
+    const empresas = obterEmpresas();
+    const empIndex = empresas.findIndex(e => e.nome === empresaAtual);
+    if (empIndex >= 0 && empresas[empIndex].ambientes && empresas[empIndex].ambientes[ambIndex]) {
+        empresas[empIndex].ambientes[ambIndex].itens.push({
+            descricao: desc.trim(),
+            categoria: cat ? cat.trim() : 'Geral',
+            status: 'pendente',
+            responsavel: '',
+            dataInicio: '',
+            prazo: '',
+            fotos: []
+        });
+        salvarEmpresas(empresas);
+        window.renderizarChecklistAmbiente(ambIndex);
+    }
+};
+
+// --- MÓDULO DE VISTORIA COMPLETA PARA OBRAS NOVAS (CONSTRUTORAS) ---
+window.navegar = function(modulo) {
+    const container = document.getElementById('main-content');
+    const empObj = obterEmpresaAtualObj();
+
+    if (modulo === 'vistoria') {
+        container.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria - ${empresaAtual}</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Checklists estruturais, alinhamentos, fôrmas e execução de obra nova</p>
+            </div>
+            
+            <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 10px;">📋 Etapas de Verificação Estrutural</h4>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+                    <strong>1. Preparação e Locação Inicial:</strong> Verificação de eixos, alinhamento, prumos em relação ao projeto geométrico e limpeza inicial da base/laje.
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+                    <strong>2. Montagem de Fôrmas e Escoramento:</strong> Conferência de dimensões geométricas (largura, altura, espessura), rigidez, estabilidade, apoios no solo e contra-flechas.
+                </div>
+                <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">
+                    <strong>3. Armadura e Concretagem:</strong> Verificação de espaçadores, cobrimento de armadura, bitolas conforme projeto estrutural e controle tecnológico do concreto.
+                </div>
+            </div>
+
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
+        `;
+        return;
+    }
+
+    if (modulo === 'cadastros') {
+        let htmlEmpreendimentos = '';
+        if (empObj && empObj.empreendimentos) {
+            empObj.empreendimentos.forEach((emp, idx) => {
+                htmlEmpreendimentos += `
+                    <div style="background: rgba(15,23,42,0.5); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--primary); font-size: 14px; margin: 0;">${emp.nome}</h4>
+                            <span style="font-size: 11px; color: var(--text-muted);">Tipologia: ${emp.tipologia.join(', ')} • Pavimentos: ${emp.pavimentosTipo}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        container.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-building-shield"></i> Cadastros & Projetos</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Gerenciamento de empreendimentos vinculados</p>
+            </div>
+            <div style="margin-bottom: 15px;">
+                ${htmlEmpreendimentos || '<p style="color: var(--text-muted); font-size: 13px;">Nenhum empreendimento cadastrado.</p>'}
+            </div>
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
+        `;
+        return;
+    }
+
+    if (modulo === 'cronograma') {
+        container.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma Físico</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Acompanhamento de avanço de etapas de construção</p>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <p style="font-size: 13px; color: var(--text-main);">Cronograma geral em execução e alinhamento com as metas físicas da construtora.</p>
+            </div>
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
+        `;
+        return;
+    }
+
+    if (modulo === 'indicadores') {
+        container.innerHTML = `
+            <div style="margin-bottom: 15px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Indicadores Gerais</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Painel consolidado de conformidades e auditorias</p>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <p style="font-size: 13px; color: var(--text-main);">Índice de conformidade geral da construtora está dentro dos parâmetros esperados.</p>
+            </div>
+            <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
+        `;
+        return;
+    }
+};
+
+// --- INDICADORES ESPECÍFICOS PARA REFORMA ---
+window.carregarPainelIndicadores = function() {
+    const container = document.getElementById('main-content');
+    const empObj = obterEmpresaAtualObj();
+    const ambientes = empObj.ambientes || [];
+
+    let totalItens = 0;
+    let concluidos = 0;
+    let andamento = 0;
+    let pendentes = 0;
+
+    ambientes.forEach(amb => {
+        if (amb.itens) {
+            amb.itens.forEach(it => {
+                totalItens++;
+                if (it.status === 'concluido') concluidos++;
+                else if (it.status === 'andamento') andamento++;
+                else pendentes++;
+            });
+        }
+    });
+
+    const percentualConcluido = totalItens > 0 ? Math.round((concluidos / totalItens) * 100) : 0;
+
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Indicadores de Reforma</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Consolidado geral de andamento do projeto</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; text-align: center;">
+                <span style="font-size: 24px; font-weight: bold; color: var(--primary); display: block;">${totalItens}</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Total de Modificações</span>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; text-align: center;">
+                <span style="font-size: 24px; font-weight: bold; color: #22c55e; display: block;">${percentualConcluido}%</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Concluído</span>
+            </div>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+            <h4 style="font-size: 13px; color: var(--primary); margin-bottom: 8px;">📊 Status Detalhado</h4>
+            <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;">🟢 Concluídos: <strong>${concluidos}</strong></div>
+            <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;">🔵 Em Andamento: <strong>${andamento}</strong></div>
+            <div style="font-size: 12px; color: var(--text-main); margin-bottom: 4px;">🟡 Pendentes: <strong>${pendentes}</strong></div>
+        </div>
+
+        <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
+    `;
+};
