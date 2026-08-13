@@ -1,8 +1,29 @@
+// Lista global de empreendimentos (inclui os padrões e os novos cadastrados)
+let listaEmpreendimentos = ['ZOE', 'NAOKI', 'ZEUS', 'GRAND GARDEN', 'ZEN LIFE'];
+
+// Objeto temporário para armazenar os dados do cadastro em andamento
+let novoEmpreendimentoTemp = {
+    nome: '',
+    pavimentos: [],
+    unidadesPorPavimento: 0,
+    tipologia: {},
+    fechamentoInterno: ''
+};
+
 // Função principal de navegação baseada no fluxograma
 function navegar(destino) {
     const container = document.querySelector('.container');
 
     if (destino === 'vistoria') {
+        let botoesObras = '';
+        listaEmpreendimentos.forEach(obra => {
+            botoesObras += `
+                <button class="btn-primary" onclick="carregarFasesObra('${obra}')">
+                    <h2>📁 ${obra}</h2>
+                </button>
+            `;
+        });
+
         container.innerHTML = `
             <header>
                 <img src="logo.png" alt="Conforme Obra" class="logo-img">
@@ -10,21 +31,7 @@ function navegar(destino) {
                 <p>Selecione o empreendimento</p>
             </header>
             <main class="menu-inicial">
-                <button class="btn-primary" onclick="carregarFasesObra('ZOE')">
-                    <h2>📁 ZOE</h2>
-                </button>
-                <button class="btn-primary" onclick="carregarFasesObra('NAOKI')">
-                    <h2>📁 NAOKI</h2>
-                </button>
-                <button class="btn-primary" onclick="carregarFasesObra('ZEUS')">
-                    <h2>📁 ZEUS</h2>
-                </button>
-                <button class="btn-primary" onclick="carregarFasesObra('GRAND GARDEN')">
-                    <h2>📁 GRAND GARDEN</h2>
-                </button>
-                <button class="btn-primary" onclick="carregarFasesObra('ZEN LIFE')">
-                    <h2>📁 ZEN LIFE</h2>
-                </button>
+                ${botoesObras}
                 <button class="btn-primary btn-back" onclick="voltarInicio()" style="margin-top: 10px;">
                     <h2>⬅ Voltar ao Início</h2>
                 </button>
@@ -38,10 +45,10 @@ function navegar(destino) {
                 <p>Gerenciamento de Obras</p>
             </header>
             <main class="menu-inicial">
-                <button class="btn-primary" onclick="alert('Abrir lista para gerenciar pavimentos, tipologias e checklists')">
+                <button class="btn-primary" onclick="alert('Funcionalidade de escolha e edição rápida da lista existente')">
                     <h2>ESCOLHER DA LISTA</h2>
                 </button>
-                <button class="btn-secondary" onclick="alert('Iniciar Wizard de Cadastro de Novo Empreendimento')">
+                <button class="btn-secondary" onclick="iniciarWizardCadastro()">
                     <h2>CADASTRAR UM NOVO EMPREENDIMENTO</h2>
                     <span>Passo a passo: pavimentos, unidades e regras</span>
                 </button>
@@ -53,10 +60,167 @@ function navegar(destino) {
     }
 }
 
-// Tela intermediária do fluxo de Vistoria (Filtra o Estrutural apenas para Grand Garden e Zen Life)
+// ================= WIZARD DE CADASTRO DE NOVO EMPREENDIMENTO =================
+
+function iniciarWizardCadastro() {
+    novoEmpreendimentoTemp = { nome: '', pavimentos: [], unidadesPorPavimento: 0, tipologia: {}, fechamentoInterno: '' };
+    carregarPassoWizard(1);
+}
+
+function carregarPassoWizard(passo) {
+    const container = document.querySelector('.container');
+
+    if (passo === 1) {
+        container.innerHTML = `
+            <header>
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
+                <h1>CADASTRO - PASSO 1/4</h1>
+                <p>Identificação e Pavimentos</p>
+            </header>
+            <main class="menu-inicial">
+                <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Nome do Empreendimento:</label>
+                    <input type="text" id="inputNomeObra" placeholder="Ex: Horizon Tower" style="width: 100%; padding: 12px; margin: 8px 0 20px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Descrição dos Pavimentos (separados por vírgula):</label>
+                    <input type="text" id="inputPavimentos" placeholder="Ex: Térreo, 1º Pavimento Tipo, Cobertura" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                </div>
+                <button class="btn-primary" onclick="salvarPasso1()" style="text-align: center; margin-top: 15px;">
+                    <h2>Avançar ➡</h2>
+                </button>
+                <button class="btn-primary btn-back" onclick="navegar('cadastros')" style="margin-top: 10px;">
+                    <h2>⬅ Cancelar</h2>
+                </button>
+            </main>
+        `;
+    } else if (passo === 2) {
+        container.innerHTML = `
+            <header>
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
+                <h1>CADASTRO - PASSO 2/4</h1>
+                <p>Unidades Privativas por Pavimento</p>
+            </header>
+            <main class="menu-inicial">
+                <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Quantidade de unidades por pavimento tipo:</label>
+                    <input type="number" id="inputQtdUnidades" placeholder="Ex: 4" style="width: 100%; padding: 12px; margin: 8px 0 10px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                </div>
+                <button class="btn-primary" onclick="salvarPasso2()" style="text-align: center; margin-top: 15px;">
+                    <h2>Avançar ➡</h2>
+                </button>
+                <button class="btn-primary btn-back" onclick="carregarPassoWizard(1)" style="margin-top: 10px;">
+                    <h2>⬅ Voltar</h2>
+                </button>
+            </main>
+        `;
+    } else if (passo === 3) {
+        container.innerHTML = `
+            <header>
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
+                <h1>CADASTRO - PASSO 3/4</h1>
+                <p>Tipologia e Composição</p>
+            </header>
+            <main class="menu-inicial">
+                <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Escolha a Tipologia:</label>
+                    <select id="selectTipologia" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="Studio">Studio</option>
+                        <option value="Quarto e Sala">Quarto e Sala</option>
+                        <option value="2 Quartos">2 Quartos</option>
+                        <option value="3 Quartos">3 Quartos</option>
+                    </select>
+
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Possui Suíte?</label>
+                    <select id="selectSuite" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Áreas de Lazer / Extras na Unidade:</label>
+                    <div style="color: white; margin-top: 5px; display: flex; flex-direction: column; gap: 8px;">
+                        <label><input type="checkbox" id="checkVaranda" value="Varanda"> Varanda</label>
+                        <label><input type="checkbox" id="checkPiscina" value="Piscina"> Piscina privativa</label>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="salvarPasso3()" style="text-align: center; margin-top: 15px;">
+                    <h2>Avançar ➡</h2>
+                </button>
+                <button class="btn-primary btn-back" onclick="carregarPassoWizard(2)" style="margin-top: 10px;">
+                    <h2>⬅ Voltar</h2>
+                </button>
+            </main>
+        `;
+    } else if (passo === 4) {
+        container.innerHTML = `
+            <header>
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
+                <h1>CADASTRO - PASSO 4/4</h1>
+                <p>Fechamento Interno e Conclusão</p>
+            </header>
+            <main class="menu-inicial">
+                <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
+                    <label style="color: #94a3b8; font-size: 0.9rem;">Tipo de Fechamento Interno:</label>
+                    <select id="selectFechamento" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="Drywall">Drywall</option>
+                        <option value="Alvenaria de Bloco Cerâmico">Alvenaria de Bloco Cerâmico</option>
+                        <option value="Bloco de Concreto">Bloco de Concreto</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="concluirCadastro()" style="text-align: center; margin-top: 15px; background-color: #16a34a;">
+                    <h2>Salvar e Inserir na Lista ✅</h2>
+                </button>
+                <button class="btn-primary btn-back" onclick="carregarPassoWizard(3)" style="margin-top: 10px;">
+                    <h2>⬅ Voltar</h2>
+                </button>
+            </main>
+        `;
+    }
+}
+
+function salvarPasso1() {
+    const nome = document.getElementById('inputNomeObra').value.trim();
+    const pavimentosStr = document.getElementById('inputPavimentos').value.trim();
+    if (!nome) {
+        alert('Por favor, informe o nome do empreendimento.');
+        return;
+    }
+    novoEmpreendimentoTemp.nome = nome.toUpperCase();
+    novoEmpreendimentoTemp.pavimentos = pavimentosStr ? pavimentosStr.split(',').map(p => p.trim()) : ['Térreo', 'Pavimento Tipo', 'Cobertura'];
+    carregarPassoWizard(2);
+}
+
+function salvarPasso2() {
+    const qtd = document.getElementById('inputQtdUnidades').value;
+    novoEmpreendimentoTemp.unidadesPorPavimento = parseInt(qtd) || 2;
+    carregarPassoWizard(3);
+}
+
+function salvarPasso3() {
+    novoEmpreendimentoTemp.tipologia = {
+        tipo: document.getElementById('selectTipologia').value,
+        suite: document.getElementById('selectSuite').value,
+        varanda: document.getElementById('checkVaranda').checked,
+        piscina: document.getElementById('checkPiscina').checked
+    };
+    carregarPassoWizard(4);
+}
+
+function concluirCadastro() {
+    novoEmpreendimentoTemp.fechamentoInterno = document.getElementById('selectFechamento').value;
+    
+    // Adiciona o novo empreendimento na lista global
+    if (!listaEmpreendimentos.includes(novoEmpreendimentoTemp.nome)) {
+        listaEmpreendimentos.push(novoEmpreendimentoTemp.nome);
+    }
+
+    alert(`Empreendimento "${novoEmpreendimentoTemp.nome}" cadastrado e integrado com sucesso!`);
+    voltarInicio();
+}
+
+// ================= FLUXO DE VISTORIA E PAVIMENTOS =================
+
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
-    
     let botoesFases = '';
 
     if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE') {
@@ -88,7 +252,6 @@ function carregarFasesObra(nomeObra) {
     `;
 }
 
-// Fluxo Específico do Estrutural para Grand Garden e Zen Life
 function carregarEstrutural(nomeObra) {
     const container = document.querySelector('.container');
     let botoesItens = '';
@@ -146,7 +309,6 @@ function carregarEstrutural(nomeObra) {
     `;
 }
 
-// Fluxo Arquitetônico: Lista de Pavimentos
 function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
     container.innerHTML = `
@@ -172,7 +334,6 @@ function carregarListaPavimentos(nomeObra) {
     `;
 }
 
-// Escolha entre Área Comum e Área Privativa
 function carregarTipoArea(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
@@ -195,7 +356,6 @@ function carregarTipoArea(nomeObra, pavimento) {
     `;
 }
 
-// Lista de Apartamentos / Unidades na Área Privativa
 function carregarListaApartamentos(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
@@ -218,7 +378,6 @@ function carregarListaApartamentos(nomeObra, pavimento) {
     `;
 }
 
-// Retorna para a tela inicial
 function voltarInicio() {
     location.reload(); 
 }
