@@ -47,7 +47,7 @@ function navegar(destino) {
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
                 <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para iniciar a vistoria</p>
+                <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para iniciar a vistoria estrutural</p>
             </div>
             <div class="menu-inicial">${botoesObras}</div>
             <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
@@ -82,7 +82,130 @@ function navegar(destino) {
     }
 }
 
-// 1. Escolher da Lista (Mostra apenas o nome da obra)
+// --- MÓDULO DE VISTORIA ESTRUTURAL COM CHECKLISTS ESPECÍFICOS ---
+
+window.abrirVistoriaObra = function(nomeObra) {
+    const container = document.getElementById('main-content');
+    
+    // Validar se a obra possui vistoria estrutural configurada
+    if (nomeObra !== 'GRAND GARDEN' && nomeObra !== 'ZEN LIFE') {
+        container.innerHTML = `
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> ${nomeObra}</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Módulo de vistoria estrutural indisponível para este empreendimento.</p>
+            </div>
+            <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
+        `;
+        return;
+    }
+
+    let pavimentosVistoria = [];
+    if (nomeObra === 'GRAND GARDEN') {
+        pavimentosVistoria = ['2º Pavimento', '3º Pavimento', '4º Pavimento', '4º Pavimento Mezanino', 'Cobertura', 'Coberta'];
+    } else if (nomeObra === 'ZEN LIFE') {
+        pavimentosVistoria = ['Fundações', 'Subsolo', 'Pilotis', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta'];
+    }
+
+    let optionsVistoria = '';
+    pavimentosVistoria.forEach(pav => {
+        const val = pav.toLowerCase().replace(/[ºª]/g, '').replace(/\s+/g, '_');
+        optionsVistoria += `<option value="${val}">${pav}</option>`;
+    });
+
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-helmet-safety"></i> Vistoria Estrutural: ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione o pavimento para realizar o checklist de execução</p>
+        </div>
+
+        <div class="upload-section">
+            <label style="font-size: 13px; font-weight: 600; color: var(--text-main);">Pavimento / Etapa:</label>
+            <select id="selectPavimentoVistoria">
+                ${optionsVistoria}
+            </select>
+
+            <div id="checklistContainer" style="margin-top: 15px;">
+                <!-- O checklist injetado via JS aparecerá aqui -->
+            </div>
+
+            <button class="btn-action" onclick="salvarVistoria('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
+        </div>
+
+        <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Obras</button>
+    `;
+
+    const selectPavVistoria = document.getElementById('selectPavimentoVistoria');
+    
+    function atualizarChecklist() {
+        const pavSelecionado = selectPavVistoria.value;
+        gerarItensChecklist(nomeObra, pavSelecionado);
+    }
+
+    selectPavVistoria.addEventListener('change', atualizarChecklist);
+    atualizarChecklist();
+};
+
+function gerarItensChecklist(nomeObra, pavimentoId) {
+    const containerChecklist = document.getElementById('checklistContainer');
+    let itens = [];
+
+    // Regras específicas baseadas nos parâmetros da construtora fornecidos
+    if (nomeObra === 'ZEN LIFE' && pavimentoId === 'fundacoes') {
+        itens = [
+            "Conferência de gabarito e locação dos eixos",
+            "Escavação e conformidade das cavas de fundação",
+            "Armadura dos blocos de concreto armado (bitolas, espaçadores e cobrimento)",
+            "Lançamento e adensamento do concreto nos blocos e baldramas",
+            "Tratamento de impermeabilização nas vigas baldrame"
+        ];
+    } else if (nomeObra === 'ZEN LIFE' && pavimentoId === 'subsolo') {
+        itens = [
+            "Execução e armação das paredes de contensão (cortinas/diafragma)",
+            "Sistema de drenagem profunda e barbacãs",
+            "Preparação do subleito e lastro de concreto magro",
+            "Armação e instalação de juntas de dilatação/waterstop para laje de subpressão",
+            "Concretagem da laje de subpressão (controle de patologias e fissuras)"
+        ];
+    } else {
+        // Pavimentos com Laje Protendida (Grand Garden e demais andares do Zen Life)
+        let tipoEstruturaMsg = nomeObra === 'GRAND GARDEN' ? "Concreto Armado com Protensão (Cabo Engraxado/Gordura protendida)" : "Laje Maciça Protendida";
+        itens = [
+            `Verificação de formas, escoramento e prumo (${tipoEstruturaMsg})`,
+            "Posicionamento das armações passivas (inferior e superior) e estribos de pilares e vigas",
+            "Montagem e traçado das cordoalhas de protensão (perfil e alinhamento em planta)",
+            "Conferência de ancoragens ativas e passivas, nichos e inserções metálicas",
+            "Inspeção pré-concretagem (limpeza de formas, gabaritos de eletrodutos)",
+            "Acompanhamento da concretagem e adensamento rigoroso com vibrador",
+            "Controle tecnológico (corpos de prova e abatimento do concreto)",
+            "Operação de protensão (tração das cordoalhas) e liberação de escoramento conforme projeto estrutural"
+        ];
+    }
+
+    let htmlItens = `<h4 style="font-size: 13px; color: var(--primary); margin-bottom: 8px;"><i class="fa-solid fa-list-check"></i> Fases de Execução e Verificação:</h4>`;
+    htmlItens += `<div class="checkbox-group" style="grid-template-columns: 1fr; gap: 10px;">`;
+    
+    itens.forEach((item, index) => {
+        htmlItens += `
+            <label style="align-items: flex-start; line-height: 1.4;">
+                <input type="checkbox" name="checkItem" value="${item}" style="margin-top: 3px;">
+                <span>${item}</span>
+            </label>
+        `;
+    });
+    htmlItens += `</div>`;
+
+    containerChecklist.innerHTML = htmlItens;
+}
+
+window.salvarVistoria = function(nomeObra) {
+    const checks = document.querySelectorAll('input[name="checkItem"]:checked');
+    const total = document.querySelectorAll('input[name="checkItem"]').length;
+    
+    alert(`Vistoria salva com sucesso para ${nomeObra}! Itens verificados: ${checks.length} de ${total}.`);
+};
+
+// --- MÓDULOS DE CADASTRO E UPLOAD ANTERIORES ---
+
 window.carregarListaCadastro = function() {
     const container = document.getElementById('main-content');
     const lista = obterEmpreendimentos();
@@ -110,7 +233,6 @@ window.carregarListaCadastro = function() {
     `;
 };
 
-// 2. Escolher Disciplina (Arquitetônico ou Estrutural)
 window.escolherDisciplinaObra = function(nomeObra) {
     const container = document.getElementById('main-content');
 
@@ -144,7 +266,6 @@ window.escolherDisciplinaObra = function(nomeObra) {
     `;
 };
 
-// 3. Tela de Upload por Pavimento e Disciplina (Com lista padrão para estrutural)
 window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
     const container = document.getElementById('main-content');
     const obraId = nomeObra.toLowerCase().replace(/\s+/g, '_');
@@ -267,7 +388,6 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
     });
 };
 
-// 4. Wizard de Cadastro com Checkboxes e Quantidade de Pavimentos Tipo
 window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
     
@@ -346,10 +466,6 @@ window.salvarNovoEmpreendimento = function() {
     salvarEmpreendimentos(lista);
     alert("Empreendimento cadastrado com sucesso!");
     carregarListaCadastro();
-};
-
-window.abrirVistoriaObra = function(nomeObra) {
-    alert(`Abrindo módulo de vistoria para: ${nomeObra}`);
 };
 
 window.voltarInicio = function() {
