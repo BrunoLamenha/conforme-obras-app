@@ -182,6 +182,36 @@ function carregarListaCadastro() {
 
 function gerenciarEmpreendimento(nomeObra) {
     const container = document.querySelector('.container');
+    const obraUpper = nomeObra.toUpperCase();
+
+    if (obraUpper.includes('GRAND GARDEN') || obraUpper.includes('ZEN LIFE') || obraUpper.includes('GARDEN')) {
+        container.innerHTML = `
+            <header>
+                <img src="logo.png" alt="Conforme Obra" class="logo-img">
+                <h1>CONFORME OBRA</h1>
+                <p>${nomeObra} - Selecione a Frente de Serviço</p>
+            </header>
+            <main class="menu-inicial">
+                <button class="btn-primary" onclick="gerenciarEstrutural('${nomeObra}')">
+                    <h2>ESTRUTURAL</h2>
+                </button>
+                <button class="btn-primary" onclick="gerenciarArquitetonico('${nomeObra}')">
+                    <h2>ARQUITETÔNICO</h2>
+                </button>
+                <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
+                    <h2>⬅ Voltar à Lista</h2>
+                </button>
+            </main>
+        `;
+    } else {
+        gerenciarArquitetonico(nomeObra);
+    }
+}
+
+function gerenciarArquitetonico(nomeObra) {
+    const container = document.querySelector('.container');
+    const obraUpper = nomeObra.toUpperCase();
+    const temMenuAnterior = obraUpper.includes('GRAND GARDEN') || obraUpper.includes('ZEN LIFE') || obraUpper.includes('GARDEN');
 
     container.innerHTML = `
         <header>
@@ -196,8 +226,46 @@ function gerenciarEmpreendimento(nomeObra) {
             <button class="btn-primary" onclick="escolherPavimentosArea('${nomeObra}', 'comum')">
                 <h2>🏛 ÁREA COMUM</h2>
             </button>
-            <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
-                <h2>⬅ Voltar à Lista</h2>
+            <button class="btn-primary btn-back" onclick="${temMenuAnterior ? `gerenciarEmpreendimento('${nomeObra}')` : `carregarListaCadastro()`}" style="margin-top: 10px;">
+                <h2>⬅ Voltar</h2>
+            </button>
+        </main>
+    `;
+}
+
+function gerenciarEstrutural(nomeObra) {
+    const container = document.querySelector('.container');
+    const pavimentosEstruturais = [
+        'Fundação',
+        'Subsolo',
+        'Pilotis',
+        '1º Pavimento',
+        '2º Pavimento',
+        '3º Pavimento',
+        '4º Pavimento',
+        'Cobertura',
+        'Coberta'
+    ];
+
+    let botoesPavimentos = '';
+    pavimentosEstruturais.forEach(pav => {
+        botoesPavimentos += `
+            <button class="btn-primary" onclick="abrirCadastroUnidadesPavimento('${nomeObra}', '${pav}', 'estrutural')">
+                <h2>📌 ${pav.toUpperCase()}</h2>
+            </button>
+        `;
+    });
+
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>CONFORME OBRA</h1>
+            <p>${nomeObra} - Estrutural</p>
+        </header>
+        <main class="menu-inicial">
+            ${botoesPavimentos}
+            <button class="btn-primary btn-back" onclick="gerenciarEmpreendimento('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar</h2>
             </button>
         </main>
     `;
@@ -247,7 +315,7 @@ function escolherPavimentosArea(nomeObra, tipoArea) {
         </header>
         <main class="menu-inicial">
             ${botoesPavimentos}
-            <button class="btn-primary btn-back" onclick="gerenciarEmpreendimento('${nomeObra}')" style="margin-top: 10px;">
+            <button class="btn-primary btn-back" onclick="gerenciarArquitetonico('${nomeObra}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar aos Tipos</h2>
             </button>
         </main>
@@ -347,8 +415,8 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
                 ${listaUnidadesHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhuma unidade cadastrada ainda.</p>'}
             </div>
 
-            <button class="btn-primary btn-back" onclick="escolherPavimentosArea('${nomeObra}', '${tipoArea}')">
-                <h2>⬅ Voltar aos Pavimentos</h2>
+            <button class="btn-primary btn-back" onclick="${tipoArea.toUpperCase() === 'ESTRUTURAL' ? `gerenciarEstrutural('${nomeObra}')` : `escolherPavimentosArea('${nomeObra}', '${tipoArea}')`}">
+                <h2>⬅ Voltar</h2>
             </button>
         </main>
     `;
@@ -698,6 +766,27 @@ function carregarFasesObra(nomeObra) {
 
 function carregarEstrutural(nomeObra) {
     const container = document.querySelector('.container');
+    const pavimentosEstruturais = [
+        'Fundação',
+        'Subsolo',
+        'Pilotis',
+        '1º Pavimento',
+        '2º Pavimento',
+        '3º Pavimento',
+        '4º Pavimento',
+        'Cobertura',
+        'Coberta'
+    ];
+
+    let botoesPavimentos = '';
+    pavimentosEstruturais.forEach(pav => {
+        botoesPavimentos += `
+            <button class="btn-primary" onclick="alert('Abrindo Vistoria Estrutural - ${pav}')">
+                <h2>📌 ${pav.toUpperCase()}</h2>
+            </button>
+        `;
+    });
+
     container.innerHTML = `
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
@@ -705,12 +794,7 @@ function carregarEstrutural(nomeObra) {
             <p>${nomeObra} - Estrutural</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Abrindo Fundações')">
-                <h2>FUNDAÇÕES</h2>
-            </button>
-            <button class="btn-primary" onclick="alert('Abrindo Estrutura Geral')">
-                <h2>ESTRUTURA GERAL</h2>
-            </button>
+            ${botoesPavimentos}
             <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Fases</h2>
             </button>
@@ -837,6 +921,8 @@ window.voltarInicio = voltarInicio;
 window.carregarListaCadastro = carregarListaCadastro;
 window.iniciarWizardCadastro = iniciarWizardCadastro;
 window.gerenciarEmpreendimento = gerenciarEmpreendimento;
+window.gerenciarArquitetonico = gerenciarArquitetonico;
+window.gerenciarEstrutural = gerenciarEstrutural;
 window.escolherPavimentosArea = escolherPavimentosArea;
 window.abrirCadastroUnidadesPavimento = abrirCadastroUnidadesPavimento;
 window.verificarTipologiaUnidade = verificarTipologiaUnidade;
