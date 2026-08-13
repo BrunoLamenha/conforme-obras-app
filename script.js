@@ -44,6 +44,8 @@ const checklistsModelos = {
 let empresasPadrao = [
     {
         nome: 'VIVER BEM',
+        tipoEmpresa: 'Construtora',
+        itensReforma: [],
         empreendimentos: [
             { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] },
             { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [] },
@@ -67,9 +69,13 @@ function salvarEmpresas(lista) {
     localStorage.setItem('conformeObra_empresas', JSON.stringify(lista));
 }
 
-function obterEmpreendimentos() {
+function obterEmpresaAtualObj() {
     const empresas = obterEmpresas();
-    const emp = empresas.find(e => e.nome === empresaAtual);
+    return empresas.find(e => e.nome === empresaAtual);
+}
+
+function obterEmpreendimentos() {
+    const emp = obterEmpresaAtualObj();
     return emp ? emp.empreendimentos : [];
 }
 
@@ -93,12 +99,17 @@ window.voltarInicio = function() {
 
     let htmlEmpresas = '';
     empresas.forEach(emp => {
+        const isReforma = emp.tipoEmpresa === 'Reforma';
+        const badgeTipo = isReforma ? '<span style="color: #facc15; font-size: 11px; margin-left: 5px;">(Reforma)</span>' : '';
+        const icone = isReforma ? 'fa-hammer' : 'fa-building-user';
+        const subtitulo = isReforma ? 'Projeto de Reforma' : `${emp.empreendimentos.length} empreendimento(s) cadastrado(s)`;
+
         htmlEmpresas += `
             <div class="card-menu" onclick="abrirEmpresa('${emp.nome}')">
-                <div class="card-icon"><i class="fa-solid fa-building-user"></i></div>
+                <div class="card-icon"><i class="fa-solid ${icone}"></i></div>
                 <div class="card-info">
-                    <h2>${emp.nome}</h2>
-                    <span>${emp.empreendimentos.length} empreendimento(s) cadastrado(s)</span>
+                    <h2>${emp.nome} ${badgeTipo}</h2>
+                    <span>${subtitulo}</span>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -107,16 +118,16 @@ window.voltarInicio = function() {
 
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-city"></i> Empresas & Grupos</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione a empresa ou adicione uma nova</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-city"></i> Empresas & Reformas</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione a empresa ou adicione um novo cadastro</p>
         </div>
         <div class="menu-inicial">
             ${htmlEmpresas}
             <div class="card-menu" onclick="iniciarCadastroEmpresa()" style="border: 2px dashed var(--primary); background: rgba(37, 99, 235, 0.05);">
                 <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
                 <div class="card-info">
-                    <h2 style="color: var(--primary);">ADICIONAR OUTRA EMPRESA</h2>
-                    <span>Criar novo grupo/empresa</span>
+                    <h2 style="color: var(--primary);">ADICIONAR EMPRESA / REFORMA</h2>
+                    <span>Criar novo grupo ou cadastro de reforma</span>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -126,42 +137,162 @@ window.voltarInicio = function() {
 
 window.iniciarCadastroEmpresa = function() {
     const container = document.getElementById('main-content');
+    
+    const itensPadraoReforma = [
+        "Demolição / Remoção de Paredes ou Estruturas",
+        "Substituição de Revestimentos (Pisos e Azulejos)",
+        "Ampliação ou Adequação de Pontos Elétricos e Iluminação",
+        "Modificações nas Instalações Hidráulicas / Sanitárias",
+        "Instalação de Forro de Gesso ou Sancas",
+        "Pintura Geral (Paredes e Tetos)",
+        "Substituição de Portas, Janelas ou Esquadrias",
+        "Instalação de Novas Bancadas e Pedras"
+    ];
+
+    let htmlCheckboxes = '';
+    itensPadraoReforma.forEach(item => {
+        htmlCheckboxes += `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 0;">
+                <input type="checkbox" name="itemReformaEmpresa" value="${item}" style="width: 15px; height: 15px; accent-color: var(--primary);">
+                <span>${item}</span>
+            </label>
+        `;
+    });
+
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Adicionar Nova Empresa</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Insira o nome da nova empresa ou grupo</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Cadastro</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Cadastre uma nova construtora ou um projeto de reforma</p>
         </div>
-        <div class="menu-inicial" style="gap: 10px;">
+        <div class="menu-inicial" style="gap: 12px;">
             <div>
-                <label style="font-size: 13px; font-weight: 600;">Nome da Empresa:</label>
-                <input type="text" id="novoNomeEmpresa" placeholder="Ex: Construtora Horizonte">
+                <label style="font-size: 13px; font-weight: 600;">Nome (Empresa ou Reforma):</label>
+                <input type="text" id="novoNomeEmpresa" placeholder="Ex: Construtora Horizonte ou Reforma Ap. 202">
             </div>
-            <button class="btn-action" onclick="salvarNovaEmpresa()"><i class="fa-solid fa-check"></i> Salvar Empresa</button>
+            <div>
+                <label style="font-size: 13px; font-weight: 600;">Tipo de Cadastro:</label>
+                <select id="novoTipoEmpresa" onchange="window.toggleSecaoReformaEmpresa(this.value)" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
+                    <option value="Construtora">Empresa / Grupo Construtora</option>
+                    <option value="Reforma">Reforma (Cadastro Direto)</option>
+                </select>
+            </div>
+
+            <div id="secao-reforma-empresa" style="display: none; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 5px;">
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Itens de Reforma (Escopo):</label>
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
+                    ${htmlCheckboxes}
+                </div>
+                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; margin-top: 10px;">Outros Itens (especificar):</label>
+                <textarea id="novoOutrosReformaEmpresa" placeholder="Digite outros itens separados por vírgula ou linha..." style="width: 100%; height: 60px; padding: 8px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; resize: vertical;"></textarea>
+            </div>
+
+            <button class="btn-action" onclick="salvarNovaEmpresa()"><i class="fa-solid fa-check"></i> Salvar Cadastro</button>
         </div>
         <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i> Voltar</button>
     `;
 };
 
+window.toggleSecaoReformaEmpresa = function(tipo) {
+    const secao = document.getElementById('secao-reforma-empresa');
+    if (secao) {
+        secao.style.display = tipo === 'Reforma' ? 'block' : 'none';
+    }
+};
+
 window.salvarNovaEmpresa = function() {
     const nome = document.getElementById('novoNomeEmpresa').value.trim();
+    const tipoEmpresa = document.getElementById('novoTipoEmpresa').value;
     if (!nome) {
-        alert("Por favor, informe o nome da empresa.");
+        alert("Por favor, informe o nome.");
         return;
     }
     const empresas = obterEmpresas();
     if (empresas.some(e => e.nome.toUpperCase() === nome.toUpperCase())) {
-        alert("Já existe uma empresa com este nome.");
+        alert("Já existe um cadastro com este nome.");
         return;
     }
-    empresas.push({ nome: nome.toUpperCase(), empreendimentos: [] });
+
+    let itensReforma = [];
+    let empreendimentos = [];
+
+    if (tipoEmpresa === 'Reforma') {
+        const checkboxes = document.querySelectorAll('input[name="itemReformaEmpresa"]:checked');
+        itensReforma = Array.from(checkboxes).map(cb => cb.value);
+        const outrosTexto = document.getElementById('novoOutrosReformaEmpresa').value.trim();
+        if (outrosTexto) {
+            const outrosSeparados = outrosTexto.split(/[\n,]+/).map(i => i.trim()).filter(i => i.length > 0);
+            itensReforma.push(...outrosSeparados);
+        }
+        empreendimentos.push({
+            nome: nome.toUpperCase(),
+            tipologia: ['Reforma'],
+            pavimentosTipo: 1,
+            cobertura: 'Privativa',
+            fechamento: ['Diversos'],
+            tipoObra: 'Reforma',
+            itensReforma: itensReforma
+        });
+    }
+
+    empresas.push({ 
+        nome: nome.toUpperCase(), 
+        tipoEmpresa: tipoEmpresa,
+        itensReforma: itensReforma,
+        empreendimentos: empreendimentos 
+    });
     salvarEmpresas(empresas);
-    alert("Empresa cadastrada com sucesso!");
+    alert("Cadastro realizado com sucesso!");
     voltarInicio();
 };
 
 window.abrirEmpresa = function(nomeEmpresa) {
     empresaAtual = nomeEmpresa;
+    const empObj = obterEmpresaAtualObj();
     const container = document.getElementById('main-content');
+
+    if (empObj && empObj.tipoEmpresa === 'Reforma') {
+        const itensReformaEmp = empObj.itensReforma && empObj.itensReforma.length > 0 ? empObj.itensReforma : ["Nenhum item específico cadastrado"];
+        container.innerHTML = `
+            <div class="app-header" style="border-bottom: none; margin-bottom: 10px; padding-bottom: 0;">
+                <div class="header-titles">
+                    <h1 style="color: var(--primary);"><i class="fa-solid fa-hammer"></i> ${empresaAtual}</h1>
+                    <p>Painel de Vistoria de Reforma</p>
+                </div>
+            </div>
+            
+            <div class="menu-inicial" style="margin-top: 15px;">
+                <div class="card-menu" onclick="abrirChecklistReformaDinamico('${empresaAtual}', ${JSON.stringify(itensReformaEmp).replace(/"/g, '&quot;')})">
+                    <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="card-info">
+                        <h2>INICIAR CHECKLIST DE REFORMA</h2>
+                        <span>Ver ${itensReformaEmp.length} item(ns) configurado(s)</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="card-menu" onclick="carregarCronogramaGeral()">
+                    <div class="card-icon"><i class="fa-solid fa-timeline"></i></div>
+                    <div class="card-info">
+                        <h2>CRONOGRAMA</h2>
+                        <span>Acompanhamento do avanço físico</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="card-menu" onclick="carregarPainelIndicadores()">
+                    <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="card-info">
+                        <h2>INDICADORES</h2>
+                        <span>Painel consolidado de conformidades</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+            </div>
+
+            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar para Lista</button>
+        `;
+        return;
+    }
 
     container.innerHTML = `
         <div class="app-header" style="border-bottom: none; margin-bottom: 10px; padding-bottom: 0;">
@@ -264,7 +395,7 @@ window.navegar = function(destino) {
                     <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
                     <div class="card-info">
                         <h2>CADASTRAR NOVO EMPREENDIMENTO</h2>
-                        <span>Adicionar nova obra ou reforma ao sistema</span>
+                        <span>Adicionar nova obra ao sistema</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -354,6 +485,10 @@ window.abrirChecklistReformaDinamico = function(nomeObra, itens) {
         `;
     });
 
+    const botaoVoltar = obterEmpresaAtualObj().tipoEmpresa === 'Reforma' ? 
+        `<button class="btn-action btn-back" onclick="voltarInicio()" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>` :
+        `<button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>`;
+
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria de Reforma: ${nomeObra}</h3>
@@ -361,7 +496,7 @@ window.abrirChecklistReformaDinamico = function(nomeObra, itens) {
         </div>
         <div id="status-tag-container"></div>
         <div id="items-container">${itensHtml}</div>
-        <button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')" style="margin-top: 15px;"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        ${botaoVoltar}
     `;
 };
 
@@ -583,27 +718,42 @@ window.renderChecklist = function(titulo) {
 
 window.carregarCronogramaGeral = function() {
     const container = document.getElementById('main-content');
+    const empObj = obterEmpresaAtualObj();
     const lista = obterEmpreendimentos();
     let htmlObra = '';
 
-    lista.forEach((obra, idx) => {
-        htmlObra += `
+    if (empObj && empObj.tipoEmpresa === 'Reforma') {
+        htmlObra = `
             <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
-                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome} <span style="font-size: 11px; color: var(--text-muted);">(${obra.tipoObra || 'Obra Nova'})</span></h4>
-                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
+                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${empObj.nome} <span style="font-size: 11px; color: var(--text-muted);">(Reforma)</span></h4>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Itens no escopo: ${empObj.itensReforma ? empObj.itensReforma.length : 0} item(ns)</div>
                 <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
                 <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                    <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
-                    <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
+                    <input type="range" min="0" max="100" value="50" style="flex: 1; accent-color: var(--primary);" disabled>
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">50%</span>
                 </div>
             </div>
         `;
-    });
+    } else {
+        lista.forEach((obra, idx) => {
+            htmlObra += `
+                <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                    <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome} <span style="font-size: 11px; color: var(--text-muted);">(${obra.tipoObra || 'Obra Nova'})</span></h4>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
+                    <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                        <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
+                        <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma: ${empresaAtual}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Acompanhamento do avanço físico dos empreendimentos</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Acompanhamento do avanço físico</p>
         </div>
         <div class="menu-inicial">${htmlObra}</div>
         <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
@@ -612,17 +762,18 @@ window.carregarCronogramaGeral = function() {
 
 window.carregarPainelIndicadores = function() {
     const container = document.getElementById('main-content');
-    const totalObras = obterEmpreendimentos().length;
+    const empObj = obterEmpresaAtualObj();
+    const totalObras = empObj && empObj.tipoEmpresa === 'Reforma' ? 1 : obterEmpreendimentos().length;
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Indicadores: ${empresaAtual}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada da gestão de obras</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada da gestão</p>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
                 <span style="font-size: 22px; font-weight: bold; color: var(--primary);">${totalObras}</span>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Obras Cadastradas</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Cadastros / Obras</p>
             </div>
             <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
                 <span style="font-size: 22px; font-weight: bold; color: #22c55e;">94.2%</span>
@@ -766,28 +917,6 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
 
 window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
-    
-    const itensPadraoReforma = [
-        "Demolição / Remoção de Paredes ou Estruturas",
-        "Substituição de Revestimentos (Pisos e Azulejos)",
-        "Ampliação ou Adequação de Pontos Elétricos e Iluminação",
-        "Modificações nas Instalações Hidráulicas / Sanitárias",
-        "Instalação de Forro de Gesso ou Sancas",
-        "Pintura Geral (Paredes e Tetos)",
-        "Substituição de Portas, Janelas ou Esquadrias",
-        "Instalação de Novas Bancadas e Pedras"
-    ];
-
-    let htmlCheckboxes = '';
-    itensPadraoReforma.forEach(item => {
-        htmlCheckboxes += `
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; padding: 4px 0;">
-                <input type="checkbox" name="itemReformaWizard" value="${item}" style="width: 15px; height: 15px; accent-color: var(--primary);">
-                <span>${item}</span>
-            </label>
-        `;
-    });
-
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento (${empresaAtual})</h3>
@@ -800,36 +929,18 @@ window.iniciarWizardCadastro = function() {
             </div>
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Tipo de Empreendimento:</label>
-                <select id="novoTipoObra" onchange="window.toggleSecaoReformaWizard(this.value)" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
-                    <option value="Obra Nova">Obra Nova (Padrão Completo: Estrutural + Arquitetônico)</option>
-                    <option value="Reforma">Reforma (Módulo Específico)</option>
+                <select id="novoTipoObra" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
+                    <option value="Obra Nova">Obra Nova (Padrão Completo)</option>
                 </select>
             </div>
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Quantidade de Pavimentos Tipo:</label>
                 <input type="number" id="novoQtdPavimentos" value="4" min="1" max="50">
             </div>
-
-            <div id="secao-reforma-wizard" style="display: none; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-top: 5px;">
-                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 8px;">Itens de Reforma (Escopo):</label>
-                <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px;">
-                    ${htmlCheckboxes}
-                </div>
-                <label style="font-size: 13px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 5px; margin-top: 10px;">Outros Itens (especificar):</label>
-                <textarea id="novoOutrosReforma" placeholder="Digite outros itens separados por vírgula ou linha..." style="width: 100%; height: 60px; padding: 8px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; resize: vertical;"></textarea>
-            </div>
-
             <button class="btn-action" onclick="salvarNovoEmpreendimento()"><i class="fa-solid fa-check"></i> Salvar Empreendimento</button>
         </div>
         <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
     `;
-};
-
-window.toggleSecaoReformaWizard = function(tipo) {
-    const secao = document.getElementById('secao-reforma-wizard');
-    if (secao) {
-        secao.style.display = tipo === 'Reforma' ? 'block' : 'none';
-    }
 };
 
 window.salvarNovoEmpreendimento = function() {
@@ -837,17 +948,6 @@ window.salvarNovoEmpreendimento = function() {
     const tipoObra = document.getElementById('novoTipoObra').value;
     const qtdPavimentos = parseInt(document.getElementById('novoQtdPavimentos').value) || 1;
     if (!nome) { alert("Por favor, informe o nome da obra."); return; }
-
-    let itensReforma = [];
-    if (tipoObra === 'Reforma') {
-        const checkboxes = document.querySelectorAll('input[name="itemReformaWizard"]:checked');
-        itensReforma = Array.from(checkboxes).map(cb => cb.value);
-        const outrosTexto = document.getElementById('novoOutrosReforma').value.trim();
-        if (outrosTexto) {
-            const outrosSeparados = outrosTexto.split(/[\n,]+/).map(i => i.trim()).filter(i => i.length > 0);
-            itensReforma.push(...outrosSeparados);
-        }
-    }
 
     const lista = obterEmpreendimentos();
     lista.push({ 
@@ -857,7 +957,7 @@ window.salvarNovoEmpreendimento = function() {
         cobertura: 'Privativa', 
         fechamento: ['Drywall'],
         tipoObra: tipoObra,
-        itensReforma: itensReforma
+        itensReforma: []
     });
     salvarEmpreendimentos(lista);
     alert("Empreendimento cadastrado com sucesso!");
