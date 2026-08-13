@@ -6,16 +6,11 @@ const db = getFirestore();
 const storage = getStorage();
 
 let empreendimentosPadrao = [
-    { 
-        nome: 'ZEN LIFE', 
-        pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
-        tipologia: 'Misto',
-        fechamentoInterno: 'Drywall'
-    },
-    { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], tipologia: '2 Quartos', fechamentoInterno: 'Drywall' },
-    { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], tipologia: 'Studio', fechamentoInterno: 'Drywall' },
-    { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], tipologia: '3 Quartos', fechamentoInterno: 'Alvenaria' },
-    { nome: 'GRAND GARDEN', pavimentos: ['Pilotis', 'Térreo', '1º Pavimento Tipo', 'Cobertura'], tipologia: '2 Quartos', fechamentoInterno: 'Drywall' }
+    { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'] },
+    { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'] },
+    { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'] },
+    { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'] },
+    { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'] }
 ];
 
 function obterEmpreendimentos() {
@@ -43,7 +38,6 @@ function navegar(destino) {
                     <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
                     <div class="card-info">
                         <h2>${obra.nome}</h2>
-                        <span>Acessar vistorias e relatórios</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -55,23 +49,21 @@ function navegar(destino) {
                 <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria</h3>
                 <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para iniciar a vistoria</p>
             </div>
-            <div class="menu-inicial">
-                ${botoesObras}
-            </div>
-            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
+            <div class="menu-inicial">${botoesObras}</div>
+            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
         `;
     } else if (destino === 'cadastros') {
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
                 <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-building-shield"></i> Cadastros & Projetos</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Gerencie empreendimentos e envie projetos em PDF por pavimento</p>
+                <p style="font-size: 13px; color: var(--text-muted);">Gerencie empreendimentos e envie projetos</p>
             </div>
             <div class="menu-inicial">
                 <div class="card-menu" onclick="carregarListaCadastro()">
                     <div class="card-icon"><i class="fa-solid fa-list-check"></i></div>
                     <div class="card-info">
                         <h2>ESCOLHER DA LISTA</h2>
-                        <span>Gerenciar obras, pavimentos e enviar projetos PDF</span>
+                        <span>Gerenciar projetos por disciplina e pavimento</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -85,12 +77,12 @@ function navegar(destino) {
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
             </div>
-            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</button>
+            <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
         `;
     }
 }
 
-// 1. Carregar Lista de Obras (Cadastro > Escolher da Lista)
+// 1. Escolher da Lista (Mostra apenas o nome da obra)
 window.carregarListaCadastro = function() {
     const container = document.getElementById('main-content');
     const lista = obterEmpreendimentos();
@@ -98,11 +90,10 @@ window.carregarListaCadastro = function() {
     let htmlObras = '';
     lista.forEach(obra => {
         htmlObras += `
-            <div class="card-menu" onclick="gerenciarObraDetalhes('${obra.nome}')">
+            <div class="card-menu" onclick="escolherDisciplinaObra('${obra.nome}')">
                 <div class="card-icon"><i class="fa-solid fa-building"></i></div>
                 <div class="card-info">
                     <h2>${obra.nome}</h2>
-                    <span>Tipologia: ${obra.tipologia || 'Misto'} | Pavimentos: ${obra.pavimentos.length}</span>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -112,67 +103,99 @@ window.carregarListaCadastro = function() {
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-list-check"></i> Escolher Obra</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione a obra para gerenciar projetos e fazer upload por pavimento</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para gerenciar os projetos</p>
         </div>
-        <div class="menu-inicial">
-            ${htmlObras.length > 0 ? htmlObras : '<p style="color:var(--text-muted); text-align:center;">Nenhum empreendimento cadastrado.</p>'}
-        </div>
-        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="menu-inicial">${htmlObras.length > 0 ? htmlObras : '<p style="color:var(--text-muted); text-align:center;">Nenhum empreendimento cadastrado.</p>'}</div>
+        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
     `;
 };
 
-// 2. Gerenciamento da Obra Selecionada (Com Upload integrado por pavimento)
-window.gerenciarObraDetalhes = async function(nomeObra) {
+// 2. Escolher Disciplina (Arquitetônico ou Estrutural)
+window.escolherDisciplinaObra = function(nomeObra) {
     const container = document.getElementById('main-content');
-    const lista = obterEmpreendimentos();
-    const obra = lista.find(o => o.nome === nomeObra);
-    
-    if (!obra) return;
 
-    const obraId = obra.nome.toLowerCase().replace(/\s+/g, '_');
+    container.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione a disciplina do projeto para envio</p>
+        </div>
+
+        <div class="menu-inicial">
+            <div class="card-menu" onclick="abrirGerenciadorUpload('${nomeObra}', 'arquitetonico')">
+                <div class="card-icon"><i class="fa-solid fa-compass-drafting"></i></div>
+                <div class="card-info">
+                    <h2>PROJETO ARQUITETÔNICO</h2>
+                    <span>Gerenciar e enviar plantas e cortes</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+
+            <div class="card-menu" onclick="abrirGerenciadorUpload('${nomeObra}', 'estrutural')">
+                <div class="card-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                <div class="card-info">
+                    <h2>PROJETO ESTRUTURAL</h2>
+                    <span>Gerenciar pavimentos estruturais e fundações</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <button class="btn-action btn-back" onclick="carregarListaCadastro()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Lista</button>
+    `;
+};
+
+// 3. Tela de Upload por Pavimento e Disciplina (Com lista padrão para estrutural)
+window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
+    const container = document.getElementById('main-content');
+    const obraId = nomeObra.toLowerCase().replace(/\s+/g, '_');
+    const disciplinaNome = disciplina === 'estrutural' ? 'Projeto Estrutural' : 'Projeto Arquitetônico';
+
+    let pavimentosLista = disciplina === 'estrutural' 
+        ? ['Fundações', 'Subsolo', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta']
+        : ['Térreo', 'Pavimento Tipo', 'Cobertura'];
 
     let optionsPavimentos = '';
-    obra.pavimentos.forEach(pav => {
-        const val = pav.toLowerCase().replace(/\s+/g, '_');
+    pavimentosLista.forEach(pav => {
+        const val = pav.toLowerCase().replace(/[ºª]/g, '').replace(/\s+/g, '_');
         optionsPavimentos += `<option value="${val}">${pav}</option>`;
     });
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${obra.nome}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Gerenciamento de Projetos e Uploads por Pavimento</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-cloud-arrow-up"></i> ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">${disciplinaNome} - Upload e Listagem por Pavimento</p>
         </div>
 
         <div class="upload-section">
             <label style="font-size: 13px; font-weight: 600; color: var(--text-main);">Selecione o Pavimento:</label>
-            <select id="selectPavimentoModal">
+            <select id="selectPavimentoModulo">
                 ${optionsPavimentos}
             </select>
 
-            <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display:block; margin-top: 10px;">Arquivo PDF do Projeto:</label>
-            <input type="file" id="pdfFileModal" accept="application/pdf">
+            <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display:block; margin-top: 10px;">Arquivo PDF:</label>
+            <input type="file" id="pdfFileModulo" accept="application/pdf">
             
-            <button class="btn-action" id="uploadBtnModal"><i class="fa-solid fa-cloud-arrow-up"></i> Enviar Projeto PDF</button>
+            <button class="btn-action" id="uploadBtnModulo"><i class="fa-solid fa-upload"></i> Enviar Arquivo PDF</button>
 
             <div class="arquivos-list-section">
-                <h4 style="font-size: 14px; margin-bottom: 8px; color: var(--text-main);">Projetos Disponíveis</h4>
-                <ul id="listaArquivosModal">
-                    <li>Selecione um pavimento para carregar os projetos.</li>
+                <h4 style="font-size: 14px; margin-bottom: 8px; color: var(--text-main);">Arquivos Disponíveis</h4>
+                <ul id="listaArquivosModulo">
+                    <li>Carregando...</li>
                 </ul>
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="carregarListaCadastro()"><i class="fa-solid fa-arrow-left"></i> Voltar para Lista de Obras</button>
+        <button class="btn-action btn-back" onclick="escolherDisciplinaObra('${nomeObra}')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Disciplinas</button>
     `;
 
-    const selectPav = document.getElementById('selectPavimentoModal');
-    
-    async function carregarArquivosAtuais(pavimentoId) {
-        const listaElement = document.getElementById('listaArquivosModal');
+    const selectPav = document.getElementById('selectPavimentoModulo');
+
+    async function carregarArquivos(pavId) {
+        const listaElement = document.getElementById('listaArquivosModulo');
         listaElement.innerHTML = "<li>Carregando projetos...</li>";
 
         try {
-            const docRef = doc(db, "obras", obraId, "pavimentos", pavimentoId);
+            const docRef = doc(db, "obras", obraId, disciplina, pavId);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists() && docSnap.data().arquivos && docSnap.data().arquivos.length > 0) {
@@ -196,36 +219,36 @@ window.gerenciarObraDetalhes = async function(nomeObra) {
                     listaElement.appendChild(li);
                 });
             } else {
-                listaElement.innerHTML = "<li>Nenhum projeto PDF cadastrado neste pavimento.</li>";
+                listaElement.innerHTML = "<li>Nenhum projeto cadastrado neste pavimento.</li>";
             }
         } catch (error) {
             console.error("Erro ao buscar arquivos:", error);
-            listaElement.innerHTML = "<li>Erro ao carregar projetos.</li>";
+            listaElement.innerHTML = "<li>Erro ao carregar arquivos.</li>";
         }
     }
 
     selectPav.addEventListener('change', (e) => {
-        carregarArquivosAtuais(e.target.value);
+        carregarArquivos(e.target.value);
     });
 
-    carregarArquivosAtuais(selectPav.value);
+    carregarArquivos(selectPav.value);
 
-    document.getElementById('uploadBtnModal').addEventListener('click', async () => {
-        const fileInput = document.getElementById('pdfFileModal');
+    document.getElementById('uploadBtnModulo').addEventListener('click', async () => {
+        const fileInput = document.getElementById('pdfFileModulo');
         const file = fileInput.files[0];
         const pavimentoId = selectPav.value;
 
         if (!file) {
-            alert("Por favor, selecione um arquivo PDF.");
+            alert("Selecione um arquivo PDF.");
             return;
         }
 
         try {
-            const storageRef = ref(storage, `obras/${obraId}/pavimentos/${pavimentoId}/${file.name}`);
+            const storageRef = ref(storage, `obras/${obraId}/${disciplina}/${pavimentoId}/${file.name}`);
             const snapshot = await uploadBytes(storageRef, file);
             const urlDownload = await getDownloadURL(snapshot.ref);
 
-            const docRef = doc(db, "obras", obraId, "pavimentos", pavimentoId);
+            const docRef = doc(db, "obras", obraId, disciplina, pavimentoId);
             await setDoc(docRef, {
                 arquivos: arrayUnion({
                     nome: file.name,
@@ -235,71 +258,89 @@ window.gerenciarObraDetalhes = async function(nomeObra) {
             }, { merge: true });
 
             alert("Upload concluído com sucesso!");
-            carregarArquivosAtuais(pavimentoId);
+            carregarArquivos(pavimentoId);
             fileInput.value = "";
         } catch (error) {
             console.error("Erro no upload:", error);
-            alert("Falha ao subir arquivo.");
+            alert("Falha ao enviar arquivo.");
         }
     });
 };
 
-// 3. Cadastrar Novo Empreendimento
+// 4. Wizard de Cadastro com Checkboxes e Quantidade de Pavimentos Tipo
 window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
     
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Preencha as informações básicas da nova obra</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Preencha as configurações da nova obra</p>
         </div>
 
-        <div class="menu-inicial" style="gap: 12px;">
+        <div class="menu-inicial" style="gap: 10px;">
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Nome da Obra:</label>
                 <input type="text" id="novoNomeObra" placeholder="Ex: Residencial Bella Vista">
             </div>
+
             <div>
-                <label style="font-size: 13px; font-weight: 600;">Tipologia:</label>
-                <input type="text" id="novaTipologia" placeholder="Ex: 2 Quartos, Studio, Misto">
+                <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Tipologia (Selecione uma ou mais):</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="tipologia" value="2 Quartos"> 2 Quartos</label>
+                    <label><input type="checkbox" name="tipologia" value="3 Quartos"> 3 Quartos</label>
+                    <label><input type="checkbox" name="tipologia" value="Studio"> Studio</label>
+                    <label><input type="checkbox" name="tipologia" value="Misto"> Misto</label>
+                </div>
             </div>
+
             <div>
-                <label style="font-size: 13px; font-weight: 600;">Fechamento Interno:</label>
-                <select id="novoFechamento">
-                    <option value="Drywall">Drywall</option>
-                    <option value="Alvenaria">Alvenaria</option>
-                </select>
+                <label style="font-size: 13px; font-weight: 600;">Quantidade de Pavimentos Tipo:</label>
+                <input type="number" id="novoQtdPavimentos" value="3" min="1" max="50">
             </div>
+
             <div>
-                <label style="font-size: 13px; font-weight: 600;">Pavimentos (separados por vírgula):</label>
-                <input type="text" id="novosPavimentos" value="Térreo, 1º Pavimento Tipo, Cobertura">
+                <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Cobertura:</label>
+                <div class="checkbox-group">
+                    <label><input type="radio" name="cobertura" value="Área Comum" checked> Área Comum</label>
+                    <label><input type="radio" name="cobertura" value="Privativa"> Privativa</label>
+                    <label><input type="radio" name="cobertura" value="Ambas"> Ambas</label>
+                </div>
+            </div>
+
+            <div>
+                <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Fechamento Interno:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="fechamento" value="Drywall" checked> Drywall</label>
+                    <label><input type="checkbox" name="fechamento" value="Alvenaria"> Alvenaria</label>
+                </div>
             </div>
             
             <button class="btn-action" onclick="salvarNovoEmpreendimento()"><i class="fa-solid fa-check"></i> Salvar Empreendimento</button>
         </div>
-        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
     `;
 };
 
 window.salvarNovoEmpreendimento = function() {
     const nome = document.getElementById('novoNomeObra').value.trim();
-    const tipologia = document.getElementById('novaTipologia').value.trim();
-    const fechamento = document.getElementById('novoFechamento').value;
-    const pavimentosStr = document.getElementById('novosPavimentos').value.trim();
+    const qtdPavimentos = parseInt(document.getElementById('novoQtdPavimentos').value) || 1;
 
     if (!nome) {
         alert("Por favor, informe o nome da obra.");
         return;
     }
 
-    const pavimentos = pavimentosStr ? pavimentosStr.split(',').map(p => p.trim()) : ['Térreo', 'Cobertura'];
+    const tipologiasSelecionadas = Array.from(document.querySelectorAll('input[name="tipologia"]:checked')).map(el => el.value);
+    const coberturaSelecionada = document.querySelector('input[name="cobertura"]:checked')?.value || 'Área Comum';
+    const fechamentoSelecionado = Array.from(document.querySelectorAll('input[name="fechamento"]:checked')).map(el => el.value);
 
     const lista = obterEmpreendimentos();
     lista.push({
         nome: nome.toUpperCase(),
-        tipologia: tipologia || 'Padrão',
-        fechamentoInterno: fechamento,
-        pavimentos: pavimentos
+        tipologia: tipologiasSelecionadas.length > 0 ? tipologiasSelecionadas : ['Padrão'],
+        pavimentosTipo: qtdPavimentos,
+        cobertura: coberturaSelecionada,
+        fechamento: fechamentoSelecionado
     });
 
     salvarEmpreendimentos(lista);
