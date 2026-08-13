@@ -5,7 +5,7 @@ function navegar(destino) {
     if (destino === 'vistoria') {
         container.innerHTML = `
             <header>
-                <h1>VISTORIA</h1>
+                <h1>CONFORME OBRAS</h1>
                 <p>Selecione o empreendimento</p>
             </header>
             <main class="menu-inicial">
@@ -32,7 +32,7 @@ function navegar(destino) {
     } else if (destino === 'cadastros') {
         container.innerHTML = `
             <header>
-                <h1>CADASTROS</h1>
+                <h1>CONFORME OBRAS</h1>
                 <p>Gerenciamento de Obras</p>
             </header>
             <main class="menu-inicial">
@@ -57,7 +57,6 @@ function carregarFasesObra(nomeObra) {
     
     let botoesFases = '';
 
-    // Mostra o botão Estrutural apenas para Grand Garden e Zen Life
     if (nomeObra === 'GRAND GARDEN' || nomeObra === 'ZEN LIFE') {
         botoesFases += `
             <button class="btn-primary" onclick="carregarEstrutural('${nomeObra}')">
@@ -66,7 +65,6 @@ function carregarFasesObra(nomeObra) {
         `;
     }
 
-    // O módulo arquitetônico aparece para todos
     botoesFases += `
         <button class="btn-primary" onclick="carregarListaPavimentos('${nomeObra}')">
             <h2>ARQUITETÔNICO</h2>
@@ -78,8 +76,8 @@ function carregarFasesObra(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <h1>${nomeObra}</h1>
-            <p>Escolha a frente de serviço</p>
+            <h1>CONFORME OBRAS</h1>
+            <p>${nomeObra} - Escolha a frente de serviço</p>
         </header>
         <main class="menu-inicial">
             ${botoesFases}
@@ -135,8 +133,8 @@ function carregarEstrutural(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <h1>${nomeObra}</h1>
-            <p>Estrutural</p>
+            <h1>CONFORME OBRAS</h1>
+            <p>${nomeObra} - Estrutural</p>
         </header>
         <main class="menu-inicial">
             ${botoesItens}
@@ -149,8 +147,8 @@ function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>${nomeObra}</h1>
-            <p>Lista de Pavimentos</p>
+            <h1>CONFORME OBRAS</h1>
+            <p>${nomeObra} - Lista de Pavimentos</p>
         </header>
         <main class="menu-inicial">
             <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Térreo')">
@@ -174,8 +172,8 @@ function carregarTipoArea(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>${nomeObra} - ${pavimento}</h1>
-            <p>Selecione a área</p>
+            <h1>CONFORME OBRAS</h1>
+            <p>${nomeObra} - ${pavimento} - Selecione a área</p>
         </header>
         <main class="menu-inicial">
             <button class="btn-primary" onclick="alert('Abrindo Checklist de Área Comum para ${pavimento}')">
@@ -196,8 +194,8 @@ function carregarListaApartamentos(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>${nomeObra} - ${pavimento}</h1>
-            <p>Selecione a Unidade (Apto)</p>
+            <h1>CONFORME OBRAS</h1>
+            <p>${nomeObra} - ${pavimento} - Selecione a Unidade (Apto)</p>
         </header>
         <main class="menu-inicial">
             <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 101')">
