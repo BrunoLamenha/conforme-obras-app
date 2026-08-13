@@ -833,3 +833,142 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou', err));
     });
 }
+// --- Estrutura de Dados Mockada (Persistência) ---
+function getDb() {
+    const data = localStorage.getItem('vistoria_db');
+    return data ? JSON.parse(data) : { obras: { "Obra Exemplo": { unidades: {} } } };
+}
+
+function saveDb(db) {
+    localStorage.setItem('vistoria_db', JSON.stringify(db));
+}
+
+// --- Variáveis de Estado ---
+let state = {
+    obra: "Obra Exemplo",
+    pavimento: null,
+    unidade: null,
+    tipoVistoria: null, // "padrao" ou "reforma"
+    checklist: [] // Itens da vistoria atual
+};
+
+// --- Funções de Navegação ---
+
+window.renderPavimentos = function() {
+    const container = document.getElementById('main-content');
+    container.innerHTML = `
+        <h3>1. Selecione o Pavimento</h3>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            ${[1, 2, 3, 4].map(p => `<button onclick="selecionarPavimento(${p})" class="btn-nav">${p}º Pav</button>`).join('')}
+        </div>
+    `;
+};
+
+window.selecionarPavimento = function(pav) {
+    state.pavimento = pav;
+    const container = document.getElementById('main-content');
+    
+    // Gera unidades baseadas na lógica anterior
+    const total = (pav === 4) ? 12 : 14;
+    let unidadesHtml = '';
+    for(let i=1; i<=total; i++) {
+        const num = `${pav}${i < 10 ? '0'+i : i}`;
+        unidadesHtml += `<button onclick="selecionarUnidade('${num}')" class="btn-unidade">${num}</button>`;
+    }
+
+    container.innerHTML += `
+        <h3>2. Selecione a Unidade</h3>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;">${unidadesHtml}</div>
+    `;
+};
+
+window.selecionarUnidade = function(unidade) {
+    state.unidade = unidade;
+    const container = document.getElementById('main-content');
+    container.innerHTML += `
+        <h3>3. Tipo de Vistoria</h3>
+        <div style="display:flex; gap:10px;">
+            <button onclick="iniciarVistoria('padrao')" class="btn-nav">Padrão Construtora</button>
+            <button onclick="iniciarVistoria('reforma')" class="btn-nav">Reforma / Aditivo</button>
+        </div>
+    `;
+};
+
+window.iniciarVistoria = function(tipo) {
+    state.tipoVistoria = tipo;
+    const db = getDb();
+    const unidadeData = db.obras[state.obra].unidades[state.unidade] || { vistorias: [] };
+    
+    // Lógica 1ª Vistoria vs Revistoria
+    const count = unidadeData.vistorias.length;
+    const labelVistoria = count === 0 ? "1ª Vistoria" : `${count}ª Revistoria`;
+
+    renderChecklist(labelVistoria);
+};
+
+// --- Renderização do Checklist (Accordion + Estados) ---
+
+window.renderChecklist = function(titulo) {
+    const container = document.getElementById('main-content');
+    // Itens simulados
+    const itens = [
+        { id: 1, desc: "Contrapiso, Revestimentos e Rodapés" },
+        { id: 2, desc: "Forro e Sancas de Gesso" }
+    ];
+
+    container.innerHTML = `
+        <div style="margin-bottom:20px;">
+            <h3>${titulo} - ${state.unidade}</h3>
+            <div id="status-tag" style="padding:5px 10px; border-radius:5px; background:#334155; display:inline-block;">Aguardando...</div>
+        </div>
+        <div id="items-container">
+            ${itens.map(item => `
+                <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px;">
+                    <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b;">
+                        ${item.id}. ${item.desc}
+                    </div>
+                    <div id="content-${item.id}" style="display:none; padding:15px; border-top:1px solid #475569;">
+                        <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state">Conforme ✓</button>
+                        <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state">Não Conforme ✗</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+};
+
+window.toggleItem = function(id) {
+    const el = document.getElementById(`content-${id}`);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+};
+
+// Estado das respostas
+let respostas = {}; 
+
+window.setOption = function(id, option) {
+    respostas[id] = option;
+    
+    // Atualiza botões visuais
+    document.querySelectorAll(`#content-${id} button`).forEach(btn => btn.style.background = '#334155');
+    const selectedBtn = document.getElementById(`btn-${option === 'conforme' ? 'c' : 'nc'}-${id}`);
+    selectedBtn.style.background = option === 'conforme' ? '#16a34a' : '#dc2626';
+
+    updateStatusTag();
+};
+
+function updateStatusTag() {
+    const tag = document.getElementById('status-tag');
+    const valores = Object.values(respostas);
+    
+    if (valores.length === 0) return;
+
+    const temNaoConforme = valores.includes('nao-conforme');
+    
+    if (temNaoConforme) {
+        tag.innerText = "NÃO CONFORME";
+        tag.style.background = "#dc2626";
+    } else {
+        tag.innerText = "CONFORME";
+        tag.style.background = "#16a34a";
+    }
+}
