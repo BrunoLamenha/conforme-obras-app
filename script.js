@@ -1552,3 +1552,43 @@ window.carregarPainelIndicadores = function() {
         <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
     `;
 };
+// --- FUNÇÃO PARA MARCAR/DESMARCAR TODOS OS ITENS DE UM CÔMODO ---
+window.toggleMarcarTodosComodo = function(masterCheckbox) {
+    const container = masterCheckbox.closest('.comodo-container');
+    if (!container) return;
+    
+    const checkboxesItens = container.querySelectorAll('.item-checkbox');
+    checkboxesItens.forEach(cb => {
+        cb.checked = masterCheckbox.checked;
+    });
+};
+
+// --- GERAÇÃO DA LISTA DE CÔMODOS COM CHECKBOXES DESMARCADOS POR PADRÃO ---
+window.gerarHtmlComodoSelecao = function(nomeComodo, itensPadrao, comodoIndex) {
+    let itensHtml = '';
+    
+    itensPadrao.forEach((item, index) => {
+        itensHtml += `
+            <div style="margin-bottom: 6px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-main); cursor: pointer;">
+                    <!-- Começa sem 'checked' (desmarcado) e com a classe item-checkbox -->
+                    <input type="checkbox" class="item-checkbox" data-comodo="${comodoIndex}" data-descricao="${item.descricao}" data-categoria="${item.categoria}">
+                    ${item.descricao}
+                </label>
+            </div>
+        `;
+    });
+
+    return `
+        <div class="comodo-container" style="background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; color: var(--primary); margin-bottom: 10px; cursor: pointer;">
+                <!-- Checkbox principal que controla todos os itens abaixo -->
+                <input type="checkbox" class="comodo-master-checkbox" onchange="window.toggleMarcarTodosComodo(this)">
+                ${nomeComodo}
+            </label>
+            <div style="padding-left: 20px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                ${itensHtml}
+            </div>
+        </div>
+    `;
+};
