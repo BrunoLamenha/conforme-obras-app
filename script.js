@@ -496,6 +496,18 @@ window.iniciarWizardCadastro = function() {
         <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
     `;
 };
+// Registro do Service Worker para suporte a PWA e funcionamento offline
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                console.log('Service Worker registrado com sucesso:', reg.scope);
+            })
+            .catch(err => {
+                console.log('Falha ao registrar o Service Worker:', err);
+            });
+    });
+}
 
 window.salvarNovoEmpreendimento = function() {
     const nome = document.getElementById('novoNomeObra').value.trim();
