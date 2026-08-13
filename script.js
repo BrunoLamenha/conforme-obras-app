@@ -1,17 +1,9 @@
-// Dados padrão iniciais (sem o empreendimento Residencial)
+// Dados padrão iniciais
 let empreendimentosPadrao = [
     { 
         nome: 'ZEN LIFE', 
         pavimentos: ['1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento (c/ piscina)'],
-        detalhesPavimentos: {
-            '1º Pavimento': [
-                { unidade: '101', tipologia: '3 Quartos', suite: 'Sim', banheiros: '2 Banheiros', lavabo: 'Não', areaServico: 'Sim', varanda: 'Sim', piscina: 'Sem piscina' },
-                { unidade: '102', tipologia: 'Quarto/Sala', suite: 'Não', banheiros: '1 Banheiro', lavabo: 'Não', areaServico: 'Não', varanda: 'Sim', piscina: 'Sem piscina' }
-            ],
-            '2º Pavimento': [],
-            '3º Pavimento': [],
-            '4º Pavimento (c/ piscina)': []
-        },
+        detalhesPavimentos: {},
         unidadesPorPavimento: 14,
         tipologia: { tipo: 'Misto' },
         fechamentoInterno: 'Drywall'
@@ -128,18 +120,63 @@ function carregarListaCadastro() {
     `;
 }
 
-// Ao escolher o empreendimento, exibe os botões de pavimentos para cadastrar/editar unidades e tipologias
+// Tela intermediária: Escolher entre Privativa ou Comum antes de ver os pavimentos
 function gerenciarEmpreendimento(nomeObra) {
     const container = document.querySelector('.container');
-    const lista = obterEmpreendimentos();
-    const obraObj = lista.find(e => e.nome === nomeObra);
+
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>CONFORME OBRA</h1>
+            <p>${nomeObra} - Selecione o Tipo de Área</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="escolherPavimentosArea('${nomeObra}', 'privativa')">
+                <h2>🏢 ÁREA PRIVATIVA</h2>
+            </button>
+            <button class="btn-primary" onclick="escolherPavimentosArea('${nomeObra}', 'comum')">
+                <h2>🏛 ÁREA COMUM</h2>
+            </button>
+            <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
+                <h2>⬅ Voltar à Lista</h2>
+            </button>
+        </main>
+    `;
+}
+
+// Retorna os pavimentos corretos conforme as regras de cada empreendimento e tipo de área
+function obterPavimentosPorTipo(nomeObra, tipoArea) {
+    const nome = nomeObra.toUpperCase();
+    if (tipoArea === 'comum') {
+        if (nome.includes('NAOKI')) {
+            return ['Pilotis', 'Coberta'];
+        } else {
+            return ['Subsolo', 'Pilotis', 'Cobertura', 'Coberta'];
+        }
+    } else {
+        // Privativa
+        if (nome.includes('ZEN LIFE')) {
+            return ['1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento (c/ piscina)'];
+        } else if (nome.includes('ZOE') || nome.includes('ZEUS')) {
+            return ['Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
+        } else if (nome.includes('GRAND GARDEN')) {
+            return ['Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
+        } else if (nome.includes('NAOKI')) {
+            return ['Pilotis', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento + Cobertura'];
+        } else {
+            return ['Térreo', '1º Pavimento Tipo', 'Cobertura'];
+        }
+    }
+}
+
+function escolherPavimentosArea(nomeObra, tipoArea) {
+    const container = document.querySelector('.container');
+    const pavimentos = obterPavimentosPorTipo(nomeObra, tipoArea);
     
     let botoesPavimentos = '';
-    const pavimentos = obraObj && obraObj.pavimentos ? obraObj.pavimentos : ['Térreo', '1º Pavimento Tipo', 'Cobertura'];
-
     pavimentos.forEach(pav => {
         botoesPavimentos += `
-            <button class="btn-primary" onclick="abrirCadastroUnidadesPavimento('${nomeObra}', '${pav}')">
+            <button class="btn-primary" onclick="abrirCadastroUnidadesPavimento('${nomeObra}', '${pav}', '${tipoArea}')">
                 <h2>📌 ${pav.toUpperCase()}</h2>
             </button>
         `;
@@ -149,33 +186,34 @@ function gerenciarEmpreendimento(nomeObra) {
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
-            <p>${nomeObra} - Selecione o Pavimento</p>
+            <p>${nomeObra} - ${tipoArea === 'privativa' ? 'Área Privativa' : 'Área Comum'}</p>
         </header>
         <main class="menu-inicial">
             ${botoesPavimentos}
-            <button class="btn-primary btn-back" onclick="carregarListaCadastro()" style="margin-top: 10px;">
-                <h2>⬅ Voltar à Lista</h2>
+            <button class="btn-primary btn-back" onclick="gerenciarEmpreendimento('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar aos Tipos</h2>
             </button>
         </main>
     `;
 }
 
-function abrirCadastroUnidadesPavimento(nomeObra, pavimento) {
+function abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea) {
     const container = document.querySelector('.container');
     const lista = obterEmpreendimentos();
     const obraObj = lista.find(e => e.nome === nomeObra);
 
     if (!obraObj.detalhesPavimentos) obraObj.detalhesPavimentos = {};
-    if (!obraObj.detalhesPavimentos[pavimento]) obraObj.detalhesPavimentos[pavimento] = [];
+    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
+    if (!obraObj.detalhesPavimentos[chavePav]) obraObj.detalhesPavimentos[chavePav] = [];
 
-    const unidadesSalvas = obraObj.detalhesPavimentos[pavimento];
+    const unidadesSalvas = obraObj.detalhesPavimentos[chavePav];
     let listaUnidadesHtml = '';
 
     unidadesSalvas.forEach((u, idx) => {
         listaUnidadesHtml += `
             <div style="background: #0f172a; padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
-                <span style="color: #f8fafc; font-size: 0.9rem;"><strong>Apto ${u.unidade}</strong> - ${u.tipologia} ${u.suite === 'Sim' ? '(C/ Suíte)' : ''} | ${u.banheiros} | Lavabo: ${u.lavabo} | Serv.: ${u.areaServico} | Varanda: ${u.varanda}</span>
-                <button onclick="removerUnidadePavimento('${nomeObra}', '${pavimento}', ${idx})" style="background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Excluir</button>
+                <span style="color: #f8fafc; font-size: 0.9rem;"><strong>Item ${u.unidade}</strong> - ${u.tipologia} ${u.suite === 'Sim' ? '(C/ Suíte)' : ''} | ${u.banheiros} | Lavabo: ${u.lavabo} | Serv.: ${u.areaServico} | Varanda: ${u.varanda}</span>
+                <button onclick="removerUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}', ${idx})" style="background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">Excluir</button>
             </div>
         `;
     });
@@ -184,7 +222,7 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento) {
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>${nomeObra}</h1>
-            <p>Pavimento: ${pavimento}</p>
+            <p>${tipoArea.toUpperCase()} | Pavimento: ${pavimento}</p>
         </header>
         <main class="menu-inicial">
             <div style="text-align: left; background: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #334155; margin-bottom: 15px;">
@@ -203,7 +241,7 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento) {
 
                 <div id="containerCamposUnidadeExtras"></div>
 
-                <button class="btn-primary" onclick="adicionarUnidadePavimento('${nomeObra}', '${pavimento}')" style="margin-top: 10px; text-align: center; background: #2563eb;">
+                <button class="btn-primary" onclick="adicionarUnidadePavimento('${nomeObra}', '${pavimento}', '${tipoArea}')" style="margin-top: 10px; text-align: center; background: #2563eb;">
                     <h2>+ Salvar Unidade</h2>
                 </button>
             </div>
@@ -213,7 +251,7 @@ function abrirCadastroUnidadesPavimento(nomeObra, pavimento) {
                 ${listaUnidadesHtml || '<p style="color: #64748b; font-size: 0.85rem;">Nenhuma unidade cadastrada ainda.</p>'}
             </div>
 
-            <button class="btn-primary btn-back" onclick="gerenciarEmpreendimento('${nomeObra}')">
+            <button class="btn-primary btn-back" onclick="escolherPavimentosArea('${nomeObra}', '${tipoArea}')">
                 <h2>⬅ Voltar aos Pavimentos</h2>
             </button>
         </main>
@@ -277,7 +315,7 @@ function atualizarCamposUnidade() {
     }
 }
 
-function adicionarUnidadePavimento(nomeObra, pavimento) {
+function adicionarUnidadePavimento(nomeObra, pavimento, tipoArea) {
     const terminacao = document.getElementById('inputTerminacao').value.trim();
     if (!terminacao) {
         alert('Informe a terminação ou número da unidade.');
@@ -313,21 +351,23 @@ function adicionarUnidadePavimento(nomeObra, pavimento) {
     let lista = obterEmpreendimentos();
     let obraObj = lista.find(e => e.nome === nomeObra);
     if (!obraObj.detalhesPavimentos) obraObj.detalhesPavimentos = {};
-    if (!obraObj.detalhesPavimentos[pavimento]) obraObj.detalhesPavimentos[pavimento] = [];
+    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
+    if (!obraObj.detalhesPavimentos[chavePav]) obraObj.detalhesPavimentos[chavePav] = [];
 
-    obraObj.detalhesPavimentos[pavimento].push(novaUnidade);
+    obraObj.detalhesPavimentos[chavePav].push(novaUnidade);
     salvarEmpreendimentos(lista);
 
-    abrirCadastroUnidadesPavimento(nomeObra, pavimento);
+    abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
 }
 
-function removerUnidadePavimento(nomeObra, pavimento, index) {
+function removerUnidadePavimento(nomeObra, pavimento, tipoArea, index) {
     let lista = obterEmpreendimentos();
     let obraObj = lista.find(e => e.nome === nomeObra);
-    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[pavimento]) {
-        obraObj.detalhesPavimentos[pavimento].splice(index, 1);
+    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
+    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[chavePav]) {
+        obraObj.detalhesPavimentos[chavePav].splice(index, 1);
         salvarEmpreendimentos(lista);
-        abrirCadastroUnidadesPavimento(nomeObra, pavimento);
+        abrirCadastroUnidadesPavimento(nomeObra, pavimento, tipoArea);
     }
 }
 
@@ -621,15 +661,35 @@ function carregarEstrutural(nomeObra) {
 
 function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
-    const lista = obterEmpreendimentos();
-    const obraObj = lista.find(e => e.nome === nomeObra);
+    
+    container.innerHTML = `
+        <header>
+            <img src="logo.png" alt="Conforme Obra" class="logo-img">
+            <h1>CONFORME OBRA</h1>
+            <p>${nomeObra} - Selecione o Tipo de Área</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="carregarVistoriaPavimentosTipo('${nomeObra}', 'privativa')">
+                <h2>🏢 ÁREA PRIVATIVA</h2>
+            </button>
+            <button class="btn-primary" onclick="carregarVistoriaPavimentosTipo('${nomeObra}', 'comum')">
+                <h2>🏛 ÁREA COMUM</h2>
+            </button>
+            <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar às Fases</h2>
+            </button>
+        </main>
+    `;
+}
+
+function carregarVistoriaPavimentosTipo(nomeObra, tipoArea) {
+    const container = document.querySelector('.container');
+    const pavimentos = obterPavimentosPorTipo(nomeObra, tipoArea);
     
     let botoesPavimentos = '';
-    const pavimentos = obraObj && obraObj.pavimentos ? obraObj.pavimentos : ['Térreo', '1º Pavimento Tipo', 'Cobertura'];
-
     pavimentos.forEach(pav => {
         botoesPavimentos += `
-            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', '${pav}')">
+            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', '${pav}', '${tipoArea}')">
                 <h2>${pav.toUpperCase()}</h2>
             </button>
         `;
@@ -639,18 +699,18 @@ function carregarListaPavimentos(nomeObra) {
         <header>
             <img src="logo.png" alt="Conforme Obra" class="logo-img">
             <h1>CONFORME OBRA</h1>
-            <p>${nomeObra} - Lista de Pavimentos</p>
+            <p>${nomeObra} - ${tipoArea === 'privativa' ? 'Área Privativa' : 'Área Comum'}</p>
         </header>
         <main class="menu-inicial">
             ${botoesPavimentos}
-            <button class="btn-primary btn-back" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 10px;">
-                <h2>⬅ Voltar às Fases</h2>
+            <button class="btn-primary btn-back" onclick="carregarListaPavimentos('${nomeObra}')" style="margin-top: 10px;">
+                <h2>⬅ Voltar aos Tipos</h2>
             </button>
         </main>
     `;
 }
 
-function carregarTipoArea(nomeObra, pavimento) {
+function carregarTipoArea(nomeObra, pavimento, tipoArea) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
@@ -662,25 +722,26 @@ function carregarTipoArea(nomeObra, pavimento) {
             <button class="btn-primary" onclick="alert('Abrindo Checklist de Área Comum para ${pavimento}')">
                 <h2>ÁREA COMUM</h2>
             </button>
-            <button class="btn-primary" onclick="carregarListaApartamentos('${nomeObra}', '${pavimento}')">
+            <button class="btn-primary" onclick="carregarListaApartamentos('${nomeObra}', '${pavimento}', '${tipoArea}')">
                 <h2>ÁREA PRIVATIVA</h2>
             </button>
-            <button class="btn-primary btn-back" onclick="carregarListaPavimentos('${nomeObra}')" style="margin-top: 10px;">
+            <button class="btn-primary btn-back" onclick="carregarVistoriaPavimentosTipo('${nomeObra}', '${tipoArea}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar aos Pavimentos</h2>
             </button>
         </main>
     `;
 }
 
-function carregarListaApartamentos(nomeObra, pavimento) {
+function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
     const container = document.querySelector('.container');
     const lista = obterEmpreendimentos();
     const obraObj = lista.find(e => e.nome === nomeObra);
     
     let botoesUnidades = '';
+    const chavePav = `${tipoArea.toUpperCase()} - ${pavimento}`;
 
-    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[pavimento] && obraObj.detalhesPavimentos[pavimento].length > 0) {
-        const unidadesDoPav = obraObj.detalhesPavimentos[pavimento];
+    if (obraObj && obraObj.detalhesPavimentos && obraObj.detalhesPavimentos[chavePav] && obraObj.detalhesPavimentos[chavePav].length > 0) {
+        const unidadesDoPav = obraObj.detalhesPavimentos[chavePav];
         unidadesDoPav.forEach(item => {
             botoesUnidades += `
                 <button class="btn-primary" onclick="alert('Abrindo Vistoria do Apto ${item.unidade} - ${pavimento} | Tipologia: ${item.tipologia} | ${item.banheiros} | Suíte: ${item.suite} | Lavabo: ${item.lavabo} | Serv: ${item.areaServico} | Varanda: ${item.varanda}')">
@@ -700,7 +761,7 @@ function carregarListaApartamentos(nomeObra, pavimento) {
         </header>
         <main class="menu-inicial">
             ${botoesUnidades}
-            <button class="btn-primary btn-back" onclick="carregarTipoArea('${nomeObra}', '${pavimento}')" style="margin-top: 10px;">
+            <button class="btn-primary btn-back" onclick="carregarTipoArea('${nomeObra}', '${pavimento}', '${tipoArea}')" style="margin-top: 10px;">
                 <h2>⬅ Voltar às Áreas</h2>
             </button>
         </main>
