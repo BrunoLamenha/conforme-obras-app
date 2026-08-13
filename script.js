@@ -69,11 +69,11 @@ let empresasPadrao = [
     {
         nome: 'VIVER BEM',
         empreendimentos: [
-            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'] },
-            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'] },
-            { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'] },
-            { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'] },
-            { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'] }
+            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
+            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
+            { nome: 'NAOKI', tipologia: ['Studio'], pavimentosTipo: 2, cobertura: 'Área Comum', fechamento: ['Drywall'], tipoObra: 'Obra Nova' },
+            { nome: 'ZEUS', tipologia: ['3 Quartos'], pavimentosTipo: 2, cobertura: 'Ambas', fechamento: ['Alvenaria'], tipoObra: 'Obra Nova' },
+            { nome: 'GRAND GARDEN', tipologia: ['2 Quartos'], pavimentosTipo: 3, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova' }
         ]
     }
 ];
@@ -249,11 +249,12 @@ window.navegar = function(destino) {
             botoesObras = `<p style="color: var(--text-muted); text-align:center; padding: 20px;">Nenhum empreendimento cadastrado.</p>`;
         } else {
             lista.forEach(obra => {
+                const badgeTipo = obra.tipoObra === 'Reforma' ? '<span style="color: #facc15; font-size: 11px; margin-left: 5px;">(Reforma)</span>' : '';
                 botoesObras += `
                     <div class="card-menu" onclick="escolherDisciplinaVistoria('${obra.nome}')">
                         <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
                         <div class="card-info">
-                            <h2>${obra.nome}</h2>
+                            <h2>${obra.nome} ${badgeTipo}</h2>
                             <span>Selecionar disciplina para vistoria</span>
                         </div>
                         <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
@@ -289,7 +290,7 @@ window.navegar = function(destino) {
                     <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
                     <div class="card-info">
                         <h2>CADASTRAR NOVO EMPREENDIMENTO</h2>
-                        <span>Adicionar nova obra ao sistema</span>
+                        <span>Adicionar nova obra ou reforma ao sistema</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -303,9 +304,34 @@ window.navegar = function(destino) {
     }
 };
 
-// --- SELEÇÃO DE DISCIPLINA PARA VISTORIA ---
+// --- SELEÇÃO DE DISCIPLINA PARA VISTORIA (VERIFICA SE É OBRA NOVA OU REFORMA) ---
 window.escolherDisciplinaVistoria = function(nomeObra) {
+    const obra = obterObraPorNome(nomeObra);
     const container = document.getElementById('main-content');
+
+    // Se for reforma, direciona para o fluxo reservado de reformas
+    if (obra && obra.tipoObra === 'Reforma') {
+        container.innerHTML = `
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-hammer"></i> ${nomeObra} (Reforma)</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Módulo de vistorias e controle específico para Reformas</p>
+            </div>
+            <div class="menu-inicial">
+                <div class="card-menu" onclick="alert('Módulo de Reformas em estruturação. Em breve!')">
+                    <div class="card-icon"><i class="fa-solid fa-list-check"></i></div>
+                    <div class="card-info">
+                        <h2>CHECKLIST DE REFORMA</h2>
+                        <span>Acompanhamento de diretrizes de reforma</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+            </div>
+            <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-arrow-left"></i> Voltar para Obras</button>
+        `;
+        return;
+    }
+
+    // Fluxo padrão completo para Obra Nova (Estrutural + Arquitetônico)
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${nomeObra}</h3>
@@ -606,7 +632,7 @@ window.carregarCronogramaGeral = function() {
         lista.forEach((obra, idx) => {
             htmlObra += `
                 <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
-                    <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome}</h4>
+                    <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome} <span style="font-size: 11px; color: var(--text-muted);">(${obra.tipoObra || 'Obra Nova'})</span></h4>
                     <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
                     <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
                     <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
@@ -661,7 +687,7 @@ window.carregarListaCadastro = function() {
             <div class="card-menu" onclick="escolherDisciplinaObra('${obra.nome}')">
                 <div class="card-icon"><i class="fa-solid fa-building"></i></div>
                 <div class="card-info">
-                    <h2>${obra.nome}</h2>
+                    <h2>${obra.nome} <span style="font-size: 11px; color: var(--text-muted); font-weight: normal;">(${obra.tipoObra || 'Obra Nova'})</span></h2>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -792,12 +818,19 @@ window.iniciarWizardCadastro = function() {
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento (${empresaAtual})</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Preencha as configurações da nova obra</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Preencha as configurações do novo empreendimento</p>
         </div>
-        <div class="menu-inicial" style="gap: 10px;">
+        <div class="menu-inicial" style="gap: 12px;">
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Nome da Obra:</label>
                 <input type="text" id="novoNomeObra" placeholder="Ex: Residencial Bella Vista">
+            </div>
+            <div>
+                <label style="font-size: 13px; font-weight: 600;">Tipo de Empreendimento:</label>
+                <select id="novoTipoObra" style="width: 100%; padding: 10px; margin-top: 5px; background: rgba(15,23,42,0.6); color: white; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px;">
+                    <option value="Obra Nova">Obra Nova (Padrão Completo: Estrutural + Arquitetônico)</option>
+                    <option value="Reforma">Reforma (Módulo Específico)</option>
+                </select>
             </div>
             <div>
                 <label style="font-size: 13px; font-weight: 600;">Quantidade de Pavimentos Tipo:</label>
@@ -811,11 +844,19 @@ window.iniciarWizardCadastro = function() {
 
 window.salvarNovoEmpreendimento = function() {
     const nome = document.getElementById('novoNomeObra').value.trim();
+    const tipoObra = document.getElementById('novoTipoObra').value;
     const qtdPavimentos = parseInt(document.getElementById('novoQtdPavimentos').value) || 1;
     if (!nome) { alert("Por favor, informe o nome da obra."); return; }
 
     const lista = obterEmpreendimentos();
-    lista.push({ nome: nome.toUpperCase(), tipologia: ['Padrão'], pavimentosTipo: qtdPavimentos, cobertura: 'Privativa', fechamento: ['Drywall'] });
+    lista.push({ 
+        nome: nome.toUpperCase(), 
+        tipologia: ['Padrão'], 
+        pavimentosTipo: qtdPavimentos, 
+        cobertura: 'Privativa', 
+        fechamento: ['Drywall'],
+        tipoObra: tipoObra 
+    });
     salvarEmpreendimentos(lista);
     alert("Empreendimento cadastrado com sucesso!");
     carregarListaCadastro();
