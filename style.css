@@ -10,19 +10,30 @@ body {
     color: #ffffff;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 30px 20px;
 }
 
 .container {
     text-align: center;
     width: 100%;
     max-width: 600px;
-    padding: 20px;
+}
+
+header {
+    margin-bottom: 25px;
+}
+
+.logo-img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 10px;
+    border-radius: 8px;
 }
 
 header h1 {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     letter-spacing: 2px;
     color: #f39c12;
     margin-bottom: 5px;
@@ -30,25 +41,25 @@ header h1 {
 
 header p {
     color: #a0aec0;
-    margin-bottom: 40px;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .menu-inicial {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
 button {
     background-color: #1e293b;
     border: 2px solid #334155;
     border-radius: 12px;
-    padding: 25px;
+    padding: 20px 25px;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: left;
+    width: 100%;
 }
 
 button:hover {
@@ -58,13 +69,13 @@ button:hover {
 }
 
 button h2 {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+    font-size: 1.4rem;
+    margin-bottom: 3px;
     color: #ffffff;
 }
 
 button span {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #94a3b8;
 }
 
@@ -77,7 +88,7 @@ button span {
 
 .btn-back h2 {
     color: #94a3b8;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .btn-back:hover {
