@@ -1,5 +1,64 @@
 import { db } from './firebaseConfig.js';
 import { collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
+
+const db = getFirestore();
+const obraId = "grand_garden";
+
+// Função para buscar e exibir os arquivos do pavimento
+async function carregarArquivos(pavimentoId) {
+    const listaElement = document.getElementById('listaArquivos');
+    listaElement.innerHTML = "<li>Carregando projetos...</li>";
+
+    try {
+        const docRef = doc(db, "obras", obraId, "pavimentos", pavimentoId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists() && docSnap.data().arquivos && docSnap.data().arquivos.length > 0) {
+            const arquivos = docSnap.data().arquivos;
+            listaElement.innerHTML = ""; // Limpa a lista
+
+            // Cria um link para cada arquivo encontrado
+            arquivos.forEach(arq => {
+                const li = document.createElement('li');
+                
+                // Formata a data de upload se existir
+                let dataFormatada = "";
+                if (arq.dataUpload) {
+                    const data = arq.dataUpload.toDate ? arq.dataUpload.toDate() : new Date(arq.dataUpload.seconds * 1000);
+                    dataFormatada = data.toLocaleDateString('pt-BR');
+                }
+
+                li.innerHTML = `
+                    <a href="${arq.url}" target="_blank" style="color: #ffa500; text-decoration: underline;">
+                        📄 ${arq.nome}
+                    </a> 
+                    <span style="font-size: 12px; color: #aaa;">(${dataFormatada})</span>
+                `;
+                listaElement.appendChild(li);
+            });
+        } else {
+            listaElement.innerHTML = "<li>Nenhum projeto PDF cadastrado para este pavimento estrutural.</li>";
+        }
+    } catch (error) {
+        console.error("Erro ao buscar arquivos:", error);
+        listaElement.innerHTML = "<li>Erro ao carregar projetos.</li>";
+    }
+}
+
+// 1. Ouve a mudança no seletor de pavimento para atualizar a lista na tela
+document.getElementById('selectPavimento').addEventListener('change', (e) => {
+    carregarArquivos(e.target.value);
+});
+
+// 2. Carrega automaticamente os arquivos do pavimento padrão (Térreo) ao abrir a tela
+window.addEventListener('DOMContentLoaded', () => {
+    const pavimentoInicial = document.getElementById('selectPavimento').value;
+    carregarArquivos(pavimentoInicial);
+});
+
+// 3. Atualiza a listagem logo após realizar um upload com sucesso
+// (Chame esta função dentro do seu evento de upload já existente: carregarArquivos(pavimentoId);)
 
 let empreendimentosPadrao = [
     { 
