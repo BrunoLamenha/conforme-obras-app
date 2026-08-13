@@ -5,8 +5,9 @@ function navegar(destino) {
     if (destino === 'vistoria') {
         container.innerHTML = `
             <header>
-                <h1>CONFORME OBRAS</h1>
-                <p>Sistema Integrado de Gestão e Vistoria</p>
+                <img src="logo.png" alt="Conforme Obras" class="logo-img">
+                <h1>CONFORME OBRA</h1>
+                <p>Selecione o empreendimento</p>
             </header>
             <main class="menu-inicial">
                 <button class="btn-primary" onclick="carregarFasesObra('ZOE')">
@@ -32,8 +33,9 @@ function navegar(destino) {
     } else if (destino === 'cadastros') {
         container.innerHTML = `
             <header>
-                <h1>CONFORME OBRAS</h1>
-                <p>Sistema Integrado de Gestão e Vistoria</p>
+                <img src="logo.png" alt="Conforme Obras" class="logo-img">
+                <h1>CONFORME OBRA</h1>
+                <p>Gerenciamento de Obras</p>
             </header>
             <main class="menu-inicial">
                 <button class="btn-primary" onclick="alert('Abrir lista para gerenciar pavimentos, tipologias e checklists')">
@@ -76,7 +78,8 @@ function carregarFasesObra(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <h1>CONFORME OBRAS</h1>
+            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Escolha a frente de serviço</p>
         </header>
         <main class="menu-inicial">
@@ -133,7 +136,8 @@ function carregarEstrutural(nomeObra) {
 
     container.innerHTML = `
         <header>
-            <h1>CONFORME OBRAS</h1>
+            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Estrutural</p>
         </header>
         <main class="menu-inicial">
@@ -147,7 +151,8 @@ function carregarListaPavimentos(nomeObra) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>CONFORME OBRAS</h1>
+            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - Lista de Pavimentos</p>
         </header>
         <main class="menu-inicial">
@@ -172,7 +177,8 @@ function carregarTipoArea(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>CONFORME OBRAS</h1>
+            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - ${pavimento} - Selecione a área</p>
         </header>
         <main class="menu-inicial">
@@ -194,7 +200,8 @@ function carregarListaApartamentos(nomeObra, pavimento) {
     const container = document.querySelector('.container');
     container.innerHTML = `
         <header>
-            <h1>CONFORME OBRAS</h1>
+            <img src="logo.png" alt="Conforme Obras" class="logo-img">
+            <h1>CONFORME OBRA</h1>
             <p>${nomeObra} - ${pavimento} - Selecione a Unidade (Apto)</p>
         </header>
         <main class="menu-inicial">
