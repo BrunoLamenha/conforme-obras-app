@@ -42,5 +42,26 @@
 </div>
 
     <script type="module" src="script.js"></script>
+    <div class="upload-container">
+    <h3>Gerenciamento de Projetos por Pavimento</h3>
+    
+    <select id="selectPavimento">
+        <option value="terreo">Térreo</option>
+        <option value="1_andar">1º Pavimento</option>
+        <option value="2_andar">2º Pavimento</option>
+        <option value="cobertura">Cobertura</option>
+    </select>
+
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button id="uploadBtn">Enviar Arquivo</button>
+
+    <!-- Área onde a lista de arquivos vai aparecer -->
+    <div class="arquivos-list-section">
+        <h4>Projetos em PDF Disponíveis</h4>
+        <ul id="listaArquivos">
+            <li>Selecione um pavimento para carregar os projetos.</li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>
