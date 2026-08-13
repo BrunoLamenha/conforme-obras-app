@@ -24,20 +24,6 @@ const checklistsModelos = {
         "Checagem de contra-flechas e alinhamento das vigas e pilares."
       ]
     }
-  ],
-  "arquitetonico": [
-    {
-      "etapa": 1,
-      "categoria": "Dormitório / Cozinha",
-      "itens": [
-        "Contrapiso, Revestimentos e Rodapés",
-        "Forro e Sancas de Gesso",
-        "Tubulações, Tomadas, Interruptores e Luminárias",
-        "Tubulações, Louças, Metais e Sifão",
-        "Infraestrutura / Aparelho Ar-Condicionado",
-        "Bancadas, Soleiras e Peitoris"
-      ]
-    }
   ]
 };
 
@@ -234,8 +220,8 @@ window.abrirEmpresa = function(nomeEmpresa) {
                 <div class="card-menu" onclick="abrirChecklistAmbientesReforma('${empresaAtual}')">
                     <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
                     <div class="card-info">
-                        <h2>CHECKLIST POR AMBIENTE</h2>
-                        <span>Verificação com status, responsáveis, prazos e fotos</span>
+                        <h2>MODIFICAÇÕES POR AMBIENTE</h2>
+                        <span>Verificação de serviços, responsáveis, prazos e fotos</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -262,7 +248,7 @@ window.abrirEmpresa = function(nomeEmpresa) {
                     <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
                     <div class="card-info">
                         <h2>INDICADORES</h2>
-                        <span>Painel consolidado de conformidades</span>
+                        <span>Painel consolidado de modificações</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -323,7 +309,7 @@ window.abrirEmpresa = function(nomeEmpresa) {
     `;
 };
 
-// --- GESTÃO DE AMBIENTES E INTERVENÇÕES POR CÔMODO ---
+// --- GESTÃO DE AMBIENTES E MODIFICAÇÕES POR CÔMODO ---
 window.gerenciarAmbientesReforma = function(nomeObra) {
     const container = document.getElementById('main-content');
     const empObj = obterEmpresaAtualObj();
@@ -342,7 +328,7 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
                     <button onclick="window.removerAmbienteReforma('${amb.nome}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 12px;" title="Excluir Ambiente"><i class="fa-solid fa-trash-can"></i> Excluir</button>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
-                    <strong>Intervenções:</strong> ${itensResumo || 'Nenhuma'}
+                    <strong>Modificações:</strong> ${itensResumo || 'Nenhuma'}
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">
                     Projeto PDF: ${amb.projetoPdf ? `<a href="${amb.projetoPdf.url}" target="_blank" style="color: var(--primary); font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> ${amb.projetoPdf.nome}</a>` : 'Nenhum PDF anexado'}
@@ -359,26 +345,52 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
         "Sala de Estar", "Sala de Jantar", "Cozinha", "Área de Serviço", "Varanda / Sacada", "Lavabo", "Escritório / Home Office"
     ];
 
-    const itensIntervencaoPadrao = [
-        "Demolição / Remoção",
-        "Contrapiso e Revestimentos",
-        "Elétrica e Iluminação",
-        "Hidráulica e Sanitária",
-        "Forro de Gesso",
-        "Pintura",
-        "Esquadrias (Portas e Janelas)",
-        "Bancadas e Pedras"
-    ];
+    // Categorias e itens de modificação de reforma
+    const categoriasModificacao = {
+        "Demolição e Preparação": [
+            "Demolição de Paredes / Elementos",
+            "Remoção de Revestimentos Antigos"
+        ],
+        "Civil e Revestimentos": [
+            "Execução de Contrapiso",
+            "Instalação de Revestimentos (Pisos e Azulejos)",
+            "Instalação de Bancadas, Soleiras e Peitoris"
+        ],
+        "Instalações": [
+            "Ampliação ou Adequação de Pontos Elétricos e Iluminação",
+            "Modificações nas Instalações Hidráulicas / Sanitárias",
+            "Infraestrutura para Aparelho Ar-Condicionado"
+        ],
+        "Acabamentos e Forro": [
+            "Instalação de Forro de Gesso ou Sancas",
+            "Pintura Geral (Paredes e Tetos)",
+            "Substituição de Portas, Janelas ou Esquadrias"
+        ]
+    };
 
     let checkboxesHtml = '';
     comodosComuns.forEach((comodo, cIdx) => {
-        let itensCheckboxes = '';
-        itensIntervencaoPadrao.forEach((it) => {
-            itensCheckboxes += `
-                <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; padding: 2px 0;">
-                    <input type="checkbox" name="item_${cIdx}" value="${it}" checked style="width: 13px; height: 13px; accent-color: var(--primary);">
-                    <span style="color: var(--text-muted);">${it}</span>
-                </label>
+        let categoriasHtml = '';
+        
+        Object.entries(categoriasModificacao).forEach(([categoriaNome, listaItens]) => {
+            let itensCheckboxes = '';
+            listaItens.forEach((it, iIdx) => {
+                const uniqueId = `chk_${cIdx}_${categoriaNome}_${iIdx}`.replace(/\s+/g, '_');
+                itensCheckboxes += `
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; padding: 2px 0;">
+                        <input type="checkbox" name="item_comodo_${cIdx}" data-categoria="${categoriaNome}" value="${it}" checked style="width: 13px; height: 13px; accent-color: var(--primary);">
+                        <span style="color: var(--text-muted);">${it}</span>
+                    </label>
+                `;
+            });
+
+            categoriasHtml += `
+                <div style="margin-top: 6px; margin-bottom: 6px;">
+                    <span style="font-size: 11px; font-weight: bold; color: var(--primary); display: block; margin-bottom: 2px;">📁 ${categoriaNome}</span>
+                    <div style="padding-left: 10px; display: grid; grid-template-columns: 1fr; gap: 2px;">
+                        ${itensCheckboxes}
+                    </div>
+                </div>
             `;
         });
 
@@ -388,8 +400,8 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
                     <input type="checkbox" id="chk_comodo_${cIdx}" value="${comodo}" onchange="window.toggleItensComodo(${cIdx})" style="width: 15px; height: 15px; accent-color: var(--primary);">
                     <span>${comodo}</span>
                 </label>
-                <div id="itens_comodo_${cIdx}" style="display: none; margin-top: 6px; padding-left: 20px; border-top: 1px dashed var(--border-color); padding-top: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-                    ${itensCheckboxes}
+                <div id="itens_comodo_${cIdx}" style="display: none; margin-top: 6px; padding-left: 20px; border-top: 1px dashed var(--border-color); padding-top: 6px;">
+                    ${categoriasHtml}
                 </div>
             </div>
         `;
@@ -397,8 +409,8 @@ window.gerenciarAmbientesReforma = function(nomeObra) {
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-door-open"></i> Ambientes & Intervenções: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Marque o cômodo para abrir os tipos de intervenção e itens</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-door-open"></i> Ambientes & Modificações: ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Marque o cômodo para abrir as categorias e itens de modificação</p>
         </div>
 
         <div style="background: rgba(15, 23, 42, 0.4); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px;">
@@ -443,7 +455,7 @@ window.toggleItensComodo = function(cIdx) {
     const chk = document.getElementById(`chk_comodo_${cIdx}`);
     const divItens = document.getElementById(`itens_comodo_${cIdx}`);
     if (chk && divItens) {
-        divItens.style.display = chk.checked ? 'grid' : 'none';
+        divItens.style.display = chk.checked ? 'block' : 'none';
     }
 };
 
@@ -464,9 +476,10 @@ window.adicionarComodosSelecionados = function() {
         const chk = document.getElementById(`chk_comodo_${cIdx}`);
         if (chk && chk.checked) {
             const nomeAmb = comodo.toUpperCase();
-            const checkboxesItens = document.querySelectorAll(`input[name="item_${cIdx}"]:checked`);
+            const checkboxesItens = document.querySelectorAll(`input[name="item_comodo_${cIdx}"]:checked`);
             const itensAmbiente = Array.from(checkboxesItens).map(cb => ({
                 descricao: cb.value,
+                categoria: cb.getAttribute('data-categoria') || 'Geral',
                 status: 'pendente',
                 responsavel: '',
                 dataInicio: '',
@@ -478,7 +491,7 @@ window.adicionarComodosSelecionados = function() {
                 ambientesAtuais.push({
                     nome: nomeAmb,
                     projetoPdf: null,
-                    itens: itensAmbiente.length > 0 ? itensAmbiente : [{ descricao: "Serviço Geral", status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] }]
+                    itens: itensAmbiente.length > 0 ? itensAmbiente : [{ descricao: "Modificação Geral", categoria: "Geral", status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] }]
                 });
                 novosAdicionados.push(nomeAmb);
             }
@@ -486,7 +499,10 @@ window.adicionarComodosSelecionados = function() {
     });
 
     const itensPadraoMultiplos = [
-        "Contrapiso e Revestimentos", "Elétrica e Iluminação", "Forro de Gesso", "Pintura"
+        { descricao: "Execução de Contrapiso e Revestimentos", categoria: "Civil e Revestimentos" },
+        { descricao: "Ampliação ou Adequação de Pontos Elétricos e Iluminação", categoria: "Instalações" },
+        { descricao: "Instalação de Forro de Gesso ou Sancas", categoria: "Acabamentos e Forro" },
+        { descricao: "Pintura Geral (Paredes e Tetos)", categoria: "Acabamentos e Forro" }
     ];
 
     const adicionarMultiplos = (prefixo, qtd) => {
@@ -496,7 +512,7 @@ window.adicionarComodosSelecionados = function() {
                 ambientesAtuais.push({
                     nome: nomeAmb,
                     projetoPdf: null,
-                    itens: itensPadraoMultiplos.map(desc => ({ descricao: desc, status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] }))
+                    itens: itensPadraoMultiplos.map(it => ({ descricao: it.descricao, categoria: it.categoria, status: 'pendente', responsavel: '', dataInicio: '', prazo: '', fotos: [] }))
                 });
                 novosAdicionados.push(nomeAmb);
             }
@@ -582,7 +598,7 @@ window.enviarPdfAmbiente = async function(nomeAmb, idx) {
     }
 };
 
-// --- CHECKLIST DETALHADO POR AMBIENTE ---
+// --- CHECKLIST / MODIFICAÇÕES DETALHADAS POR AMBIENTE SEPARADO POR CATEGORIAS ---
 window.abrirChecklistAmbientesReforma = function(nomeObra) {
     const container = document.getElementById('main-content');
     const empObj = obterEmpresaAtualObj();
@@ -591,7 +607,7 @@ window.abrirChecklistAmbientesReforma = function(nomeObra) {
     if (ambientes.length === 0) {
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Checklist por Ambiente</h3>
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Modificações por Ambiente</h3>
                 <p style="font-size: 13px; color: var(--text-muted);">Nenhum ambiente cadastrado. Cadastre ambientes primeiro.</p>
             </div>
             <button class="btn-action" onclick="gerenciarAmbientesReforma('${nomeObra}')">Cadastrar Ambientes</button>
@@ -607,8 +623,8 @@ window.abrirChecklistAmbientesReforma = function(nomeObra) {
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-check"></i> Checklist: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Gerencie status, responsáveis, prazos e fotos por ambiente</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-check"></i> Modificações: ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Gerencie status, responsáveis, prazos e fotos por categoria e ambiente</p>
         </div>
 
         <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px;">
@@ -638,66 +654,89 @@ window.renderizarChecklistAmbiente = function(ambIndex) {
     const empObj = obterEmpresaAtualObj();
     const amb = empObj.ambientes[ambIndex];
 
-    if (!amb || !amb.itens) {
-        container.innerHTML = `<p style="color: var(--text-muted);">Nenhum item neste ambiente.</p>`;
+    if (!amb || !amb.itens || amb.itens.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted);">Nenhum item de modificação neste ambiente.</p>`;
         return;
     }
 
-    let htmlItens = '';
+    // Agrupar itens por categoria
+    const itensPorCategoria = {};
     amb.itens.forEach((item, itemIdx) => {
-        const isConforme = item.status === 'conforme';
-        const isNaoConforme = item.status === 'nao-conforme';
+        const cat = item.categoria || 'Geral';
+        if (!itensPorCategoria[cat]) itensPorCategoria[cat] = [];
+        itensPorCategoria[cat].push({ ...item, itemIdx });
+    });
 
-        let fotosHtml = '';
-        if (item.fotos && item.fotos.length > 0) {
-            item.fotos.forEach((fotoUrl) => {
-                fotosHtml += `<img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" />`;
-            });
-        }
+    let htmlCategorias = '';
+    Object.entries(itensPorCategoria).forEach(([categoria, listaItens]) => {
+        let htmlItensCategoria = '';
+        
+        listaItens.forEach((item) => {
+            const isConcluido = item.status === 'concluido' || item.status === 'conforme';
+            const isEmAndamento = item.status === 'em-andamento';
+            const isPendente = !item.status || item.status === 'pendente';
 
-        htmlItens += `
-            <div style="border: 1px solid #475569; margin-bottom: 12px; border-radius: 8px; overflow: hidden; background: #0f172a;">
-                <div style="padding: 12px; background: #1e293b; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: 600; font-size: 13px;">${itemIdx + 1}. ${item.descricao}</span>
-                    <span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; ${isConforme ? 'background: #16a34a; color: white;' : (isNaoConforme ? 'background: #dc2626; color: white;' : 'background: #334155; color: #cbd5e1;')}">
-                        ${isConforme ? 'CONFORME' : (isNaoConforme ? 'NÃO CONFORME' : 'PENDENTE')}
-                    </span>
+            let fotosHtml = '';
+            if (item.fotos && item.fotos.length > 0) {
+                item.fotos.forEach((fotoUrl) => {
+                    fotosHtml += `<img src="${fotoUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" />`;
+                });
+            }
+
+            htmlItensCategoria += `
+                <div style="border: 1px solid #475569; margin-bottom: 12px; border-radius: 8px; overflow: hidden; background: #0f172a;">
+                    <div style="padding: 10px 12px; background: #1e293b; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; font-size: 13px;">${item.descricao}</span>
+                        <span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; ${isConcluido ? 'background: #16a34a; color: white;' : (isEmAndamento ? 'background: #ca8a04; color: white;' : 'background: #334155; color: #cbd5e1;')}">
+                            ${isConcluido ? 'CONCLUÍDO' : (isEmAndamento ? 'EM ANDAMENTO' : 'PENDENTE')}
+                        </span>
+                    </div>
+                    <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${item.itemIdx}, 'pendente')" style="flex: 1; padding: 6px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 11px; font-weight: bold; background: ${isPendente ? '#475569' : '#334155'};">Pendente</button>
+                            <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${item.itemIdx}, 'em-andamento')" style="flex: 1; padding: 6px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 11px; font-weight: bold; background: ${isEmAndamento ? '#ca8a04' : '#334155'};">Em Andamento</button>
+                            <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${item.itemIdx}, 'concluido')" style="flex: 1; padding: 6px; border: none; border-radius: 4px; color: white; cursor: pointer; font-size: 11px; font-weight: bold; background: ${isConcluido ? '#16a34a' : '#334155'};">Concluído ✓</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
+                            <div>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Responsável:</label>
+                                <input type="text" value="${item.responsavel || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${item.itemIdx}, 'responsavel', this.value)" placeholder="Nome do responsável" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Data Início:</label>
+                                <input type="date" value="${item.dataInicio || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${item.itemIdx}, 'dataInicio', this.value)" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            </div>
+                            <div>
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Prazo:</label>
+                                <input type="date" value="${item.prazo || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${item.itemIdx}, 'prazo', this.value)" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Fotos / Evidências:</label>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                ${fotosHtml}
+                                <input type="file" id="fotoItem_${ambIndex}_${item.itemIdx}" accept="image/*" style="font-size: 11px; display: none;" onchange="window.anexarFotoItemAmbiente(event, ${ambIndex}, ${item.itemIdx})">
+                                <button onclick="document.getElementById('fotoItem_${ambIndex}_${item.itemIdx}').click()" style="padding: 6px 10px; background: rgba(37,99,235,0.2); border: 1px solid var(--primary); color: white; border-radius: 4px; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-camera"></i> Adicionar Foto</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${itemIdx}, 'conforme')" style="flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; background: ${isConforme ? '#16a34a' : '#334155'};">Conforme ✓</button>
-                        <button onclick="window.atualizarStatusItemAmbiente(${ambIndex}, ${itemIdx}, 'nao-conforme')" style="flex: 1; padding: 8px; border: none; border-radius: 4px; color: white; cursor: pointer; font-weight: bold; background: ${isNaoConforme ? '#dc2626' : '#334155'};">Não Conforme ✗</button>
-                    </div>
+            `;
+        });
 
-                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Responsável:</label>
-                            <input type="text" value="${item.responsavel || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${itemIdx}, 'responsavel', this.value)" placeholder="Nome" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Data Início:</label>
-                            <input type="date" value="${item.dataInicio || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${itemIdx}, 'dataInicio', this.value)" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
-                        </div>
-                        <div>
-                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px;">Prazo:</label>
-                            <input type="date" value="${item.prazo || ''}" onchange="window.atualizarCampoItemAmbiente(${ambIndex}, ${itemIdx}, 'prazo', this.value)" style="width: 100%; padding: 6px; background: rgba(15,23,42,0.8); color: white; border: 1px solid var(--border-color); border-radius: 4px; font-size: 12px;">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Fotos / Evidências:</label>
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            ${fotosHtml}
-                            <input type="file" id="fotoItem_${ambIndex}_${itemIdx}" accept="image/*" style="font-size: 11px; display: none;" onchange="window.anexarFotoItemAmbiente(event, ${ambIndex}, ${itemIdx})">
-                            <button onclick="document.getElementById('fotoItem_${ambIndex}_${itemIdx}').click()" style="padding: 6px 10px; background: rgba(37,99,235,0.2); border: 1px solid var(--primary); color: white; border-radius: 4px; font-size: 12px; cursor: pointer;"><i class="fa-solid fa-camera"></i> Adicionar Foto</button>
-                        </div>
-                    </div>
-                </div>
+        htmlCategorias += `
+            <div style="background: rgba(15, 23, 42, 0.3); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-folder-open"></i> ${categoria}
+                </h4>
+                ${htmlItensCategoria}
             </div>
         `;
     });
 
-    container.innerHTML = htmlItens;
+    container.innerHTML = htmlCategorias;
 };
 
 window.atualizarStatusItemAmbiente = function(ambIndex, itemIdx, status) {
@@ -754,7 +793,7 @@ window.carregarCronogramaReforma = function(nomeObra) {
                     <div style="background: rgba(15,23,42,0.6); padding: 8px 12px; border-radius: 6px; margin-bottom: 6px; font-size: 12px; display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <strong>${it.descricao}</strong><br>
-                            <span style="color: var(--text-muted);">Resp: ${it.responsavel || 'Não definido'}</span>
+                            <span style="color: var(--text-muted);">Cat: ${it.categoria || 'Geral'} | Resp: ${it.responsavel || 'Não definido'}</span>
                         </div>
                         <div style="text-align: right; font-size: 11px; color: var(--text-muted);">
                             Início: ${it.dataInicio || '---'}<br>Prazo: ${it.prazo || '---'}
@@ -766,7 +805,7 @@ window.carregarCronogramaReforma = function(nomeObra) {
         htmlCronograma += `
             <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
                 <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 8px;"><i class="fa-solid fa-door-open"></i> ${amb.nome}</h4>
-                ${itensHtml || '<p style="font-size: 12px; color: var(--text-muted);">Sem itens cadastrados.</p>'}
+                ${itensHtml || '<p style="font-size: 12px; color: var(--text-muted);">Sem modificações cadastradas.</p>'}
             </div>
         `;
     });
@@ -774,7 +813,7 @@ window.carregarCronogramaReforma = function(nomeObra) {
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Cronograma físico estruturado por ambiente</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Cronograma físico de modificações estruturado por ambiente</p>
         </div>
         <div class="menu-inicial">${htmlCronograma || '<p style="color: var(--text-muted);">Nenhum ambiente ou cronograma montado.</p>'}</div>
         <button class="btn-action btn-back" onclick="abrirEmpresa('${nomeObra}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
@@ -787,7 +826,7 @@ window.abrirRelatoriosReforma = function(nomeObra) {
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-file-invoice"></i> Relatórios: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Compartilhe ou imprima o relatório completo da obra</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Compartilhe ou imprima o relatório completo de modificações</p>
         </div>
         <div class="menu-inicial">
             <div class="card-menu" onclick="window.print()">
@@ -802,7 +841,7 @@ window.abrirRelatoriosReforma = function(nomeObra) {
                 <div class="card-icon" style="color: #22c55e;"><i class="fa-brands fa-whatsapp"></i></div>
                 <div class="card-info">
                     <h2>ENVIAR VIA WHATSAPP</h2>
-                    <span>Compartilhar resumo e status de progresso</span>
+                    <span>Compartilhar resumo e status das modificações</span>
                 </div>
                 <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
@@ -813,13 +852,13 @@ window.abrirRelatoriosReforma = function(nomeObra) {
 
 window.enviarWhatsAppReforma = function(nomeObra) {
     const empObj = obterEmpresaAtualObj();
-    let texto = `*RELATÓRIO DE REFORMA - ${nomeObra}*%0A%0A`;
+    let texto = `*RELATÓRIO DE MODIFICAÇÕES - ${nomeObra}*%0A%0A`;
     if (empObj && empObj.ambientes) {
         empObj.ambientes.forEach(amb => {
             texto += `*Ambiente: ${amb.nome}*%0A`;
             if (amb.itens) {
                 amb.itens.forEach(it => {
-                    texto += `- ${it.descricao}: *${it.status.toUpperCase()}* (Resp: ${it.responsavel || 'N/A'})%0A`;
+                    texto += `- [${it.categoria}] ${it.descricao}: *${(it.status || 'pendente').toUpperCase()}* (Resp: ${it.responsavel || 'N/A'})%0A`;
                 });
             }
             texto += `%0A`;
@@ -872,7 +911,7 @@ window.carregarPainelIndicadores = function() {
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Indicadores: ${empresaAtual}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada da gestão</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada das modificações</p>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
             <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
@@ -881,7 +920,7 @@ window.carregarPainelIndicadores = function() {
             </div>
             <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
                 <span style="font-size: 22px; font-weight: bold; color: #22c55e;">94.2%</span>
-                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Conformidade Média</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Conclusão Média</p>
             </div>
         </div>
         <button class="btn-action btn-back" onclick="abrirEmpresa('${empresaAtual}')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Painel</button>
