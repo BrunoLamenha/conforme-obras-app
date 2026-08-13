@@ -160,7 +160,7 @@ function obterPavimentosPorTipo(nomeObra, tipoArea) {
         } else if (nome.includes('ZOE') || nome.includes('ZEUS')) {
             return ['Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
         } else if (nome.includes('GRAND GARDEN')) {
-            return ['Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
+            return ['Pilotis', 'Térreo', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento Tipo', '4º Pavimento Tipo', 'Cobertura'];
         } else if (nome.includes('NAOKI')) {
             return ['Pilotis', '1º Pavimento Tipo', '2º Pavimento Tipo', '3º Pavimento + Cobertura'];
         } else {
