@@ -42,7 +42,7 @@ function navegar(destino) {
     }
 }
 
-// Tela intermediária do fluxo de Vistoria (Estrutural vs Arquitetônico) sem descrições
+// Tela intermediária do fluxo de Vistoria (Estrutural vs Arquitetônico)
 function carregarFasesObra(nomeObra) {
     const container = document.querySelector('.container');
     container.innerHTML = `
@@ -51,14 +51,83 @@ function carregarFasesObra(nomeObra) {
             <p>Escolha a frente de serviço</p>
         </header>
         <main class="menu-inicial">
-            <button class="btn-primary" onclick="alert('Abrindo módulo Estrutural')">
+            <button class="btn-primary" onclick="alert('Abrindo módulo Estrutural: Concreto, Estacas, Insumos e XML')">
                 <h2>ESTRUTURAL</h2>
             </button>
-            <button class="btn-primary" onclick="alert('Abrindo módulo Arquitetônico')">
+            <button class="btn-primary" onclick="carregarListaPavimentos('${nomeObra}')">
                 <h2>ARQUITETÔNICO</h2>
             </button>
             <button class="btn-secondary" onclick="navegar('vistoria')" style="margin-top: 20px; text-align: center;">
                 ⬅ Voltar aos Empreendimentos
+            </button>
+        </main>
+    `;
+}
+
+// Fluxo Arquitetônico: Lista de Pavimentos
+function carregarListaPavimentos(nomeObra) {
+    const container = document.querySelector('.container');
+    container.innerHTML = `
+        <header>
+            <h1>${nomeObra}</h1>
+            <p>Lista de Pavimentos</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Térreo')">
+                <h2>TÉRREO</h2>
+            </button>
+            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', '1º Pavimento Tipo')">
+                <h2>1º PAVIMENTO TIPO</h2>
+            </button>
+            <button class="btn-primary" onclick="carregarTipoArea('${nomeObra}', 'Cobertura')">
+                <h2>COBERTURA</h2>
+            </button>
+            <button class="btn-secondary" onclick="carregarFasesObra('${nomeObra}')" style="margin-top: 20px; text-align: center;">
+                ⬅ Voltar às Fases
+            </button>
+        </main>
+    `;
+}
+
+// Escolha entre Área Comum e Área Privativa
+function carregarTipoArea(nomeObra, pavimento) {
+    const container = document.querySelector('.container');
+    container.innerHTML = `
+        <header>
+            <h1>${nomeObra} - ${pavimento}</h1>
+            <p>Selecione a área</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="alert('Abrindo Checklist de Área Comum para ${pavimento}')">
+                <h2>ÁREA COMUM</h2>
+            </button>
+            <button class="btn-primary" onclick="carregarListaApartamentos('${nomeObra}', '${pavimento}')">
+                <h2>ÁREA PRIVATIVA</h2>
+            </button>
+            <button class="btn-secondary" onclick="carregarListaPavimentos('${nomeObra}')" style="margin-top: 20px; text-align: center;">
+                ⬅ Voltar aos Pavimentos
+            </button>
+        </main>
+    `;
+}
+
+// Lista de Apartamentos / Unidades na Área Privativa
+function carregarListaApartamentos(nomeObra, pavimento) {
+    const container = document.querySelector('.container');
+    container.innerHTML = `
+        <header>
+            <h1>${nomeObra} - ${pavimento}</h1>
+            <p>Selecione a Unidade (Apto)</p>
+        </header>
+        <main class="menu-inicial">
+            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 101')">
+                <h2>APTO 101</h2>
+            </button>
+            <button class="btn-primary" onclick="alert('Abrindo Vistoria/Checklist do Apartamento 102')">
+                <h2>APTO 102</h2>
+            </button>
+            <button class="btn-secondary" onclick="carregarTipoArea('${nomeObra}', '${pavimento}')" style="margin-top: 20px; text-align: center;">
+                ⬅ Voltar às Áreas
             </button>
         </main>
     `;
