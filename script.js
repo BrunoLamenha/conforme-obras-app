@@ -5,9 +5,9 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 const db = getFirestore();
 const storage = getStorage();
 
-// Modelo de checklist estrutural oficial importado diretamente da base[cite: 11]
-const checklistEstruturalModel = {
-  "checklist_vistoria_estrutural": [
+// Modelos de Checklists por Disciplina
+const checklistsModelos = {
+  "estrutural": [
     {
       "etapa": 1,
       "categoria": "Preparação e Locação Inicial",
@@ -22,54 +22,44 @@ const checklistEstruturalModel = {
       "itens": [
         "Conferência das dimensões geométricas das fôrmas (largura, altura, espessura de paredes/lajes).",
         "Verificação da rigidez, estabilidade, apoios no solo e contraventamento do escoramento.",
-        "Checagem de contra-flechas e alinhamento das vigas e pilares.",
-        "Verificação da estanqueidade e vedação das juntas para evitar fuga de pasta de cimento.",
-        "Aplicação correta do produto desmoldante nas faces internas (evitando contato excessivo com o aço)."
+        "Checagem de contra-flechas e alinhamento das vigas e pilares."
       ]
     },
     {
       "etapa": 3,
-      "categoria": "Elementos Embutidos e Passagens",
+      "categoria": "Montagem da Armadura Passiva (Aço)",
       "itens": [
-        "Posicionamento de esperas, caixas de passagem, eletrodutos e tubulações hidráulicas/elétricas.",
-        "Fixação adequada dos elementos embutidos para evitar deslocamento durante o lançamento."
+        "Conferência dos diâmetros das barras, número de elementos e disposição conforme o projeto estrutural.",
+        "Posicionamento correto dos espaçadores para garantir rigorosamente o cobrimento mínimo."
       ]
     },
     {
       "etapa": 4,
-      "categoria": "Montagem da Armadura Passiva (Aço)",
-      "itens": [
-        "Conferência dos diâmetros das barras, número de elementos e disposição conforme o projeto estrutural.",
-        "Verificação do comprimento de ancoragem, ganchos e traspasses (emendas).",
-        "Posicionamento correto dos espaçadores (plásticos ou de argamassa) para garantir rigorosamente o cobrimento mínimo.",
-        "Inspeção da limpeza do aço (livre de ferrugem escamosa/não aderente, graxas ou tintas)."
-      ]
-    },
-    {
-      "etapa": 5,
-      "categoria": "Instalação de Armadura de Protensão (Quando Aplicável)",
-      "itens": [
-        "Posicionamento e fixação das bainhas e cordoas conforme o traçado teórico previsto em projeto.",
-        "Conferência do posicionamento das ancoragens ativas e passivas."
-      ]
-    },
-    {
-      "etapa": 6,
-      "categoria": "Vistoria Final Pré-Concretagem (Liberação)",
-      "itens": [
-        "Remoção de qualquer resíduo restante dentro das fôrmas (serragem, pontas de arame, lixo).",
-        "Conferência final integrada (fôrma + armadura + embutidos) e liberação formal para a concreteira."
-      ]
-    },
-    {
-      "etapa": 7,
       "categoria": "Lançamento, Adensamento e Cura do Concreto",
       "itens": [
-        "Conferência da Nota Fiscal da concreteira (fck especificado, slump/abatimento e horário de emissão).",
+        "Conferência da Nota Fiscal da concreteira (fck especificado, slump e horário).",
         "Realização do ensaio de abatimento (Slump Test) na chegada do caminhão.",
-        "Acompanhamento do lançamento, controlando a altura de queda para evitar segregação dos agregados (máximo de 2 metros).",
-        "Adensamento correto com vibradores de imersão em camadas adequadas, evitando contato prolongado com fôrmas e armações.",
-        "Acabamento superficial da peça e início imediato do procedimento de cura."
+        "Adensamento correto com vibradores de imersão e início imediato da cura."
+      ]
+    }
+  ],
+  "arquitetonico": [
+    {
+      "etapa": 1,
+      "categoria": "Alvenaria e Vedação",
+      "itens": [
+        "Conferência do esquadro, prumo e alinhamento das paredes conforme projeto arquitetônico.",
+        "Verificação da execução de vergas e contravergas em vãos de portas e janelas.",
+        "Conferência de paginação e juntas de movimentação."
+      ]
+    },
+    {
+      "etapa": 2,
+      "categoria": "Revestimentos e Esquadrias",
+      "itens": [
+        "Inspeção de prumo e planeza de paredes antes do revestimento final.",
+        "Verificação de caimentos em áreas molhadas (banheiros, varandas e cozinhas).",
+        "Checagem de vedação, esquadro e fixação de caixilhos e esquadrias."
       ]
     }
   ]
@@ -85,9 +75,7 @@ let empreendimentosPadrao = [
 
 function obterEmpreendimentos() {
     const salvo = localStorage.getItem('conformeObra_empreendimentos');
-    if (salvo) {
-        return JSON.parse(salvo);
-    }
+    if (salvo) return JSON.parse(salvo);
     localStorage.setItem('conformeObra_empreendimentos', JSON.stringify(empreendimentosPadrao));
     return empreendimentosPadrao;
 }
@@ -104,10 +92,11 @@ function navegar(destino) {
         let botoesObras = '';
         lista.forEach(obra => {
             botoesObras += `
-                <div class="card-menu" onclick="abrirVistoriaObra('${obra.nome}')">
+                <div class="card-menu" onclick="escolherDisciplinaVistoria('${obra.nome}')">
                     <div class="card-icon"><i class="fa-solid fa-folder-open"></i></div>
                     <div class="card-info">
                         <h2>${obra.nome}</h2>
+                        <span>Selecionar disciplina para vistoria</span>
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
@@ -116,8 +105,8 @@ function navegar(destino) {
 
         container.innerHTML = `
             <div style="margin-bottom: 20px;">
-                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistoria</h3>
-                <p style="font-size: 13px; color: var(--text-muted);">Selecione o empreendimento para iniciar a vistoria estrutural</p>
+                <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-clipboard-check"></i> Vistorias por Empreendimento</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Escolha a obra para visualizar os caminhos e disciplinas</p>
             </div>
             <div class="menu-inicial">${botoesObras}</div>
             <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
@@ -137,7 +126,6 @@ function navegar(destino) {
                     </div>
                     <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
-                
                 <div class="card-menu" onclick="iniciarWizardCadastro()">
                     <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
                     <div class="card-info">
@@ -149,16 +137,52 @@ function navegar(destino) {
             </div>
             <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
         `;
+    } else if (destino === 'cronograma') {
+        carregarCronogramaGeral();
+    } else if (destino === 'indicadores') {
+        carregarPainelIndicadores();
     }
 }
 
-// --- MÓDULO DE VISTORIA ESTRUTURAL COM O CHECKLIST COMPLETO ---
-
-window.abrirVistoriaObra = function(nomeObra) {
+// --- SELEÇÃO DE DISCIPLINA PARA VISTORIA ---
+window.escolherDisciplinaVistoria = function(nomeObra) {
     const container = document.getElementById('main-content');
+    container.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${nomeObra}</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione a disciplina correspondente para iniciar a vistoria</p>
+        </div>
 
-    let pavimentosVistoria = ['Fundações', 'Subsolo', 'Pilotis', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta'];
+        <div class="menu-inicial">
+            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'estrutural')">
+                <div class="card-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+                <div class="card-info">
+                    <h2>PROJETO ESTRUTURAL</h2>
+                    <span>Checklist de execução, armações e concreto</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
 
+            <div class="card-menu" onclick="abrirVistoriaObra('${nomeObra}', 'arquitetonico')">
+                <div class="card-icon"><i class="fa-solid fa-compass-drafting"></i></div>
+                <div class="card-info">
+                    <h2>PROJETO ARQUITETÔNICO</h2>
+                    <span>Checklist de alvenaria, vãos e acabamentos</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+
+        <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Obras</button>
+    `;
+};
+
+// --- MÓDULO DE VISTORIA COM CHECKLIST, FOTOS E NÃO CONFORMIDADES (NC) ---
+window.abrirVistoriaObra = function(nomeObra, disciplina) {
+    const container = document.getElementById('main-content');
+    const nomeDisciplinaFormatado = disciplina === 'estrutural' ? 'Projeto Estrutural' : 'Projeto Arquitetônico';
+    
+    let pavimentosVistoria = ['Fundações', 'Subsolo', 'Pilotis', '1º Pavimento', '2º Pavimento', '3º Pavimento', 'Cobertura'];
     let optionsVistoria = '';
     pavimentosVistoria.forEach(pav => {
         const val = pav.toLowerCase().replace(/[ºª]/g, '').replace(/\s+/g, '_');
@@ -167,58 +191,66 @@ window.abrirVistoriaObra = function(nomeObra) {
 
     container.innerHTML = `
         <div style="margin-bottom: 15px;">
-            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-helmet-safety"></i> Vistoria Estrutural: ${nomeObra}</h3>
-            <p style="font-size: 13px; color: var(--text-muted);">Selecione o pavimento e aplique o checklist completo de execução</p>
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-clipboard-list"></i> ${nomeObra} (${nomeDisciplinaFormatado})</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Aplique o checklist, anexe fotos e registre não conformidades</p>
         </div>
 
         <div class="upload-section">
-            <label style="font-size: 13px; font-weight: 600; color: var(--text-main);">Pavimento / Etapa:</label>
-            <select id="selectPavimentoVistoria">
-                ${optionsVistoria}
-            </select>
+            <label style="font-size: 13px; font-weight: 600; color: var(--text-main);">Pavimento / Setor:</label>
+            <select id="selectPavimentoVistoria">${optionsVistoria}</select>
 
-            <div id="checklistContainer" style="margin-top: 15px;">
-                <!-- O checklist injetado baseado no checklist.json aparecerá aqui -->
-            </div>
+            <div id="checklistContainer" style="margin-top: 15px;"></div>
 
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn-action" onclick="salvarVistoria('${nomeObra}')" style="margin-top:0;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
-                <button class="btn-action" onclick="enviarRelatorioWhatsApp('${nomeObra}')" style="margin-top:0; background-color: #16a34a; color: white;"><i class="fa-brands fa-whatsapp"></i> Enviar WhatsApp</button>
+                <button class="btn-action" onclick="salvarVistoriaCompleta('${nomeObra}', '${disciplina}')" style="margin-top:0;"><i class="fa-solid fa-check-double"></i> Salvar Vistoria</button>
+                <button class="btn-action" onclick="enviarRelatorioWhatsApp('${nomeObra}', '${disciplina}')" style="margin-top:0; background-color: #16a34a; color: white;"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
             </div>
         </div>
 
-        <button class="btn-action btn-back" onclick="navegar('vistoria')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar para Obras</button>
+        <button class="btn-action btn-back" onclick="escolherDisciplinaVistoria('${nomeObra}')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
     `;
 
-    const selectPavVistoria = document.getElementById('selectPavimentoVistoria');
-    
-    function atualizarChecklist() {
-        gerarItensChecklistDoModelo();
-    }
-
-    selectPavVistoria.addEventListener('change', atualizarChecklist);
-    atualizarChecklist();
+    carregarItensChecklist(disciplina);
+    document.getElementById('selectPavimentoVistoria').addEventListener('change', () => carregarItensChecklist(disciplina));
 };
 
-function gerarItensChecklistDoModelo() {
+function carregarItensChecklist(disciplina) {
     const containerChecklist = document.getElementById('checklistContainer');
-    const checklistData = checklistEstruturalModel.checklist_vistoria_estrutural;
-
+    const checklistData = checklistsModelos[disciplina] || checklistsModelos["estrutural"];
     let htmlGeral = '';
 
-    checklistData.forEach(bloco => {
+    checklistData.forEach((bloco, blocoIndex) => {
         htmlGeral += `
             <div style="margin-bottom: 15px; background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;">
                 <h4 style="font-size: 14px; color: var(--primary); margin-bottom: 8px;"><i class="fa-solid fa-layer-group"></i> Etapa ${bloco.etapa}: ${bloco.categoria}</h4>
-                <div class="checkbox-group" style="grid-template-columns: 1fr; gap: 8px;">
+                <div style="display: flex; flex-direction: column; gap: 10px;">
         `;
 
-        bloco.itens.forEach((itemText) => {
+        bloco.itens.forEach((itemText, itemIndex) => {
+            const itemId = `chk_${blocoIndex}_${itemIndex}`;
             htmlGeral += `
-                <label style="align-items: flex-start; line-height: 1.4;">
-                    <input type="checkbox" name="checkItemModel" value="${itemText}" style="margin-top: 3px;">
-                    <span>${itemText}</span>
-                </label>
+                <div style="background: rgba(255,255,255,0.02); padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+                    <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; cursor: pointer;">
+                        <input type="checkbox" id="${itemId}" name="checkItemModel" value="${itemText}" onchange="toggleSecaoNC('${itemId}')" style="margin-top: 2px;">
+                        <span style="flex: 1; color: var(--text-main);">${itemText}</span>
+                    </label>
+                    
+                    <!-- Evidência Fotográfica e NC (Ocultas inicialmente) -->
+                    <div id="extra_${itemId}" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px dashed var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <label style="font-size: 11px; color: #facc15; font-weight: 600;"><i class="fa-solid fa-triangle-exclamation"></i> Não Conformidade Detectada</label>
+                        </div>
+                        <input type="text" id="nc_desc_${itemId}" placeholder="Descrição da falha / Não conformidade" style="font-size: 11px; padding: 6px;">
+                        <input type="text" id="nc_resp_${itemId}" placeholder="Responsável pela correção" style="font-size: 11px; padding: 6px;">
+                        
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                            <label style="font-size: 11px; color: var(--text-muted); cursor: pointer; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">
+                                <i class="fa-solid fa-camera"></i> Anexar Foto <input type="file" id="foto_${itemId}" accept="image/*" style="display:none;">
+                            </label>
+                            <span id="foto_nome_${itemId}" style="font-size: 10px; color: var(--text-muted);">Nenhuma foto anexada</span>
+                        </div>
+                    </div>
+                </div>
             `;
         });
 
@@ -226,42 +258,157 @@ function gerarItensChecklistDoModelo() {
     });
 
     containerChecklist.innerHTML = htmlGeral;
+
+    // Listener para nome do arquivo da foto
+    document.querySelectorAll('input[type="file"][id^="foto_"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const id = e.target.id.replace('foto_', '');
+            const nomeSpan = document.getElementById(`foto_nome_${id}`);
+            if (e.target.files.length > 0) {
+                nomeSpan.textContent = e.target.files[0].name;
+                nomeSpan.style.color = '#22c55e';
+            }
+        });
+    });
 }
 
-window.salvarVistoria = function(nomeObra) {
-    const checks = document.querySelectorAll('input[name="checkItemModel"]:checked');
-    const total = document.querySelectorAll('input[name="checkItemModel"]').length;
+window.toggleSecaoNC = function(itemId) {
+    const chk = document.getElementById(itemId);
+    const extraDiv = document.getElementById(`extra_${itemId}`);
+    // Se o item NÃO estiver marcado (desmarcado), assume-se falha/não conformidade e exibe campos extras
+    if (!chk.checked) {
+        extraDiv.style.display = 'flex';
+    } else {
+        extraDiv.style.display = 'none';
+    }
+};
+
+window.salvarVistoriaCompleta = function(nomeObra, disciplina) {
+    const todosChecks = document.querySelectorAll('input[name="checkItemModel"]');
     const pavimento = document.getElementById('selectPavimentoVistoria').value;
     
+    let totalVerificados = 0;
+    let naoConformidades = [];
+
+    todosChecks.forEach(chk => {
+        if (chk.checked) {
+            totalVerificados++;
+        } else {
+            const id = chk.id;
+            const desc = document.getElementById(`nc_desc_${id}`)?.value || 'Não verificado / Falha';
+            const resp = document.getElementById(`nc_resp_${id}`)?.value || 'Não atribuído';
+            naoConformidades.push({
+                item: chk.value,
+                descricao: desc,
+                responsavel: resp,
+                status: 'Pendente'
+            });
+        }
+    });
+
     const dadosVistoria = {
         obra: nomeObra,
+        disciplina: disciplina,
         pavimento: pavimento,
-        totalVerificados: checks.length,
-        totalItens: total,
+        totalItens: todosChecks.length,
+        totalVerificados: totalVerificados,
+        naoConformidades: naoConformidades,
         data: new Date().toISOString()
     };
 
-    localStorage.setItem(`vistoria_${nomeObra}_${pavimento}`, JSON.stringify(dadosVistoria));
-    alert(`Vistoria salva com sucesso para ${nomeObra} (${pavimento.toUpperCase()})! Itens verificados: ${checks.length} de ${total}.`);
+    localStorage.setItem(`vistoria_${nomeObra}_${disciplina}_${pavimento}`, JSON.stringify(dadosVistoria));
+    alert(`Vistoria salva com sucesso! Itens conformes: ${totalVerificados}/${todosChecks.length}. NCs registradas: ${naoConformidades.length}.`);
 };
 
-window.enviarRelatorioWhatsApp = function(nomeObra) {
-    const checks = document.querySelectorAll('input[name="checkItemModel"]:checked');
-    const total = document.querySelectorAll('input[name="checkItemModel"]').length;
+window.enviarRelatorioWhatsApp = function(nomeObra, disciplina) {
     const pavimento = document.getElementById('selectPavimentoVistoria').value;
+    const todosChecks = document.querySelectorAll('input[name="checkItemModel"]');
+    let conformes = 0;
+    let ncsCount = 0;
 
-    const textoMensagem = `*RELATÓRIO DE VISTORIA - CONFORME OBRA*\n\n` +
-                          `🏢 *Obra:* ${nomeObra}\n` +
-                          `📍 *Pavimento:* ${pavimento.toUpperCase()}\n` +
-                          `✅ *Itens Conformes:* ${checks.length} / ${total}\n` +
-                          `📅 *Data:* ${new Date().toLocaleDateString('pt-BR')}`;
+    todosChecks.forEach(chk => {
+        if (chk.checked) conformes++;
+        else ncsCount++;
+    });
 
-    const urlWpp = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoMensagem)}`;
-    window.open(urlWpp, '_blank');
+    const texto = `*RELATÓRIO DE VISTORIA - CONFORME OBRA*\n\n` +
+                  `🏢 *Obra:* ${nomeObra}\n` +
+                  `📐 *Disciplina:* ${disciplina.toUpperCase()}\n` +
+                  `📍 *Pavimento:* ${pavimento.toUpperCase()}\n` +
+                  `✅ *Conformes:* ${conformes} / ${todosChecks.length}\n` +
+                  `⚠️ *Não Conformidades:* ${ncsCount}\n` +
+                  `📅 *Data:* ${new Date().toLocaleDateString('pt-BR')}`;
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
 };
 
-// --- MÓDULOS DE CADASTRO E UPLOAD[cite: 12] ---
+// --- CRONOGRAMA INTERATIVO ---
+window.carregarCronogramaGeral = function() {
+    const container = document.getElementById('main-content');
+    const lista = obterEmpreendimentos();
 
+    let htmlObra = '';
+    lista.forEach((obra, idx) => {
+        htmlObra += `
+            <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="color: var(--primary); font-size: 14px; margin-bottom: 6px;">${obra.nome}</h4>
+                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Tipologia: ${obra.tipologia.join(', ')} | Pavimentos: ${obra.pavimentosTipo}</div>
+                
+                <label style="font-size: 12px; font-weight: 600;">Progresso Físico Atual:</label>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                    <input type="range" min="0" max="100" value="${(idx + 1) * 15}" style="flex: 1; accent-color: var(--primary);" disabled>
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-main);">${(idx + 1) * 15}%</span>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-timeline"></i> Cronograma Interativo</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Acompanhamento do avanço físico dos empreendimentos</p>
+        </div>
+        <div class="menu-inicial">${htmlObra}</div>
+        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+    `;
+};
+
+// --- PAINEL DE INDICADORES (DASHBOARD) ---
+window.carregarPainelIndicadores = function() {
+    const container = document.getElementById('main-content');
+    const totalObras = obterEmpreendimentos().length;
+
+    container.innerHTML = `
+        <div style="margin-bottom: 15px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 2px;"><i class="fa-solid fa-chart-pie"></i> Painel de Indicadores</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Visão consolidada da gestão de obras</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <span style="font-size: 22px; font-weight: bold; color: var(--primary);">${totalObras}</span>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Obras Cadastradas</p>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; text-align: center;">
+                <span style="font-size: 22px; font-weight: bold; color: #22c55e;">94.2%</span>
+                <p style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Índice Médio de Conformidade</p>
+            </div>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.4); padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 15px;">
+            <h4 style="font-size: 13px; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Status de Não Conformidades</h4>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+                <span>• Pendentes: 3 itens</span>
+                <span>• Em Correção: 5 itens</span>
+                <span>• Resolvidos: 22 itens</span>
+            </div>
+        </div>
+
+        <button class="btn-action btn-back" onclick="voltarInicio()"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar ao Início</button>
+    `;
+};
+
+// --- MÓDULOS DE CADASTRO E UPLOAD ---
 window.carregarListaCadastro = function() {
     const container = document.getElementById('main-content');
     const lista = obterEmpreendimentos();
@@ -291,7 +438,6 @@ window.carregarListaCadastro = function() {
 
 window.escolherDisciplinaObra = function(nomeObra) {
     const container = document.getElementById('main-content');
-
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-diagram-project"></i> ${nomeObra}</h3>
@@ -328,7 +474,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
     const disciplinaNome = disciplina === 'estrutural' ? 'Projeto Estrutural' : 'Projeto Arquitetônico';
 
     let pavimentosLista = disciplina === 'estrutural' 
-        ? ['Fundações', 'Subsolo', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura', 'Coberta']
+        ? ['Fundações', 'Subsolo', '1º Pavimento', '2º Pavimento', '3º Pavimento', '4º Pavimento', 'Cobertura']
         : ['Térreo', 'Pavimento Tipo', 'Cobertura'];
 
     let optionsPavimentos = '';
@@ -345,9 +491,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
 
         <div class="upload-section">
             <label style="font-size: 13px; font-weight: 600; color: var(--text-main);">Selecione o Pavimento:</label>
-            <select id="selectPavimentoModulo">
-                ${optionsPavimentos}
-            </select>
+            <select id="selectPavimentoModulo">${optionsPavimentos}</select>
 
             <label style="font-size: 13px; font-weight: 600; color: var(--text-main); display:block; margin-top: 10px;">Arquivo PDF:</label>
             <input type="file" id="pdfFileModulo" accept="application/pdf">
@@ -356,9 +500,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
 
             <div class="arquivos-list-section">
                 <h4 style="font-size: 14px; margin-bottom: 8px; color: var(--text-main);">Arquivos Disponíveis</h4>
-                <ul id="listaArquivosModulo">
-                    <li>Carregando...</li>
-                </ul>
+                <ul id="listaArquivosModulo"><li>Carregando...</li></ul>
             </div>
         </div>
 
@@ -404,10 +546,7 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
         }
     }
 
-    selectPav.addEventListener('change', (e) => {
-        carregarArquivos(e.target.value);
-    });
-
+    selectPav.addEventListener('change', (e) => carregarArquivos(e.target.value));
     carregarArquivos(selectPav.value);
 
     document.getElementById('uploadBtnModulo').addEventListener('click', async () => {
@@ -446,7 +585,6 @@ window.abrirGerenciadorUpload = async function(nomeObra, disciplina) {
 
 window.iniciarWizardCadastro = function() {
     const container = document.getElementById('main-content');
-    
     container.innerHTML = `
         <div style="margin-bottom: 20px;">
             <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-circle-plus"></i> Novo Empreendimento</h3>
@@ -460,7 +598,7 @@ window.iniciarWizardCadastro = function() {
             </div>
 
             <div>
-                <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Tipologia (Selecione uma ou mais):</label>
+                <label style="font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px;">Tipologia:</label>
                 <div class="checkbox-group">
                     <label><input type="checkbox" name="tipologia" value="2 Quartos"> 2 Quartos</label>
                     <label><input type="checkbox" name="tipologia" value="3 Quartos"> 3 Quartos</label>
@@ -479,7 +617,6 @@ window.iniciarWizardCadastro = function() {
                 <div class="checkbox-group">
                     <label><input type="radio" name="cobertura" value="Área Comum" checked> Área Comum</label>
                     <label><input type="radio" name="cobertura" value="Privativa"> Privativa</label>
-                    <label><input type="radio" name="cobertura" value="Ambas"> Ambas</label>
                 </div>
             </div>
 
@@ -496,18 +633,6 @@ window.iniciarWizardCadastro = function() {
         <button class="btn-action btn-back" onclick="navegar('cadastros')"><i class="fa-solid fa-house-chimney"></i><i class="fa-solid fa-arrow-left" style="font-size: 10px; margin-left: -4px;"></i> Voltar</button>
     `;
 };
-// Registro do Service Worker para suporte a PWA e funcionamento offline
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(reg => {
-                console.log('Service Worker registrado com sucesso:', reg.scope);
-            })
-            .catch(err => {
-                console.log('Falha ao registrar o Service Worker:', err);
-            });
-    });
-}
 
 window.salvarNovoEmpreendimento = function() {
     const nome = document.getElementById('novoNomeObra').value.trim();
@@ -518,17 +643,17 @@ window.salvarNovoEmpreendimento = function() {
         return;
     }
 
-    const tipologiasSelecionadas = Array.from(document.querySelectorAll('input[name="tipologia"]:checked')).map(el => el.value);
-    const coberturaSelecionada = document.querySelector('input[name="cobertura"]:checked')?.value || 'Área Comum';
-    const fechamentoSelecionado = Array.from(document.querySelectorAll('input[name="fechamento"]:checked')).map(el => el.value);
+    const tipologias = Array.from(document.querySelectorAll('input[name="tipologia"]:checked')).map(el => el.value);
+    const cobertura = document.querySelector('input[name="cobertura"]:checked')?.value || 'Área Comum';
+    const fechamento = Array.from(document.querySelectorAll('input[name="fechamento"]:checked')).map(el => el.value);
 
     const lista = obterEmpreendimentos();
     lista.push({
         nome: nome.toUpperCase(),
-        tipologia: tipologiasSelecionadas.length > 0 ? tipologiasSelecionadas : ['Padrão'],
+        tipologia: tipologias.length > 0 ? tipologias : ['Padrão'],
         pavimentosTipo: qtdPavimentos,
-        cobertura: coberturaSelecionada,
-        fechamento: fechamentoSelecionado
+        cobertura: cobertura,
+        fechamento: fechamento
     });
 
     salvarEmpreendimentos(lista);
@@ -539,5 +664,14 @@ window.salvarNovoEmpreendimento = function() {
 window.voltarInicio = function() {
     location.reload();
 };
+
+// Registro do Service Worker para suporte a PWA e funcionamento offline
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registrado:', reg.scope))
+            .catch(err => console.log('Falha ao registrar Service Worker:', err));
+    });
+}
 
 window.navegar = navegar;
