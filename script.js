@@ -1,7 +1,5 @@
 import { db } from './firebaseConfig.js';
-import { collection, addDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-// Nota: Se você instalou via NPM, use os imports normais:
-// import { collection, addDoc, onSnapshot, query, where } from "firebase/firestore";// Dados padrão iniciais com unidades pré-cadastradas para o ZEN LIFE
+import { collection, doc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
 let empreendimentosPadrao = [
     { 
         nome: 'ZEN LIFE', 
