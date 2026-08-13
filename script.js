@@ -906,11 +906,54 @@ window.iniciarVistoria = function(tipo) {
     renderChecklist(labelVistoria);
 };
 
-// --- Renderização do Checklist (Accordion + Estados) ---
+// --- Funções de Estado ---
+let respostas = {}; // Armazena { id: 'conforme' ou 'nao-conforme' }
+const totalItens = 2; // Quantidade total de itens no seu checklist atual
 
+window.setOption = function(id, option) {
+    respostas[id] = option;
+    
+    // Atualiza visual dos botões
+    document.querySelectorAll(`#content-${id} button`).forEach(btn => btn.style.background = '#334155');
+    const selectedBtn = document.getElementById(`btn-${option === 'conforme' ? 'c' : 'nc'}-${id}`);
+    selectedBtn.style.background = option === 'conforme' ? '#16a34a' : '#dc2626';
+
+    // Atualiza a fita (tag) instantaneamente
+    updateStatusTag();
+};
+
+function updateStatusTag() {
+    const container = document.getElementById('status-tag-container');
+    const valores = Object.values(respostas);
+    
+    // Se não houver nada marcado, não mostra nada
+    if (valores.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const temNaoConforme = valores.includes('nao-conforme');
+    
+    if (temNaoConforme) {
+        // Fita Vermelha
+        container.innerHTML = `
+            <div style="background:#dc2626; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-triangle-exclamation"></i> PENDÊNCIAS IDENTIFICADAS
+            </div>
+        `;
+    } else {
+        // Fita Verde
+        container.innerHTML = `
+            <div style="background:#16a34a; color:white; padding:12px; width:100%; text-align:center; font-weight:bold; border-radius:5px; margin-bottom:15px; box-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-check"></i> TUDO OK
+            </div>
+        `;
+    }
+}
+
+// --- Renderização (Atualizada) ---
 window.renderChecklist = function(titulo) {
     const container = document.getElementById('main-content');
-    // Itens simulados
     const itens = [
         { id: 1, desc: "Contrapiso, Revestimentos e Rodapés" },
         { id: 2, desc: "Forro e Sancas de Gesso" }
@@ -918,57 +961,24 @@ window.renderChecklist = function(titulo) {
 
     container.innerHTML = `
         <div style="margin-bottom:20px;">
-            <h3>${titulo} - ${state.unidade}</h3>
-            <div id="status-tag" style="padding:5px 10px; border-radius:5px; background:#334155; display:inline-block;">Aguardando...</div>
+            <h3 style="color:#3b82f6; margin-bottom:10px;">${titulo} - ${state.unidade}</h3>
+            <!-- Container onde as fitas aparecerão -->
+            <div id="status-tag-container"></div> 
         </div>
+        
         <div id="items-container">
             ${itens.map(item => `
-                <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px;">
-                    <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b;">
-                        ${item.id}. ${item.desc}
+                <div class="card-item" style="border:1px solid #475569; margin-bottom:10px; border-radius:8px; overflow:hidden;">
+                    <div onclick="toggleItem(${item.id})" style="padding:15px; cursor:pointer; background:#1e293b; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${item.id}. ${item.desc}</span>
+                        <i class="fa-solid fa-chevron-down" style="font-size:12px; color:#94a3b8;"></i>
                     </div>
-                    <div id="content-${item.id}" style="display:none; padding:15px; border-top:1px solid #475569;">
-                        <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state">Conforme ✓</button>
-                        <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state">Não Conforme ✗</button>
+                    <div id="content-${item.id}" style="display:none; padding:15px; border-top:1px solid #475569; background:#0f172a;">
+                        <button id="btn-c-${item.id}" onclick="setOption(${item.id}, 'conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Conforme ✓</button>
+                        <button id="btn-nc-${item.id}" onclick="setOption(${item.id}, 'nao-conforme')" class="btn-state" style="width:48%; padding:10px; border:none; border-radius:4px; color:white; cursor:pointer; background:#334155;">Não Conforme ✗</button>
                     </div>
                 </div>
             `).join('')}
         </div>
     `;
 };
-
-window.toggleItem = function(id) {
-    const el = document.getElementById(`content-${id}`);
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
-};
-
-// Estado das respostas
-let respostas = {}; 
-
-window.setOption = function(id, option) {
-    respostas[id] = option;
-    
-    // Atualiza botões visuais
-    document.querySelectorAll(`#content-${id} button`).forEach(btn => btn.style.background = '#334155');
-    const selectedBtn = document.getElementById(`btn-${option === 'conforme' ? 'c' : 'nc'}-${id}`);
-    selectedBtn.style.background = option === 'conforme' ? '#16a34a' : '#dc2626';
-
-    updateStatusTag();
-};
-
-function updateStatusTag() {
-    const tag = document.getElementById('status-tag');
-    const valores = Object.values(respostas);
-    
-    if (valores.length === 0) return;
-
-    const temNaoConforme = valores.includes('nao-conforme');
-    
-    if (temNaoConforme) {
-        tag.innerText = "NÃO CONFORME";
-        tag.style.background = "#dc2626";
-    } else {
-        tag.innerText = "CONFORME";
-        tag.style.background = "#16a34a";
-    }
-}
