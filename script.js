@@ -11,7 +11,7 @@ let empreendimentosPadrao = [
     { nome: 'ZOE', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 2, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' },
     { nome: 'NAOKI', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 2, tipologia: { tipo: 'Studio' }, fechamentoInterno: 'Drywall' },
     { nome: 'ZEUS', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 2, tipologia: { tipo: '3 Quartos' }, fechamentoInterno: 'Alvenaria' },
-    { nome: 'GRAND GARDEN', pavimentos: ['Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' }
+    { nome: 'GRAND GARDEN', pavimentos: ['Pilotis', 'Térreo', '1º Pavimento Tipo', 'Cobertura'], detalhesPavimentos: {}, unidadesPorPavimento: 4, tipologia: { tipo: '2 Quartos' }, fechamentoInterno: 'Drywall' }
 ];
 
 // Funções de Gerenciamento de Estado (LocalStorage)
@@ -468,11 +468,17 @@ function carregarPassoWizard(passo) {
             <main class="menu-inicial">
                 <div style="text-align: left; background: #1e293b; padding: 20px; border-radius: 12px; border: 2px solid #334155;">
                     <label style="color: #94a3b8; font-size: 0.9rem;">Tipo de Fechamento Interno:</label>
-                    <select id="selectFechamento" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    <select id="selectFechamento" onchange="verificarOutroFechamento()" style="width: 100%; padding: 12px; margin: 8px 0 15px 0; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                        <option value="Bloco de gesso">Bloco de gesso</option>
+                        <option value="Bloco cerâmico">Bloco cerâmico</option>
                         <option value="Drywall">Drywall</option>
-                        <option value="Alvenaria de Bloco Cerâmico">Alvenaria de Bloco Cerâmico</option>
-                        <option value="Bloco de Concreto">Bloco de Concreto</option>
+                        <option value="Outros">Outros (escrever)</option>
                     </select>
+
+                    <div id="containerOutroFechamento" style="display: none; margin-top: 10px;">
+                        <label style="color: #94a3b8; font-size: 0.9rem;">Especifique o fechamento interno:</label>
+                        <input type="text" id="inputOutroFechamento" placeholder="Digite o tipo de fechamento" style="width: 100%; padding: 12px; margin-top: 8px; background: #0f172a; border: 1px solid #475569; color: white; border-radius: 8px;">
+                    </div>
                 </div>
                 <button class="btn-primary" onclick="concluirCadastro()" style="text-align: center; margin-top: 15px; background-color: #16a34a;">
                     <h2>Salvar e Inserir na Lista ✅</h2>
@@ -482,6 +488,18 @@ function carregarPassoWizard(passo) {
                 </button>
             </main>
         `;
+        setTimeout(verificarOutroFechamento, 50);
+    }
+}
+
+function verificarOutroFechamento() {
+    const select = document.getElementById('selectFechamento');
+    const containerOutro = document.getElementById('containerOutroFechamento');
+    if (!select || !containerOutro) return;
+    if (select.value === 'Outros') {
+        containerOutro.style.display = 'block';
+    } else {
+        containerOutro.style.display = 'none';
     }
 }
 
@@ -585,7 +603,13 @@ function salvarPasso3() {
 }
 
 function concluirCadastro() {
-    novoEmpreendimentoTemp.fechamentoInterno = document.getElementById('selectFechamento').value;
+    const selectFechamento = document.getElementById('selectFechamento').value;
+    let fechamento = selectFechamento;
+    if (selectFechamento === 'Outros') {
+        const outroInput = document.getElementById('inputOutroFechamento').value.trim();
+        fechamento = outroInput || 'Outros';
+    }
+    novoEmpreendimentoTemp.fechamentoInterno = fechamento;
     
     let lista = obterEmpreendimentos();
     let index = lista.findIndex(e => e.nome === novoEmpreendimentoTemp.nome);
