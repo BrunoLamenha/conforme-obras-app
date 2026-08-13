@@ -14,12 +14,6 @@
             <p>Sistema Integrado de Gestão e Vistoria</p>
         </header>
         
- <div class="upload-section">
-  <label for="pdfFile">Enviar Projeto PDF:</label>
-  <input type="file" id="pdfFile" accept="application/pdf">
-  <button id="uploadBtn">Fazer Upload</button>
-</div>
-        
         <main class="menu-inicial">
             <button class="btn-primary" onclick="navegar('vistoria')">
                 <h2>VISTORIA</h2>
@@ -32,6 +26,20 @@
             </button>
         </main>
     </div>
+    <!-- Área de Upload Simplificada -->
+<div class="upload-container">
+    <h3>Upload de Projeto</h3>
+    
+    <select id="selectPavimento">
+        <option value="terreo">Térreo</option>
+        <option value="1_andar">1º Pavimento</option>
+        <option value="2_andar">2º Pavimento</option>
+        <option value="cobertura">Cobertura</option>
+    </select>
+
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button id="uploadBtn">Enviar Arquivo</button>
+</div>
 
     <script type="module" src="script.js"></script>
 </body>
