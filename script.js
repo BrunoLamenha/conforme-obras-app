@@ -1043,6 +1043,48 @@ function carregarListaApartamentos(nomeObra, pavimento, tipoArea) {
     `;
 }
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-storage.js";
+import { getFirestore, doc, arrayUnion, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
+
+const storage = getStorage();
+const db = getFirestore();
+
+document.getElementById('uploadBtn').addEventListener('click', async () => {
+    const fileInput = document.getElementById('pdfFile');
+    const pavimentoSelect = document.getElementById('selectPavimento');
+    
+    const file = fileInput.files[0];
+    const pavimentoId = pavimentoSelect.value;
+    const obraId = "grand_garden"; // ID da obra atual
+
+    if (!file) return alert("Selecione um arquivo PDF.");
+
+    try {
+        // 1. Caminho no Storage (Pasta organizada por obra e pavimento)
+        const storageRef = ref(storage, `obras/${obraId}/pavimentos/${pavimentoId}/${file.name}`);
+
+        // 2. Fazer Upload do arquivo físico
+        const snapshot = await uploadBytes(storageRef, file);
+        const urlDownload = await getDownloadURL(snapshot.ref);
+
+        // 3. Salvar referência no Firestore (No documento do pavimento)
+        const docRef = doc(db, "obras", obraId, "pavimentos", pavimentoId);
+        
+        // setDoc com merge: true garante que o documento seja criado se não existir
+        await setDoc(docRef, {
+            arquivos: arrayUnion({
+                nome: file.name,
+                url: urlDownload,
+                dataUpload: new Date()
+            })
+        }, { merge: true });
+
+        alert("Upload concluído com sucesso!");
+    } catch (error) {
+        console.error("Erro no upload:", error);
+        alert("Falha ao subir arquivo.");
+    }
+});
 
 // Inicializa o Storage vinculado ao seu app Firebase
 const storage = getStorage();
