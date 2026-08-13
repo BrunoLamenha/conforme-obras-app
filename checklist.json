@@ -1,0 +1,68 @@
+{
+  "checklist_vistoria_estrutural": [
+    {
+      "etapa": 1,
+      "categoria": "Preparação e Locação Inicial",
+      "itens": [
+        "Verificação dos eixos, alinhamento e prumos em relação ao projeto geométrico.",
+        "Limpeza inicial da base ou laje anterior, removendo poeira, serragem, pregos e detritos."
+      ]
+    },
+    {
+      "etapa": 2,
+      "categoria": "Montagem de Fôrmas e Escoramento",
+      "itens": [
+        "Conferência das dimensões geométricas das fôrmas (largura, altura, espessura de paredes/lajes).",
+        "Verificação da rigidez, estabilidade, apoios no solo e contraventamento do escoramento.",
+        "Checagem de contra-flechas e alinhamento das vigas e pilares.",
+        "Verificação da estanqueidade e vedação das juntas para evitar fuga de pasta de cimento.",
+        "Aplicação correta do produto desmoldante nas faces internas (evitando contato excessivo com o aço)."
+      ]
+    },
+    {
+      "etapa": 3,
+      "categoria": "Elementos Embutidos e Passagens",
+      "itens": [
+        "Posicionamento de esperas, caixas de passagem, eletrodutos e tubulações hidráulicas/elétricas.",
+        "Fixação adequada dos elementos embutidos para evitar deslocamento durante o lançamento."
+      ]
+    },
+    {
+      "etapa": 4,
+      "categoria": "Montagem da Armadura Passiva (Aço)",
+      "itens": [
+        "Conferência dos diâmetros das barras, número de elementos e disposição conforme o projeto estrutural.",
+        "Verificação do comprimento de ancoragem, ganchos e traspasses (emendas).",
+        "Posicionamento correto dos espaçadores (plásticos ou de argamassa) para garantir rigorosamente o cobrimento mínimo.",
+        "Inspeção da limpeza do aço (livre de ferrugem escamosa/não aderente, graxas ou tintas)."
+      ]
+    },
+    {
+      "etapa": 5,
+      "categoria": "Instalação de Armadura de Protensão (Quando Aplicável)",
+      "itens": [
+        "Posicionamento e fixação das bainhas e cordoas conforme o traçado teórico previsto em projeto.",
+        "Conferência do posicionamento das ancoragens ativas e passivas."
+      ]
+    },
+    {
+      "etapa": 6,
+      "categoria": "Vistoria Final Pré-Concretagem (Liberação)",
+      "itens": [
+        "Remoção de qualquer resíduo restante dentro das fôrmas (serragem, pontas de arame, lixo).",
+        "Conferência final integrada (fôrma + armadura + embutidos) e liberação formal para a concreteira."
+      ]
+    },
+    {
+      "etapa": 7,
+      "categoria": "Lançamento, Adensamento e Cura do Concreto",
+      "itens": [
+        "Conferência da Nota Fiscal da concreteira (fck especificado, slump/abatimento e horário de emissão).",
+        "Realização do ensaio de abatimento (Slump Test) na chegada do caminhão.",
+        "Acompanhamento do lançamento, controlando a altura de queda para evitar segregação dos agregados (máximo de 2 metros).",
+        "Adensamento correto com vibradores de imersão em camadas adequadas, evitando contato prolongado com fôrmas e armações.",
+        "Acabamento superficial da peça e início imediato do procedimento de cura."
+      ]
+    }
+  ]
+}
