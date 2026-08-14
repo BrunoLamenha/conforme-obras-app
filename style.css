@@ -215,3 +215,32 @@ select:focus, input:focus {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 4px;
 }
+/* Controle de visibilidade de telas e componentes */
+.hidden {
+    display: none !important;
+}
+
+/* Agrupadores de botões flexíveis */
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.button-group .btn-opt {
+    flex: 1;
+    min-width: 140px;
+}
+
+.button-group .btn-stage {
+    flex: 1;
+}
+
+/* Texto informativo do Wizard */
+.stage-info {
+    margin-top: 10px;
+    font-weight: bold;
+    color: var(--primary, #0056b3);
+    font-size: 0.9rem;
+}
