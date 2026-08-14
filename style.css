@@ -244,3 +244,10 @@ select:focus, input:focus {
     color: var(--primary, #0056b3);
     font-size: 0.9rem;
 }
+/* Estilo para destacar os botões ativos/selecionados */
+.tab-btn.active, .btn-stage.active {
+    background-color: var(--primary, #0056b3);
+    color: white;
+    border-color: var(--primary, #0056b3);
+    font-weight: 600;
+}
