@@ -22,49 +22,114 @@
             </div>
         </header>
         
-        <main id="main-content">
-            <!-- SEÇÃO 1: MENU INICIAL -->
-            <section id="screen-menu" class="menu-inicial">
-                <div class="card-menu" data-target="vistoria">
-                    <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div class="card-info">
-                        <h2>VISTORIA</h2>
-                        <span>Acompanhamento de campo, estrutura e acabamentos</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-                
-                <div class="card-menu" data-target="cadastros">
-                    <div class="card-icon"><i class="fa-solid fa-building-shield"></i></div>
-                    <div class="card-info">
-                        <h2>CADASTROS</h2>
-                        <span>Gerenciamento de empreendimentos, projetos e configurações</span>
-                    </div>
-                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-                </div>
-            </section>
-
-            <!-- SEÇÃO 2: WIZARD DE VISTORIA (Oculto por padrão via CSS) -->
-            <section id="screen-wizard" class="wizard-screen hidden">
-                <div class="card" id="type-card">
-                    <h3>3. Tipo de Vistoria</h3>
-                    <div class="button-group" id="category-selection-container">
-                        <button class="tab-btn btn-opt" id="btn-cat-padrao" data-category="Padrão Construtora">Padrão Construtora</button>
-                        <button class="tab-btn btn-opt" id="btn-cat-reforma" data-category="Reforma / Aditivo">Reforma / Aditivo</button>
-                    </div>
-
-                    <h3>4. Etapa da Vistoria</h3>
-                    <div class="button-group" id="stage-selection-container">
-                        <button class="btn btn-stage" id="btn-stage-1" data-stage="1ª Vistoria">📋 1ª Vistoria</button>
-                        <button class="btn btn-stage hidden" id="btn-stage-rev" data-stage="Revistoria">🔄 Revistoria</button>
-                    </div>
-                    <div id="stage-info-text" class="stage-info"></div>
-                </div>
-            </section>
+        <main id="main-content" class="menu-inicial">
+            <!-- Conteúdo dinâmico injetado via JavaScript -->
         </main>
     </div>
 
-    <!-- Ponto de entrada do JavaScript modular -->
-    <script type="module" src="js/app.js"></script>
+    <!-- Script principal modularizado -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>
+```[cite: 2]
+
+---
+
+### Passo 2: O que cortar e colar no `script.js` (Módulo de Controle e Rotas)
+
+No seu arquivo de script principal (`script.js`), vamos isolar a inicialização e o roteamento das telas de empresas, reformas e ambientes. 
+
+**Onde colar:** No seu arquivo `script.js` principal, insira a base de controle de navegação e inicialização:
+
+```javascript
+import { db as dbConfig } from './firebaseConfig.js';
+import { getFirestore, doc, getDoc, setDoc, arrayUnion, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; 
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const db = getFirestore();
+const storage = getStorage();
+
+let empresasPadrao = [
+    {
+        nome: 'VIVER BEM',
+        tipoEmpresa: 'Construtora',
+        itensReforma: [],
+        ambientes: [],
+        empreendimentos: [
+            { nome: 'ZEN LIFE', tipologia: ['Misto'], pavimentosTipo: 4, cobertura: 'Ambas', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [], ambientes: [] },
+            { nome: 'ZOE', tipologia: ['2 Quartos'], pavimentosTipo: 2, cobertura: 'Privativa', fechamento: ['Drywall'], tipoObra: 'Obra Nova', itensReforma: [], ambientes: [] }
+        ]
+    }
+];
+
+let empresaAtual = 'VIVER BEM';
+
+function obterEmpresas() {
+    const salvo = localStorage.getItem('conformeObra_empresas');
+    if (salvo) return JSON.parse(salvo);
+    localStorage.setItem('conformeObra_empresas', JSON.stringify(empresasPadrao));
+    return empresasPadrao;
+}
+
+function salvarEmpresas(lista) {
+    localStorage.setItem('conformeObra_empresas', JSON.stringify(lista));
+}
+
+function obterEmpresaAtualObj() {
+    const empresas = obterEmpresas();
+    return empresas.find(e => e.nome === empresaAtual);
+}
+
+window.voltarInicio = function() {
+    const container = document.getElementById('main-content');
+    const empresas = obterEmpresas();
+
+    let htmlEmpresas = '';
+    empresas.forEach(emp => {
+        const isReforma = emp.tipoEmpresa === 'Reforma';
+        const badgeTipo = isReforma ? '<span style="color: #facc15; font-size: 11px; margin-left: 5px;">(Reforma)</span>' : '';
+        const icone = isReforma ? 'fa-hammer' : 'fa-building-user';
+        const subtitulo = isReforma ? `Projeto de Reforma • ${emp.ambientes ? emp.ambientes.length : 0} ambiente(s)` : `${emp.empreendimentos.length} empreendimento(s) cadastrado(s)`;
+
+        htmlEmpresas += `
+            <div class="card-menu" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer;" onclick="abrirEmpresa('${emp.nome}')">
+                    <div class="card-icon" style="margin-bottom: 0;"><i class="fa-solid ${icone}"></i></div>
+                    <div class="card-info" style="flex: 1;">
+                        <h2>${emp.nome} ${badgeTipo}</h2>
+                        <span>${subtitulo}</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button onclick="event.stopPropagation(); solicitarExclusaoEmpresa('${emp.nome}')" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 14px;" title="Excluir Empresa"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="card-arrow" onclick="abrirEmpresa('${emp.nome}')" style="cursor: pointer;"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = `
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 5px;"><i class="fa-solid fa-city"></i> Empresas & Reformas</h3>
+            <p style="font-size: 13px; color: var(--text-muted);">Selecione a empresa ou adicione um novo cadastro</p>
+        </div>
+        <div class="menu-inicial">
+            ${htmlEmpresas}
+            <div class="card-menu" onclick="iniciarCadastroEmpresa()" style="border: 2px dashed var(--primary); background: rgba(37, 99, 235, 0.05);">
+                <div class="card-icon"><i class="fa-solid fa-circle-plus"></i></div>
+                <div class="card-info">
+                    <h2 style="color: var(--primary);">ADICIONAR EMPRESA / REFORMA</h2>
+                    <span>Criar novo grupo ou cadastro de reforma</span>
+                </div>
+                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+    `;
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+    voltarInicio();
+});
+```[cite: 3]
+
+Me diga qual é o próximo bloco específico de funções (ex: painel de reformas, checklists de ambientes ou relatórios) que você quer isolar e mapear para o seu novo padrão de módulos!
