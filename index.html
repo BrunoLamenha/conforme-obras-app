@@ -22,41 +22,49 @@
             </div>
         </header>
         
-        <main id="main-content" class="menu-inicial">
-            <div class="card-menu" onclick="navegar('vistoria')">
-                <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                <div class="card-info">
-                    <h2>VISTORIA</h2>
-                    <span>Acompanhamento de campo, estrutura e acabamentos</span>
+        <main id="main-content">
+            <!-- SEÇÃO 1: MENU INICIAL -->
+            <section id="screen-menu" class="menu-inicial">
+                <div class="card-menu" data-target="vistoria">
+                    <div class="card-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="card-info">
+                        <h2>VISTORIA</h2>
+                        <span>Acompanhamento de campo, estrutura e acabamentos</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
-                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-            </div>
-            
-            <div class="card-menu" onclick="navegar('cadastros')">
-                <div class="card-icon"><i class="fa-solid fa-building-shield"></i></div>
-                <div class="card-info">
-                    <h2>CADASTROS</h2>
-                    <span>Gerenciamento de empreendimentos, projetos e configurações</span>
+                
+                <div class="card-menu" data-target="cadastros">
+                    <div class="card-icon"><i class="fa-solid fa-building-shield"></i></div>
+                    <div class="card-info">
+                        <h2>CADASTROS</h2>
+                        <span>Gerenciamento de empreendimentos, projetos e configurações</span>
+                    </div>
+                    <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                 </div>
-                <div class="card-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-            </div>
+            </section>
+
+            <!-- SEÇÃO 2: WIZARD DE VISTORIA (Oculto por padrão via CSS) -->
+            <section id="screen-wizard" class="wizard-screen hidden">
+                <div class="card" id="type-card">
+                    <h3>3. Tipo de Vistoria</h3>
+                    <div class="button-group" id="category-selection-container">
+                        <button class="tab-btn btn-opt" id="btn-cat-padrao" data-category="Padrão Construtora">Padrão Construtora</button>
+                        <button class="tab-btn btn-opt" id="btn-cat-reforma" data-category="Reforma / Aditivo">Reforma / Aditivo</button>
+                    </div>
+
+                    <h3>4. Etapa da Vistoria</h3>
+                    <div class="button-group" id="stage-selection-container">
+                        <button class="btn btn-stage" id="btn-stage-1" data-stage="1ª Vistoria">📋 1ª Vistoria</button>
+                        <button class="btn btn-stage hidden" id="btn-stage-rev" data-stage="Revistoria">🔄 Revistoria</button>
+                    </div>
+                    <div id="stage-info-text" class="stage-info"></div>
+                </div>
+            </section>
         </main>
     </div>
-    <div class="card" id="type-card" style="display:none;">
-    <h3>3. Tipo de Vistoria</h3>
-    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;" id="category-selection-container">
-        <button class="tab-btn btn-opt" style="flex:1; min-width:140px;" id="btn-cat-padrao" onclick="setCategory('Padrão Construtora', this)">Padrão Construtora</button>
-        <button class="tab-btn btn-opt" style="flex:1; min-width:140px;" id="btn-cat-reforma" onclick="setCategory('Reforma / Aditivo', this)">Reforma / Aditivo</button>
-    </div>
 
-    <h3 style="margin-top: 15px;">4. Etapa da Vistoria</h3>
-    <div style="display:flex; gap:8px; margin-top:8px;" id="stage-selection-container">
-        <button class="btn btn-stage" id="btn-stage-1" style="flex:1;" onclick="setStage('1ª Vistoria', this)">📋 1ª Vistoria</button>
-        <button class="btn btn-stage" id="btn-stage-rev" style="flex:1; display:none;" onclick="setStage('Revistoria', this)">🔄 Revistoria</button>
-    </div>
-    <div id="stage-info-text" style="margin-top:10px; font-weight:bold; color:var(--primary); font-size:0.9rem;"></div>
-</div>
-
-    <script type="module" src="script.js"></script>
+    <!-- Ponto de entrada do JavaScript modular -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
